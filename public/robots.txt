@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lehestetic.com.br/sitemap.xml
