@@ -1,6 +1,7 @@
 import type { Treatment } from '../../types/siteContent';
 import { PlaceholderMedia } from '../ui/PlaceholderMedia';
 import { useSelection } from '../../context/SelectionContext';
+import { getTreatmentCategoryName } from '../../utils/treatments';
 
 interface TreatmentCardProps {
   treatment: Treatment;
@@ -17,7 +18,7 @@ export function TreatmentCard({ treatment, onViewDetails }: TreatmentCardProps) 
 
       <div className="flex flex-1 flex-col gap-3 p-6">
         <span className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
-          {treatment.category}
+          {getTreatmentCategoryName(treatment.categoryId)}
         </span>
         <h3 className="text-xl text-brown-dark">{treatment.name}</h3>
         <p className="flex-1 text-sm leading-relaxed text-brown/70">{treatment.summary}</p>

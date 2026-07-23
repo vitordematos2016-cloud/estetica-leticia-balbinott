@@ -1,15 +1,20 @@
 import { SelectionProvider } from './context/SelectionContext';
+import { TreatmentsFilterProvider } from './context/TreatmentsFilterContext';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { SelectionWidget } from './components/selection/SelectionWidget';
+import { BackToTop } from './components/ui/BackToTop';
 import { Hero } from './components/sections/Hero';
 import { BrandLoop } from './components/sections/BrandLoop';
 import { Manifesto } from './components/sections/Manifesto';
 import { About } from './components/sections/About';
+import { Credentials } from './components/sections/Credentials';
 import { Purpose } from './components/sections/Purpose';
 import { Differentials } from './components/sections/Differentials';
+import { SkinConcerns } from './components/sections/SkinConcerns';
 import { Treatments } from './components/sections/Treatments';
 import { FeaturedTreatments } from './components/sections/FeaturedTreatments';
+import { PersonalAssessment } from './components/sections/PersonalAssessment';
 import { HowItWorks } from './components/sections/HowItWorks';
 import { Experience } from './components/sections/Experience';
 import { Gallery } from './components/sections/Gallery';
@@ -21,36 +26,44 @@ import { Faq } from './components/sections/Faq';
 import { MySelectionSection } from './components/sections/MySelectionSection';
 import { Scheduling } from './components/sections/Scheduling';
 import { Location } from './components/sections/Location';
+import { FinalCta } from './components/sections/FinalCta';
 import { Contact } from './components/sections/Contact';
 
 function App() {
   return (
     <SelectionProvider>
-      <Header />
-      <main>
-        <Hero />
-        <BrandLoop />
-        <Manifesto />
-        <About />
-        <Purpose />
-        <Differentials />
-        <Treatments />
-        <FeaturedTreatments />
-        <HowItWorks />
-        <Experience />
-        <Gallery />
-        <FacadeYears />
-        <AuthorizedResults />
-        <Offers />
-        <Reviews />
-        <Faq />
-        <MySelectionSection />
-        <Scheduling />
-        <Location />
-        <Contact />
-      </main>
-      <Footer />
-      <SelectionWidget />
+      <TreatmentsFilterProvider>
+        <Header />
+        <main>
+          <Hero />
+          <BrandLoop />
+          <Manifesto />
+          <About />
+          <Credentials />
+          <Purpose />
+          <Differentials />
+          <SkinConcerns />
+          <Treatments />
+          <FeaturedTreatments />
+          <PersonalAssessment />
+          <HowItWorks />
+          <Experience />
+          <Gallery />
+          <FacadeYears />
+          <AuthorizedResults />
+          <Offers />
+          <Reviews />
+          <Faq />
+          <MySelectionSection />
+          <Scheduling />
+          <Location />
+          <FinalCta />
+          <Contact />
+        </main>
+        <Footer />
+        <SelectionWidget />
+        <BackToTop />
+      </TreatmentsFilterProvider>
     </SelectionProvider>
   );
 }

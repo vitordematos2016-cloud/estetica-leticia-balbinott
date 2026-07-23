@@ -83,21 +83,81 @@ export interface FacadeContent {
   text: string;
 }
 
+export interface TreatmentCategory {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface SkinConcern {
+  id: string;
+  label: string;
+  description: string;
+  categoryId: string;
+}
+
+export interface SkinConcernsContent {
+  title: string;
+  text: string;
+  items: SkinConcern[];
+}
+
 export interface Treatment {
   id: string;
   name: string;
-  category: string;
+  categoryId: string;
   summary: string;
   description: string;
   image?: string;
-  benefits: string[];
   indication: string;
-  care: string;
+  howItWorks: string;
+  benefits: string[];
+  sessions?: string;
   duration: string;
+  careBefore: string[];
+  careAfter: string[];
+  contraindications: string[];
   price: string;
   featured: boolean;
   professional: string;
   whatsappMessage: string;
+}
+
+export type CredentialType =
+  | 'formacao'
+  | 'especializacao'
+  | 'curso'
+  | 'certificado'
+  | 'tecnologia'
+  | 'evento';
+
+export interface CredentialItem {
+  id: string;
+  type: CredentialType;
+  title: string;
+  description?: string;
+  year?: string;
+}
+
+export interface CredentialsContent {
+  title: string;
+  text: string;
+  notice: string;
+  items: CredentialItem[];
+}
+
+export interface PersonalAssessmentContent {
+  title: string;
+  text: string;
+  criteria: string[];
+  cta: { label: string; href: string };
+}
+
+export interface FinalCtaContent {
+  title: string;
+  text: string;
+  primaryCta: { label: string; href: string };
+  secondaryCtaLabel: string;
 }
 
 export interface Offer {
@@ -153,8 +213,13 @@ export interface SiteContent {
   gallery: { title: string; text: string; images: GalleryImage[] };
   facade: FacadeContent;
   authorizedResults: { title: string; text: string; placeholder: string };
+  credentials: CredentialsContent;
+  skinConcerns: SkinConcernsContent;
+  treatmentCategories: TreatmentCategory[];
   treatments: Treatment[];
   treatmentsCatalogNotice: string;
+  personalAssessment: PersonalAssessmentContent;
+  finalCta: FinalCtaContent;
   offers: Offer[];
   offersNotice: string;
   reviews: Review[];

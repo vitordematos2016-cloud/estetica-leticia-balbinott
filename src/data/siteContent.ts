@@ -175,8 +175,111 @@ export const siteContent: SiteContent = {
     placeholder: 'Nenhum resultado autorizado publicado até o momento.',
   },
 
+  credentials: {
+    title: 'Conhecimento que se transforma em cuidado',
+    text: 'A busca constante por atualização é o que sustenta cada indicação feita na Leh Estetic — sempre com responsabilidade sobre o que é apresentado.',
+    notice: 'Formações, especializações e certificações em atualização.',
+    items: [],
+  },
+
+  skinConcerns: {
+    title: 'Qual cuidado sua pele precisa?',
+    text: 'Cada objetivo pede um caminho diferente. Escolha o que mais se aproxima do que você sente hoje.',
+    items: [
+      {
+        id: 'manchas',
+        label: 'Melhorar manchas',
+        description: 'Uniformizar o tom e a aparência da pele.',
+        categoryId: 'manchas-uniformizacao',
+      },
+      {
+        id: 'linhas-sinais',
+        label: 'Suavizar linhas e sinais',
+        description: 'Atenuar marcas de expressão e sinais do tempo.',
+        categoryId: 'rejuvenescimento',
+      },
+      {
+        id: 'oleosidade-acne',
+        label: 'Controlar oleosidade e acne',
+        description: 'Equilibrar a produção de oleosidade da pele.',
+        categoryId: 'acne-oleosidade',
+      },
+      {
+        id: 'textura-vico',
+        label: 'Melhorar textura e viço',
+        description: 'Renovar a superfície da pele e devolver luminosidade.',
+        categoryId: 'limpeza-renovacao',
+      },
+      {
+        id: 'saude-pele',
+        label: 'Recuperar a saúde da pele',
+        description: 'Fortalecer e regenerar a barreira natural da pele.',
+        categoryId: 'estetica-regenerativa',
+      },
+      {
+        id: 'flacidez',
+        label: 'Cuidar da flacidez',
+        description: 'Trabalhar firmeza e sustentação da pele.',
+        categoryId: 'rejuvenescimento',
+      },
+      {
+        id: 'prevencao',
+        label: 'Prevenir o envelhecimento',
+        description: 'Cuidados contínuos para retardar sinais futuros.',
+        categoryId: 'rejuvenescimento',
+      },
+    ],
+  },
+
+  treatmentCategories: [
+    {
+      id: 'limpeza-renovacao',
+      name: 'Limpeza e renovação',
+      description: 'Procedimentos de renovação da superfície da pele.',
+    },
+    {
+      id: 'estetica-regenerativa',
+      name: 'Estética regenerativa',
+      description: 'Cuidados voltados à regeneração e saúde da pele.',
+    },
+    {
+      id: 'rejuvenescimento',
+      name: 'Rejuvenescimento',
+      description: 'Tratamentos focados em firmeza e sinais do tempo.',
+    },
+    {
+      id: 'manchas-uniformizacao',
+      name: 'Manchas e uniformização',
+      description: 'Cuidados para tom e uniformidade da pele.',
+    },
+    {
+      id: 'acne-oleosidade',
+      name: 'Acne e oleosidade',
+      description: 'Tratamentos para controle de oleosidade e acne.',
+    },
+    {
+      id: 'protocolos-personalizados',
+      name: 'Protocolos personalizados',
+      description: 'Combinações construídas a partir da avaliação individual.',
+    },
+  ],
+
   treatments: [],
   treatmentsCatalogNotice: 'Catálogo oficial em atualização.',
+
+  personalAssessment: {
+    title: 'Cada pele precisa de uma avaliação individual',
+    text: 'Nenhum tratamento é indicado apenas pela aparência ou pela vontade da cliente. Antes de qualquer sugestão, a avaliação considera:',
+    criteria: [
+      'Histórico da pele',
+      'Rotina de cuidados',
+      'Sensibilidades',
+      'Objetivos',
+      'Tratamentos anteriores',
+      'Necessidades atuais',
+    ],
+    cta: { label: 'Agendar minha avaliação', href: '#agendamento' },
+  },
 
   offers: [],
   offersNotice: 'Nenhuma oferta ativa no momento.',
@@ -201,6 +304,13 @@ export const siteContent: SiteContent = {
         'Na Rua José Sampaio, sala 101, 1º andar — no prédio espelhado próximo à Audisom.',
     },
   ],
+
+  finalCta: {
+    title: 'Sua pele merece um cuidado pensado especialmente para ela',
+    text: 'Agende uma avaliação e descubra quais cuidados fazem sentido para as necessidades da sua pele.',
+    primaryCta: { label: 'Agendar avaliação', href: '#agendamento' },
+    secondaryCtaLabel: 'Falar pelo WhatsApp',
+  },
 
   seo: {
     title: 'Leh Estetic | Estética Facial e Regenerativa',
