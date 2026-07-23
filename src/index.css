@@ -73,7 +73,7 @@
 
 @layer utilities {
   .marquee-track {
-    animation: marquee 32s linear infinite;
+    animation: marquee 50s linear infinite;
   }
 
   .marquee-track.is-paused {

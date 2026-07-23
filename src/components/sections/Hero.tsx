@@ -75,10 +75,10 @@ export function Hero() {
             <p className="px-8 text-[0.7rem] text-brown/45">Foto oficial em preparação</p>
           </div>
 
-          <div className="absolute -bottom-6 -right-4 flex h-24 w-24 flex-col items-center justify-center rounded-full bg-brown-dark text-cream shadow-warm sm:h-28 sm:w-28">
-            <span className="text-2xl font-heading sm:text-3xl">{siteContent.brand.experienceYears}</span>
-            <span className="text-[0.6rem] uppercase tracking-[0.15em] text-cream-light/80">anos</span>
-          </div>
+          <div
+            aria-hidden="true"
+            className="absolute -bottom-5 -right-5 h-20 w-20 rounded-full border border-gold/35 sm:h-24 sm:w-24"
+          />
         </div>
       </Container>
     </section>
