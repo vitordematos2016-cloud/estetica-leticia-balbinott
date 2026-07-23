@@ -160,6 +160,53 @@ export interface FinalCtaContent {
   secondaryCtaLabel: string;
 }
 
+export interface AftercareContent {
+  title: string;
+  text: string;
+}
+
+export interface TechnologyItem {
+  id: string;
+  name: string;
+  purpose: string;
+  benefit?: string;
+}
+
+export interface TechnologiesContent {
+  title: string;
+  text: string;
+  notice: string;
+  items: TechnologyItem[];
+}
+
+export interface InstagramContent {
+  title: string;
+  text: string;
+  notice: string;
+  postsPlaceholderCount: number;
+}
+
+export interface LegalPolicySection {
+  heading: string;
+  text: string;
+}
+
+export interface LegalPolicyContent {
+  title: string;
+  reviewNotice: string;
+  sections: LegalPolicySection[];
+}
+
+export interface LegalContent {
+  privacyPolicy: LegalPolicyContent;
+  cancellationPolicy: LegalPolicyContent;
+}
+
+export interface SchedulingConsentContent {
+  label: string;
+  error: string;
+}
+
 export interface Offer {
   id: string;
   title: string;
@@ -219,6 +266,9 @@ export interface SiteContent {
   treatments: Treatment[];
   treatmentsCatalogNotice: string;
   personalAssessment: PersonalAssessmentContent;
+  aftercare: AftercareContent;
+  technologies: TechnologiesContent;
+  instagramShowcase: InstagramContent;
   finalCta: FinalCtaContent;
   offers: Offer[];
   offersNotice: string;
@@ -227,5 +277,7 @@ export interface SiteContent {
   faq: FaqItem[];
   seo: SeoContent;
   footer: FooterContent;
+  legal: LegalContent;
+  schedulingConsent: SchedulingConsentContent;
   whatsappDefaultMessage: string;
 }

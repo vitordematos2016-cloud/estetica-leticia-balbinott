@@ -3,6 +3,7 @@ import type { FormEvent, RefObject } from 'react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
+import { LegalPolicyModal } from '../ui/LegalPolicyModal';
 import { useSelection } from '../../context/SelectionContext';
 import { buildSchedulingMessage, buildWhatsAppUrl } from '../../utils/whatsapp';
 import { getLocalTodayISO, getLocalNowTime, isPastDate, isPastTimeToday } from '../../utils/date';
@@ -14,6 +15,7 @@ interface FormState {
   date: string;
   time: string;
   notes: string;
+  consent: boolean;
 }
 
 type FieldErrors = Partial<Record<keyof FormState, string>>;
@@ -25,6 +27,7 @@ const initialState: FormState = {
   date: '',
   time: '',
   notes: '',
+  consent: false,
 };
 
 export function Scheduling() {
@@ -32,17 +35,20 @@ export function Scheduling() {
   const [form, setForm] = useState<FormState>(initialState);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitted, setSubmitted] = useState(false);
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
 
   const nameRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
   const dateRef = useRef<HTMLInputElement>(null);
   const timeRef = useRef<HTMLInputElement>(null);
+  const consentRef = useRef<HTMLInputElement>(null);
 
   const fieldRefs: Record<string, RefObject<HTMLInputElement | null>> = {
     name: nameRef,
     phone: phoneRef,
     date: dateRef,
     time: timeRef,
+    consent: consentRef,
   };
 
   function updateField<K extends keyof FormState>(field: K, value: FormState[K]) {
@@ -67,6 +73,8 @@ export function Scheduling() {
     } else if (form.date && isPastTimeToday(form.date, form.time)) {
       nextErrors.time = 'O horário selecionado já passou para hoje.';
     }
+
+    if (!form.consent) nextErrors.consent = siteContent.schedulingConsent.error;
 
     return nextErrors;
   }
@@ -237,6 +245,36 @@ export function Scheduling() {
             />
           </div>
 
+          <div className="flex flex-col gap-1.5">
+            <label className="flex items-start gap-3 text-sm text-brown-dark">
+              <input
+                id="scheduling-consent"
+                ref={consentRef}
+                type="checkbox"
+                checked={form.consent}
+                onChange={(event) => updateField('consent', event.target.checked)}
+                aria-invalid={!!errors.consent}
+                aria-describedby={errors.consent ? 'scheduling-consent-error' : undefined}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-brown-dark"
+              />
+              <span>
+                {siteContent.schedulingConsent.label}{' '}
+                <button
+                  type="button"
+                  onClick={() => setShowPrivacyPolicy(true)}
+                  className="underline decoration-gold/50 underline-offset-2 hover:text-gold"
+                >
+                  Ver Política de Privacidade
+                </button>
+              </span>
+            </label>
+            {errors.consent && (
+              <p id="scheduling-consent-error" className="text-xs text-red-700">
+                {errors.consent}
+              </p>
+            )}
+          </div>
+
           <button
             type="submit"
             className="mt-2 rounded-full bg-brown-dark px-7 py-3.5 text-sm font-medium text-cream transition-colors hover:bg-brown"
@@ -252,6 +290,11 @@ export function Scheduling() {
           )}
         </form>
       </Container>
+
+      <LegalPolicyModal
+        policy={showPrivacyPolicy ? siteContent.legal.privacyPolicy : null}
+        onClose={() => setShowPrivacyPolicy(false)}
+      />
     </section>
   );
 }

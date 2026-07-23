@@ -7,26 +7,29 @@ export function HowItWorks() {
 
   return (
     <section className="py-24 sm:py-28">
-      <Container className="flex flex-col gap-14">
-        <SectionHeading title={howItWorks.title} text={howItWorks.text} />
+      <Container className="flex flex-col gap-16">
+        <SectionHeading eyebrow="Jornada" title={howItWorks.title} text={howItWorks.text} />
 
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-6">
           {howItWorks.steps.map((step, index) => (
-            <div key={step.title} className="relative flex flex-col gap-4 px-2">
-              <span className="font-heading text-4xl text-gold/70">
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <h3 className="text-xl text-brown-dark">{step.title}</h3>
-              <p className="text-sm leading-relaxed text-brown/70">{step.text}</p>
+            <li key={step.title} className="relative flex flex-col items-center gap-4 text-center">
+              <div className="flex flex-col items-center gap-3">
+                <span className="flex h-16 w-16 items-center justify-center rounded-full border border-gold/50 bg-cream-light/50 font-heading text-2xl text-gold">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 className="text-lg text-brown-dark">{step.title}</h3>
+              </div>
+              <p className="max-w-[16rem] text-sm leading-relaxed text-brown/70">{step.text}</p>
+
               {index < howItWorks.steps.length - 1 && (
                 <span
                   aria-hidden="true"
-                  className="absolute right-0 top-5 hidden h-px w-8 -translate-y-1/2 translate-x-full bg-gold/40 lg:block"
+                  className="absolute right-[-1.5rem] top-8 hidden h-px w-12 bg-gold/40 lg:block"
                 />
               )}
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
       </Container>
     </section>
   );

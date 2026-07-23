@@ -1,10 +1,14 @@
+import { useState } from 'react';
+import type { LegalPolicyContent } from '../../types/siteContent';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
+import { LegalPolicyModal } from '../ui/LegalPolicyModal';
 import { buildWhatsAppUrl } from '../../utils/whatsapp';
 
 export function Footer() {
-  const { brand, contact, address, nav, footer } = siteContent;
+  const { brand, contact, address, nav, footer, legal } = siteContent;
   const whatsappUrl = buildWhatsAppUrl(contact.whatsappNumber, siteContent.whatsappDefaultMessage);
+  const [openPolicy, setOpenPolicy] = useState<LegalPolicyContent | null>(null);
 
   return (
     <footer className="bg-brown-dark text-cream-light">
@@ -66,10 +70,28 @@ export function Footer() {
       </Container>
 
       <div className="border-t border-cream-light/10 py-5">
-        <Container>
+        <Container className="flex flex-col items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1">
+            <button
+              type="button"
+              onClick={() => setOpenPolicy(legal.privacyPolicy)}
+              className="text-[0.7rem] text-cream-light/50 underline decoration-cream-light/20 underline-offset-2 transition-colors hover:text-gold"
+            >
+              {legal.privacyPolicy.title}
+            </button>
+            <button
+              type="button"
+              onClick={() => setOpenPolicy(legal.cancellationPolicy)}
+              className="text-[0.7rem] text-cream-light/50 underline decoration-cream-light/20 underline-offset-2 transition-colors hover:text-gold"
+            >
+              {legal.cancellationPolicy.title}
+            </button>
+          </div>
           <p className="text-center text-[0.7rem] text-cream-light/40">{footer.developedBy}</p>
         </Container>
       </div>
+
+      <LegalPolicyModal policy={openPolicy} onClose={() => setOpenPolicy(null)} />
     </footer>
   );
 }

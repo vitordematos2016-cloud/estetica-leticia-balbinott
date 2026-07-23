@@ -29,7 +29,18 @@ está preparado para recebê-los assim que estiverem disponíveis.
 ## Ofertas e condições comerciais
 - [ ] Ofertas ativas (título, descrição, validade)
 - [ ] Formas de pagamento aceitas
-- [ ] Políticas de cancelamento/remarcação
+- [ ] Políticas de cancelamento/remarcação (prazos e condições — o site já tem uma seção preliminar em `src/data/siteContent.ts` → `legal.cancellationPolicy`, marcada como conteúdo em revisão)
+
+## Tecnologias e produtos
+- [ ] Nome, finalidade e benefício de cada tecnologia/equipamento utilizado
+- [ ] Foto real de cada equipamento
+
+## Instagram
+- [ ] Seleção de publicações reais para exibir na seção "Instagram" (a seção já está pronta, apenas sem posts)
+
+## Políticas legais
+- [ ] Revisão e confirmação do texto de `legal.privacyPolicy` (Política de Privacidade) — conteúdo preliminar
+- [ ] Revisão e confirmação do texto de `legal.cancellationPolicy` (Política de Cancelamento e Reagendamento) — conteúdo preliminar, sem prazos definidos ainda
 
 ## Avaliações e resultados
 - [ ] Avaliações de clientes autorizadas para publicação
@@ -43,6 +54,9 @@ está preparado para recebê-los assim que estiverem disponíveis.
 - [ ] Formação acadêmica
 - [ ] Cursos e especializações
 - [ ] Certificados e registros profissionais
+
+## Técnico (não depende da cliente)
+- [ ] `src/components/NotFoundPage.tsx` está pronto mas não está montado — o site hoje é uma página única com âncoras, sem rotas. Só faz sentido ativá-lo se o site ganhar páginas internas separadas (ex.: `/gestao`, política de privacidade em página própria) no futuro.
 
 ## Observação
 Todos os textos, valores e dados já publicados no site (nome, profissional,

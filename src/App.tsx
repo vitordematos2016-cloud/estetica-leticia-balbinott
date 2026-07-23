@@ -16,13 +16,16 @@ import { Treatments } from './components/sections/Treatments';
 import { FeaturedTreatments } from './components/sections/FeaturedTreatments';
 import { PersonalAssessment } from './components/sections/PersonalAssessment';
 import { HowItWorks } from './components/sections/HowItWorks';
+import { Aftercare } from './components/sections/Aftercare';
 import { Experience } from './components/sections/Experience';
+import { Technologies } from './components/sections/Technologies';
 import { Gallery } from './components/sections/Gallery';
 import { FacadeYears } from './components/sections/FacadeYears';
 import { AuthorizedResults } from './components/sections/AuthorizedResults';
 import { Offers } from './components/sections/Offers';
 import { Reviews } from './components/sections/Reviews';
 import { Faq } from './components/sections/Faq';
+import { InstagramShowcase } from './components/sections/InstagramShowcase';
 import { MySelectionSection } from './components/sections/MySelectionSection';
 import { Scheduling } from './components/sections/Scheduling';
 import { Location } from './components/sections/Location';
@@ -47,13 +50,16 @@ function App() {
           <FeaturedTreatments />
           <PersonalAssessment />
           <HowItWorks />
+          <Aftercare />
           <Experience />
+          <Technologies />
           <Gallery />
           <FacadeYears />
           <AuthorizedResults />
           <Offers />
           <Reviews />
           <Faq />
+          <InstagramShowcase />
           <MySelectionSection />
           <Scheduling />
           <Location />

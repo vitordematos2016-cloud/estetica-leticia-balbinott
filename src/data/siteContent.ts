@@ -122,24 +122,28 @@ export const siteContent: SiteContent = {
   ],
 
   howItWorks: {
-    title: 'Como funciona o atendimento',
-    text: 'Um processo simples, pensado para que você se sinta segura e bem informada em cada etapa.',
+    title: 'A jornada do seu tratamento',
+    text: 'Um caminho claro, do primeiro contato ao acompanhamento — para que você saiba exatamente o que esperar em cada etapa.',
     steps: [
       {
-        title: 'Contato inicial',
-        text: 'Você entra em contato pelo WhatsApp ou pelo site para tirar dúvidas e solicitar sua avaliação.',
+        title: 'Avaliação',
+        text: 'Sua pele é avaliada com atenção para entender histórico, sensibilidades e objetivos antes de qualquer indicação.',
       },
       {
-        title: 'Avaliação personalizada',
-        text: 'Sua pele é avaliada com atenção para entender suas necessidades antes de qualquer indicação.',
+        title: 'Planejamento',
+        text: 'A partir da avaliação, é construído um plano de cuidado transparente, adequado às suas necessidades.',
       },
       {
-        title: 'Plano de cuidado',
-        text: 'As orientações são construídas de forma transparente, respeitando o seu tempo e suas expectativas.',
+        title: 'Procedimento',
+        text: 'Cada etapa é conduzida com atenção, segurança e respeito ao seu tempo.',
+      },
+      {
+        title: 'Orientações',
+        text: 'Você recebe orientações claras sobre os cuidados necessários após o atendimento.',
       },
       {
         title: 'Acompanhamento',
-        text: 'O cuidado continua após o atendimento, com atenção próxima em cada etapa do processo.',
+        text: 'O cuidado continua além do consultório, com atenção próxima em cada etapa seguinte.',
       },
     ],
   },
@@ -281,6 +285,25 @@ export const siteContent: SiteContent = {
     cta: { label: 'Agendar minha avaliação', href: '#agendamento' },
   },
 
+  aftercare: {
+    title: 'Cuidados após o atendimento',
+    text: 'O cuidado não termina quando o procedimento acaba. Você recebe orientações claras sobre os cuidados necessários e permanece acompanhada nos dias seguintes, com atenção para qualquer dúvida que surgir.',
+  },
+
+  technologies: {
+    title: 'Tecnologias e produtos utilizados',
+    text: 'Equipamentos e linhas profissionais utilizados nos tratamentos da Leh Estetic.',
+    notice: 'Informações sobre tecnologias e produtos em atualização.',
+    items: [],
+  },
+
+  instagramShowcase: {
+    title: 'Acompanhe cuidados, resultados e bastidores da Leh Estetic',
+    text: 'Uma seleção de publicações do Instagram da Leh Estetic.',
+    notice: 'Publicações em seleção — em breve, destaques direto do Instagram.',
+    postsPlaceholderCount: 6,
+  },
+
   offers: [],
   offersNotice: 'Nenhuma oferta ativa no momento.',
 
@@ -320,6 +343,48 @@ export const siteContent: SiteContent = {
 
   footer: {
     developedBy: 'Desenvolvido por Matos Soluções',
+  },
+
+  legal: {
+    privacyPolicy: {
+      title: 'Política de Privacidade',
+      reviewNotice:
+        'Conteúdo preliminar, ainda pendente de revisão e confirmação pela Leh Estetic antes da publicação definitiva.',
+      sections: [
+        {
+          heading: 'Quais dados são coletados',
+          text: 'Ao preencher o formulário de agendamento ou entrar em contato pelo site, coletamos apenas os dados informados voluntariamente: nome, telefone e, quando preenchidas, observações e preferências de horário.',
+        },
+        {
+          heading: 'Como esses dados são usados',
+          text: 'As informações são usadas exclusivamente para responder à sua solicitação de contato ou agendamento pelo WhatsApp, e não são utilizadas para nenhuma outra finalidade.',
+        },
+        {
+          heading: 'Compartilhamento',
+          text: 'Os dados informados não são vendidos, compartilhados ou repassados a terceiros.',
+        },
+      ],
+    },
+    cancellationPolicy: {
+      title: 'Política de Cancelamento e Reagendamento',
+      reviewNotice:
+        'Conteúdo preliminar, ainda pendente de definição e confirmação pela Leh Estetic antes da publicação definitiva.',
+      sections: [
+        {
+          heading: 'Como cancelar ou reagendar',
+          text: 'Cancelamentos e reagendamentos devem ser solicitados diretamente pelo WhatsApp, com a maior antecedência possível.',
+        },
+        {
+          heading: 'Prazos e condições',
+          text: 'Os prazos mínimos de antecedência e eventuais condições específicas ainda serão definidos pela Leh Estetic e publicados aqui assim que confirmados.',
+        },
+      ],
+    },
+  },
+
+  schedulingConsent: {
+    label: 'Autorizo o contato via WhatsApp para tratar desta solicitação.',
+    error: 'É necessário autorizar o contato via WhatsApp para continuar.',
   },
 
   whatsappDefaultMessage:
