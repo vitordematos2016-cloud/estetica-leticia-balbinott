@@ -32,3 +32,10 @@ export function buildSchedulingMessage(fields: SchedulingMessageFields): string 
 
   return lines.join('\n');
 }
+
+export function buildSelectionWhatsAppMessage(itemNames: string[]): string {
+  const lines = ['Olá, gostaria de agendar um horário na Leh Estetic.', '', 'Serviços selecionados:'];
+  itemNames.forEach((name) => lines.push(`• ${name}`));
+  lines.push('', 'Gostaria de verificar os horários disponíveis.');
+  return lines.join('\n');
+}

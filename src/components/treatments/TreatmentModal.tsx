@@ -11,7 +11,7 @@ interface TreatmentModalProps {
 }
 
 export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
-  const { addItem, isSelected } = useSelection();
+  const { addItem, removeItem, isSelected } = useSelection();
 
   if (!treatment) return null;
 
@@ -129,14 +129,24 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
           </div>
         )}
 
-        <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <button
             type="button"
-            disabled={alreadySelected}
-            onClick={() => addItem({ id: treatment.id, type: 'treatment', name: treatment.name })}
-            className="flex-1 rounded-full border border-gold/50 px-6 py-3 text-sm font-medium text-brown-dark transition-colors hover:bg-gold/10 disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={() =>
+              addItem({
+                id: treatment.id,
+                type: 'treatment',
+                name: treatment.name,
+                category: getTreatmentCategoryName(treatment.categoryId),
+              })
+            }
+            className={`flex-1 rounded-full px-6 py-3 text-sm font-medium transition-colors ${
+              alreadySelected
+                ? 'bg-gold/20 text-brown-dark'
+                : 'border border-gold/50 text-brown-dark hover:bg-gold/10'
+            }`}
           >
-            {alreadySelected ? 'Já está na sua seleção' : 'Adicionar à Minha Seleção'}
+            {alreadySelected ? 'Adicionado ✓' : 'Adicionar à seleção'}
           </button>
           <a
             href={whatsappUrl}
@@ -147,6 +157,15 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
             Perguntar no WhatsApp
           </a>
         </div>
+        {alreadySelected && (
+          <button
+            type="button"
+            onClick={() => removeItem(treatment.id)}
+            className="self-center text-xs font-medium text-brown/50 underline decoration-gold/40 underline-offset-2 hover:text-gold"
+          >
+            Remover da seleção
+          </button>
+        )}
       </div>
     </Modal>
   );

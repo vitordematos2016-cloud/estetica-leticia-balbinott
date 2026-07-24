@@ -5,6 +5,7 @@ export interface SelectionItem {
   id: string;
   type: 'treatment' | 'offer';
   name: string;
+  category?: string;
 }
 
 interface SelectionContextValue {
@@ -13,7 +14,8 @@ interface SelectionContextValue {
   removeItem: (id: string) => void;
   clearItems: () => void;
   isSelected: (id: string) => boolean;
-  lastAddedName: string | null;
+  toastMessage: string | null;
+  notify: (message: string) => void;
   isPanelOpen: boolean;
   openPanel: () => void;
   closePanel: () => void;
@@ -37,7 +39,7 @@ function loadFromStorage(): SelectionItem[] {
 
 export function SelectionProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<SelectionItem[]>(() => loadFromStorage());
-  const [lastAddedName, setLastAddedName] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   useEffect(() => {
@@ -48,13 +50,23 @@ export function SelectionProvider({ children }: { children: ReactNode }) {
     }
   }, [items]);
 
-  const addItem = useCallback((item: SelectionItem) => {
-    setItems((current) => {
-      if (current.some((existing) => existing.id === item.id)) return current;
-      return [...current, item];
-    });
-    setLastAddedName(item.name);
+  const notify = useCallback((message: string) => {
+    setToastMessage(message);
   }, []);
+
+  const addItem = useCallback(
+    (item: SelectionItem) => {
+      setItems((current) => {
+        if (current.some((existing) => existing.id === item.id)) {
+          notify('Este serviço já está na sua seleção.');
+          return current;
+        }
+        notify(`${item.name} adicionado à sua seleção ✓`);
+        return [...current, item];
+      });
+    },
+    [notify],
+  );
 
   const removeItem = useCallback((id: string) => {
     setItems((current) => current.filter((item) => item.id !== id));
@@ -70,10 +82,10 @@ export function SelectionProvider({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    if (!lastAddedName) return;
-    const timeout = window.setTimeout(() => setLastAddedName(null), 2600);
+    if (!toastMessage) return;
+    const timeout = window.setTimeout(() => setToastMessage(null), 2600);
     return () => window.clearTimeout(timeout);
-  }, [lastAddedName]);
+  }, [toastMessage]);
 
   const openPanel = useCallback(() => setIsPanelOpen(true), []);
   const closePanel = useCallback(() => setIsPanelOpen(false), []);
@@ -85,12 +97,13 @@ export function SelectionProvider({ children }: { children: ReactNode }) {
       removeItem,
       clearItems,
       isSelected,
-      lastAddedName,
+      toastMessage,
+      notify,
       isPanelOpen,
       openPanel,
       closePanel,
     }),
-    [items, addItem, removeItem, clearItems, isSelected, lastAddedName, isPanelOpen, openPanel, closePanel],
+    [items, addItem, removeItem, clearItems, isSelected, toastMessage, notify, isPanelOpen, openPanel, closePanel],
   );
 
   return <SelectionContext.Provider value={value}>{children}</SelectionContext.Provider>;

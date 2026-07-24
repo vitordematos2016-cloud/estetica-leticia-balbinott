@@ -26,7 +26,6 @@ import { Offers } from './components/sections/Offers';
 import { Reviews } from './components/sections/Reviews';
 import { Faq } from './components/sections/Faq';
 import { InstagramShowcase } from './components/sections/InstagramShowcase';
-import { MySelectionSection } from './components/sections/MySelectionSection';
 import { Scheduling } from './components/sections/Scheduling';
 import { Location } from './components/sections/Location';
 import { FinalCta } from './components/sections/FinalCta';
@@ -60,7 +59,6 @@ function App() {
           <Reviews />
           <Faq />
           <InstagramShowcase />
-          <MySelectionSection />
           <Scheduling />
           <Location />
           <FinalCta />

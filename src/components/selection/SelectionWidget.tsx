@@ -1,16 +1,21 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelection } from '../../context/SelectionContext';
 import { useScrollLock } from '../../hooks/useScrollLock';
+import { siteContent } from '../../data/siteContent';
+import { buildSelectionWhatsAppMessage, buildWhatsAppUrl } from '../../utils/whatsapp';
 
 export function SelectionWidget() {
-  const { items, removeItem, clearItems, isPanelOpen, openPanel, closePanel, lastAddedName } =
+  const { items, removeItem, clearItems, isPanelOpen, openPanel, closePanel, toastMessage, notify } =
     useSelection();
-  const panelRef = useRef<HTMLDivElement>(null);
+  const [confirmingClear, setConfirmingClear] = useState(false);
 
   useScrollLock(isPanelOpen);
 
   useEffect(() => {
-    if (!isPanelOpen) return;
+    if (!isPanelOpen) {
+      setConfirmingClear(false);
+      return;
+    }
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') closePanel();
@@ -19,46 +24,53 @@ export function SelectionWidget() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isPanelOpen, closePanel]);
 
-  function handleReviewAndSchedule() {
+  useEffect(() => {
+    if (items.length === 0 && isPanelOpen) closePanel();
+  }, [items.length, isPanelOpen, closePanel]);
+
+  function handleConfirmClear() {
+    clearItems();
+    setConfirmingClear(false);
     closePanel();
-    window.setTimeout(() => {
-      document.getElementById('agendamento')?.scrollIntoView({ behavior: 'smooth' });
-    }, 150);
+    notify('Sua seleção foi limpa.');
   }
+
+  const whatsappUrl = buildWhatsAppUrl(
+    siteContent.contact.whatsappNumber,
+    buildSelectionWhatsAppMessage(items.map((item) => item.name)),
+  );
 
   return (
     <>
-      <button
-        type="button"
-        onClick={openPanel}
-        aria-label={`Minha seleção, ${items.length} ${items.length === 1 ? 'item' : 'itens'}`}
-        className="fixed bottom-6 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-brown-dark text-cream shadow-warm transition-transform hover:scale-105 sm:bottom-8 sm:right-8"
-      >
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-          <path
-            d="M2 3h2l1.6 10.6a2 2 0 0 0 2 1.7h8.4a2 2 0 0 0 2-1.7L20 6H5.2"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <circle cx="9" cy="19" r="1.4" fill="currentColor" />
-          <circle cx="16" cy="19" r="1.4" fill="currentColor" />
-        </svg>
-        {items.length > 0 && (
-          <span className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-gold text-xs font-semibold text-brown-dark">
-            {items.length}
-          </span>
-        )}
-      </button>
+      {items.length > 0 && (
+        <button
+          type="button"
+          onClick={openPanel}
+          aria-label={`Minha seleção, ${items.length} ${items.length === 1 ? 'item' : 'itens'}`}
+          className="fixed bottom-6 right-5 z-40 flex items-center gap-2 rounded-full bg-brown-dark px-5 py-3.5 text-cream shadow-warm transition-transform hover:scale-105 sm:bottom-8 sm:right-8"
+        >
+          <svg width="18" height="18" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <path
+              d="M2 3h2l1.6 10.6a2 2 0 0 0 2 1.7h8.4a2 2 0 0 0 2-1.7L20 6H5.2"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle cx="9" cy="19" r="1.4" fill="currentColor" />
+            <circle cx="16" cy="19" r="1.4" fill="currentColor" />
+          </svg>
+          <span className="text-sm font-medium">Minha seleção • {items.length}</span>
+        </button>
+      )}
 
       <div
         aria-live="polite"
-        className="pointer-events-none fixed bottom-24 right-5 z-40 sm:bottom-28 sm:right-8"
+        className="pointer-events-none fixed bottom-24 left-1/2 z-40 -translate-x-1/2 px-4 sm:bottom-28 sm:left-auto sm:right-8 sm:translate-x-0"
       >
-        {lastAddedName && (
-          <div className="rounded-xl bg-brown-dark px-4 py-3 text-sm text-cream shadow-warm fade-up">
-            "{lastAddedName}" adicionado à Minha Seleção
+        {toastMessage && (
+          <div className="rounded-xl border border-gold/30 bg-cream-light px-4 py-3 text-center text-sm text-brown-dark shadow-warm fade-up">
+            {toastMessage}
           </div>
         )}
       </div>
@@ -71,13 +83,12 @@ export function SelectionWidget() {
             onClick={closePanel}
           />
           <div
-            ref={panelRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="selection-panel-title"
             className="relative z-10 flex h-full w-full max-w-sm flex-col bg-cream p-6 shadow-warm sm:p-8"
           >
-            <div className="mb-6 flex items-center justify-between">
+            <div className="mb-2 flex items-center justify-between">
               <h3 id="selection-panel-title" className="text-2xl text-brown-dark">
                 Minha Seleção
               </h3>
@@ -97,46 +108,81 @@ export function SelectionWidget() {
               </button>
             </div>
 
-            {items.length === 0 ? (
-              <p className="text-sm text-brown/70">
-                Você ainda não adicionou tratamentos ou ofertas à sua seleção.
-              </p>
-            ) : (
-              <ul className="flex flex-1 flex-col gap-3 overflow-y-auto">
-                {items.map((item) => (
-                  <li
-                    key={item.id}
-                    className="flex items-center justify-between gap-3 rounded-xl border border-gold/20 bg-cream-light/40 px-4 py-3"
-                  >
+            <p className="mb-6 text-sm text-brown/60">
+              {items.length} {items.length === 1 ? 'item selecionado' : 'itens selecionados'}
+            </p>
+
+            <ul className="flex flex-1 flex-col gap-3 overflow-y-auto">
+              {items.map((item) => (
+                <li
+                  key={item.id}
+                  className="flex items-center justify-between gap-3 rounded-xl border border-gold/20 bg-cream-light/40 px-4 py-3"
+                >
+                  <div className="flex flex-col gap-0.5">
                     <span className="text-sm text-brown-dark">{item.name}</span>
-                    <button
-                      onClick={() => removeItem(item.id)}
-                      aria-label={`Remover ${item.name} da seleção`}
-                      className="text-xs font-medium uppercase tracking-wide text-brown/60 hover:text-gold"
-                    >
-                      Remover
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
+                    {item.category && (
+                      <span className="text-xs uppercase tracking-wide text-gold">{item.category}</span>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => removeItem(item.id)}
+                    aria-label={`Remover ${item.name} da seleção`}
+                    className="text-xs font-medium uppercase tracking-wide text-brown/60 hover:text-gold"
+                  >
+                    Remover
+                  </button>
+                </li>
+              ))}
+            </ul>
 
             <div className="mt-6 flex flex-col gap-3">
-              {items.length > 0 && (
-                <button
-                  onClick={clearItems}
-                  className="text-xs font-medium uppercase tracking-wide text-brown/60 hover:text-gold"
-                >
-                  Limpar seleção
-                </button>
+              {confirmingClear ? (
+                <div className="flex flex-col gap-3 rounded-xl border border-gold/30 bg-cream-light/50 p-4">
+                  <p className="text-sm text-brown-dark">
+                    Deseja remover todos os serviços da sua seleção?
+                  </p>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setConfirmingClear(false)}
+                      className="flex-1 rounded-full border border-gold/50 px-4 py-2.5 text-xs font-medium uppercase tracking-wide text-brown-dark hover:bg-gold/10"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={handleConfirmClear}
+                      className="flex-1 rounded-full bg-brown-dark px-4 py-2.5 text-xs font-medium uppercase tracking-wide text-cream hover:bg-brown"
+                    >
+                      Limpar seleção
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={() => setConfirmingClear(true)}
+                    className="text-xs font-medium uppercase tracking-wide text-brown/60 hover:text-gold"
+                  >
+                    Limpar seleção
+                  </button>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <button
+                      onClick={closePanel}
+                      className="flex-1 rounded-full border border-gold/50 px-6 py-3.5 text-sm font-medium text-brown-dark transition-colors hover:bg-gold/10"
+                    >
+                      Continuar navegando
+                    </button>
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-disabled={items.length === 0}
+                      className="flex-1 rounded-full bg-brown-dark px-6 py-3.5 text-center text-sm font-medium text-cream transition-colors hover:bg-brown"
+                    >
+                      Agendar pelo WhatsApp
+                    </a>
+                  </div>
+                </>
               )}
-              <button
-                onClick={handleReviewAndSchedule}
-                disabled={items.length === 0}
-                className="rounded-full bg-brown-dark px-6 py-3.5 text-sm font-medium text-cream transition-colors hover:bg-brown disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                Revisar e agendar
-              </button>
             </div>
           </div>
         </div>

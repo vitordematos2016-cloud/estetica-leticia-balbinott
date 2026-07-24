@@ -9,7 +9,7 @@ interface TreatmentCardProps {
 }
 
 export function TreatmentCard({ treatment, onViewDetails }: TreatmentCardProps) {
-  const { addItem, isSelected } = useSelection();
+  const { addItem, removeItem, isSelected } = useSelection();
   const alreadySelected = isSelected(treatment.id);
 
   return (
@@ -31,16 +31,35 @@ export function TreatmentCard({ treatment, onViewDetails }: TreatmentCardProps) 
           >
             Ver detalhes
           </button>
-          <button
-            type="button"
-            disabled={alreadySelected}
-            onClick={() =>
-              addItem({ id: treatment.id, type: 'treatment', name: treatment.name })
-            }
-            className="ml-auto rounded-full border border-gold/50 px-4 py-2 text-xs font-medium uppercase tracking-wide text-brown-dark transition-colors hover:bg-gold/10 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {alreadySelected ? 'Selecionado' : 'Adicionar à Minha Seleção'}
-          </button>
+          <div className="ml-auto flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() =>
+                addItem({
+                  id: treatment.id,
+                  type: 'treatment',
+                  name: treatment.name,
+                  category: getTreatmentCategoryName(treatment.categoryId),
+                })
+              }
+              className={`rounded-full px-4 py-2 text-xs font-medium uppercase tracking-wide transition-colors ${
+                alreadySelected
+                  ? 'bg-gold/20 text-brown-dark'
+                  : 'border border-gold/50 text-brown-dark hover:bg-gold/10'
+              }`}
+            >
+              {alreadySelected ? 'Adicionado ✓' : 'Adicionar à seleção'}
+            </button>
+            {alreadySelected && (
+              <button
+                type="button"
+                onClick={() => removeItem(treatment.id)}
+                className="text-xs font-medium text-brown/50 underline decoration-gold/40 underline-offset-2 hover:text-gold"
+              >
+                Remover
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </article>

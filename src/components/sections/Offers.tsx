@@ -5,7 +5,7 @@ import { useSelection } from '../../context/SelectionContext';
 
 export function Offers() {
   const { offers, offersNotice } = siteContent;
-  const { addItem, isSelected } = useSelection();
+  const { addItem, removeItem, isSelected } = useSelection();
 
   return (
     <section className="py-24 sm:py-28">
@@ -34,14 +34,28 @@ export function Offers() {
                       Válido até {offer.validUntil}
                     </p>
                   )}
-                  <button
-                    type="button"
-                    disabled={alreadySelected}
-                    onClick={() => addItem({ id: offer.id, type: 'offer', name: offer.title })}
-                    className="mt-1 w-fit rounded-full border border-gold/50 px-4 py-2 text-xs font-medium uppercase tracking-wide text-brown-dark hover:bg-gold/10 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {alreadySelected ? 'Selecionado' : 'Adicionar à Minha Seleção'}
-                  </button>
+                  <div className="mt-1 flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => addItem({ id: offer.id, type: 'offer', name: offer.title })}
+                      className={`w-fit rounded-full px-4 py-2 text-xs font-medium uppercase tracking-wide transition-colors ${
+                        alreadySelected
+                          ? 'bg-gold/20 text-brown-dark'
+                          : 'border border-gold/50 text-brown-dark hover:bg-gold/10'
+                      }`}
+                    >
+                      {alreadySelected ? 'Adicionado ✓' : 'Adicionar à seleção'}
+                    </button>
+                    {alreadySelected && (
+                      <button
+                        type="button"
+                        onClick={() => removeItem(offer.id)}
+                        className="text-xs font-medium text-brown/50 underline decoration-gold/40 underline-offset-2 hover:text-gold"
+                      >
+                        Remover
+                      </button>
+                    )}
+                  </div>
                 </div>
               );
             })}
