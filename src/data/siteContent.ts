@@ -82,12 +82,16 @@ export const siteContent: SiteContent = {
   },
 
   purpose: {
-    title: 'Propósito',
-    text: 'Transformar a autoestima e a confiança das pessoas por meio de tratamentos estéticos seguros, personalizados e baseados em resultados reais, oferecendo um atendimento humano, acolhedor e de excelência.',
-    emphasis: ['autoestima', 'segurança', 'personalização', 'acolhimento', 'resultados reais'],
+    eyebrow: 'Nossa essência',
+    heading: 'Cuidar vai além da estética',
+    subheading:
+      'Cada atendimento nasce de um propósito claro: unir conhecimento, segurança e atenção verdadeira em cada etapa do cuidado.',
+    purposeTitle: 'Propósito',
+    purposeText:
+      'Transformar a autoestima e fortalecer a confiança de cada pessoa por meio de tratamentos estéticos seguros, personalizados e baseados em resultados reais, sempre com um atendimento humano, acolhedor e responsável.',
     objectiveTitle: 'Objetivo',
     objectiveText:
-      'Fazer com que cada cliente perceba que está sendo cuidada por uma profissional que realmente se importa com seu resultado, sua segurança e sua autoestima.',
+      'Fazer com que cada cliente perceba que está sendo cuidada por uma profissional que realmente se importa com seu resultado, sua segurança, seu bem-estar e a forma como ela se sente consigo mesma.',
   },
 
   differential: {

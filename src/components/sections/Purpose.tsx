@@ -1,41 +1,143 @@
+import type { CSSProperties } from 'react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
 
-function highlightWords(text: string, words: string[]) {
-  const pattern = new RegExp(`(${words.join('|')})`, 'gi');
-  const parts = text.split(pattern);
+type Direction = 'up' | 'left' | 'right';
 
-  return parts.map((part, index) =>
-    words.some((word) => word.toLowerCase() === part.toLowerCase()) ? (
-      <strong key={index} className="font-medium text-gold">
-        {part}
-      </strong>
-    ) : (
-      <span key={index}>{part}</span>
-    ),
+const hiddenTransform: Record<Direction, string> = {
+  up: 'translateY(22px)',
+  left: 'translateX(-32px)',
+  right: 'translateX(32px)',
+};
+
+function Ornament({ mirror = false }: { mirror?: boolean }) {
+  return (
+    <div
+      aria-hidden="true"
+      className={`relative h-20 w-20 sm:h-24 sm:w-24 ${mirror ? 'scale-x-[-1]' : ''}`}
+    >
+      <div className="absolute inset-0 rounded-full border border-gold/25" />
+      <div className="absolute inset-3 rounded-full border border-dashed border-gold/30" />
+      <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/50" />
+    </div>
   );
 }
 
 export function Purpose() {
   const { purpose } = siteContent;
+  const { ref, isVisible } = useScrollReveal<HTMLDivElement>(0.2);
+
+  function revealStyle(direction: Direction, delayMs: number): CSSProperties {
+    return {
+      opacity: isVisible ? 1 : 0,
+      transform: isVisible ? 'translate(0px, 0px)' : hiddenTransform[direction],
+      transitionDelay: `${delayMs}ms`,
+    };
+  }
+
+  function lineStyle(delayMs: number): CSSProperties {
+    return {
+      transform: isVisible ? 'scaleY(1)' : 'scaleY(0)',
+      transitionDelay: `${delayMs}ms`,
+    };
+  }
 
   return (
-    <section className="py-24 sm:py-28">
-      <Container className="grid gap-14 lg:grid-cols-2 lg:gap-16">
-        <div className="flex flex-col gap-5">
-          <span className="text-xs font-medium uppercase tracking-[0.28em] text-gold">
-            {purpose.title}
-          </span>
-          <p className="text-2xl leading-relaxed text-brown-dark sm:text-[1.7rem]">
-            {highlightWords(purpose.text, purpose.emphasis)}
-          </p>
-        </div>
+    <section className="py-20 sm:py-24 lg:py-28">
+      <Container>
+        <div ref={ref} className="flex flex-col gap-14 lg:gap-16">
+          <div
+            className="reveal mx-auto flex max-w-2xl flex-col items-center gap-4 text-center"
+            style={revealStyle('up', 0)}
+          >
+            <span className="text-xs font-medium uppercase tracking-[0.28em] text-gold">
+              {purpose.eyebrow}
+            </span>
+            <h2 className="text-3xl leading-[1.2] text-brown-dark sm:text-4xl">{purpose.heading}</h2>
+            <p className="text-base leading-relaxed text-brown/75 sm:text-lg">{purpose.subheading}</p>
+          </div>
 
-        <div className="flex flex-col gap-5 rounded-[2rem] border border-gold/25 bg-cream-light/50 p-8 sm:p-10">
-          <span className="text-xs font-medium uppercase tracking-[0.28em] text-gold">
-            {purpose.objectiveTitle}
-          </span>
-          <p className="text-lg leading-relaxed text-brown/85">{purpose.objectiveText}</p>
+          <div className="relative grid gap-12 pl-10 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-14 lg:pl-0">
+            <div
+              aria-hidden="true"
+              className="reveal-line-v absolute left-4 top-2 bottom-2 w-px bg-gold/40 lg:hidden"
+              style={lineStyle(350)}
+            />
+            <div
+              aria-hidden="true"
+              className="reveal-line-v absolute left-1/2 top-0 bottom-0 hidden w-px -translate-x-1/2 bg-gold/40 lg:block"
+              style={lineStyle(400)}
+            />
+
+            <div className="relative lg:col-start-1 lg:row-start-1">
+              <span
+                aria-hidden="true"
+                className="reveal absolute -left-10 top-8 flex h-8 w-8 items-center justify-center rounded-full border border-gold/50 bg-cream text-xs font-medium text-gold lg:hidden"
+                style={revealStyle('left', 150)}
+              >
+                01
+              </span>
+              <div
+                className="reveal relative overflow-hidden rounded-[1.75rem] border border-gold/25 bg-cream-light/40 p-8 shadow-warm-sm sm:p-9"
+                style={revealStyle('left', 150)}
+              >
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-y-0 left-0 hidden w-1 bg-gold/60 lg:block"
+                />
+                <span
+                  aria-hidden="true"
+                  className="mb-4 hidden h-10 w-10 items-center justify-center rounded-full border border-gold/50 text-sm font-medium text-gold lg:flex"
+                >
+                  01
+                </span>
+                <h3 className="text-xl text-brown-dark sm:text-2xl">{purpose.purposeTitle}</h3>
+                <p className="mt-3 text-base leading-relaxed text-brown/80">{purpose.purposeText}</p>
+              </div>
+            </div>
+
+            <div
+              className="reveal hidden items-center justify-center lg:col-start-2 lg:row-start-1 lg:flex"
+              style={revealStyle('right', 350)}
+            >
+              <Ornament />
+            </div>
+
+            <div
+              className="reveal hidden items-center justify-center lg:col-start-1 lg:row-start-2 lg:flex"
+              style={revealStyle('left', 450)}
+            >
+              <Ornament mirror />
+            </div>
+
+            <div className="relative lg:col-start-2 lg:row-start-2">
+              <span
+                aria-hidden="true"
+                className="reveal absolute -left-10 top-8 flex h-8 w-8 items-center justify-center rounded-full border border-gold/50 bg-cream text-xs font-medium text-gold lg:hidden"
+                style={revealStyle('right', 550)}
+              >
+                02
+              </span>
+              <div
+                className="reveal relative overflow-hidden rounded-[1.75rem] border border-gold/25 bg-cream p-8 shadow-warm-sm sm:p-9"
+                style={revealStyle('right', 550)}
+              >
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-y-0 right-0 hidden w-1 bg-gold/60 lg:block"
+                />
+                <span
+                  aria-hidden="true"
+                  className="mb-4 hidden h-10 w-10 items-center justify-center rounded-full border border-gold/50 text-sm font-medium text-gold lg:flex"
+                >
+                  02
+                </span>
+                <h3 className="text-xl text-brown-dark sm:text-2xl">{purpose.objectiveTitle}</h3>
+                <p className="mt-3 text-base leading-relaxed text-brown/80">{purpose.objectiveText}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </Container>
     </section>

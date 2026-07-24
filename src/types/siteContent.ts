@@ -54,9 +54,11 @@ export interface AboutContent {
 }
 
 export interface PurposeContent {
-  title: string;
-  text: string;
-  emphasis: string[];
+  eyebrow: string;
+  heading: string;
+  subheading: string;
+  purposeTitle: string;
+  purposeText: string;
   objectiveTitle: string;
   objectiveText: string;
 }

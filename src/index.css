@@ -103,4 +103,15 @@
       transform: translateY(0);
     }
   }
+
+  .reveal {
+    transition:
+      opacity 0.8s ease-out,
+      transform 0.8s ease-out;
+  }
+
+  .reveal-line-v {
+    transform-origin: top;
+    transition: transform 1s ease-out;
+  }
 }
