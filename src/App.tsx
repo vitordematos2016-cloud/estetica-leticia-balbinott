@@ -27,7 +27,6 @@ import { InstagramShowcase } from './components/sections/InstagramShowcase';
 import { Scheduling } from './components/sections/Scheduling';
 import { Location } from './components/sections/Location';
 import { FinalCta } from './components/sections/FinalCta';
-import { Contact } from './components/sections/Contact';
 
 function App() {
   return (
@@ -58,7 +57,6 @@ function App() {
           <Scheduling />
           <Location />
           <FinalCta />
-          <Contact />
         </main>
         <Footer />
         <SelectionWidget />
