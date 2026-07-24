@@ -164,13 +164,6 @@ export interface CredentialsContent {
   items: CredentialItem[];
 }
 
-export interface PersonalAssessmentContent {
-  title: string;
-  text: string;
-  criteria: string[];
-  cta: { label: string; href: string };
-}
-
 export interface FinalCtaContent {
   title: string;
   text: string;
@@ -181,6 +174,7 @@ export interface FinalCtaContent {
 export interface AftercareContent {
   title: string;
   text: string;
+  cta: { label: string; href: string };
 }
 
 export interface ThoughtfulDetailsContent {
@@ -282,7 +276,6 @@ export interface SiteContent {
   treatments: Treatment[];
   treatmentsCatalogNotice: string;
   pendingTreatments: PendingTreatment[];
-  personalAssessment: PersonalAssessmentContent;
   aftercare: AftercareContent;
   thoughtfulDetails: ThoughtfulDetailsContent;
   technologies: TechnologiesContent;

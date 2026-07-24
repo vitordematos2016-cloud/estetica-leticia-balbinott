@@ -338,23 +338,10 @@ export const siteContent: SiteContent = {
     },
   ],
 
-  personalAssessment: {
-    title: 'Cada pele precisa de uma avaliação individual',
-    text: 'Nenhum tratamento é indicado apenas pela aparência ou pela vontade da cliente. Antes de qualquer sugestão, a avaliação considera:',
-    criteria: [
-      'Histórico da pele',
-      'Rotina de cuidados',
-      'Sensibilidades',
-      'Objetivos',
-      'Tratamentos anteriores',
-      'Necessidades atuais',
-    ],
-    cta: { label: 'Agendar minha avaliação', href: '#agendamento' },
-  },
-
   aftercare: {
     title: 'Cuidados após o atendimento',
     text: 'O cuidado não termina quando o procedimento acaba. Você recebe orientações claras sobre os cuidados necessários e permanece acompanhada nos dias seguintes, com atenção para qualquer dúvida que surgir.',
+    cta: { label: 'Agendar minha avaliação', href: '#agendamento' },
   },
 
   thoughtfulDetails: {

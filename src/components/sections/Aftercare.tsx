@@ -1,12 +1,13 @@
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
+import { Button } from '../ui/Button';
 
 export function Aftercare() {
   const { aftercare } = siteContent;
 
   return (
     <section className="py-16 sm:py-20">
-      <Container>
+      <Container className="flex flex-col items-center gap-10">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 rounded-[2rem] border border-gold/25 bg-cream-light/40 px-8 py-12 text-center">
           <span
             aria-hidden="true"
@@ -24,6 +25,10 @@ export function Aftercare() {
           <h2 className="text-2xl text-brown-dark sm:text-3xl">{aftercare.title}</h2>
           <p className="text-base leading-relaxed text-brown/75">{aftercare.text}</p>
         </div>
+
+        <Button href={aftercare.cta.href} variant="primary" className="whitespace-nowrap">
+          {aftercare.cta.label}
+        </Button>
       </Container>
     </section>
   );

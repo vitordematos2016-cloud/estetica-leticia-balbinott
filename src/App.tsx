@@ -14,7 +14,6 @@ import { Differentials } from './components/sections/Differentials';
 import { SkinConcerns } from './components/sections/SkinConcerns';
 import { Treatments } from './components/sections/Treatments';
 import { FeaturedTreatments } from './components/sections/FeaturedTreatments';
-import { PersonalAssessment } from './components/sections/PersonalAssessment';
 import { HowItWorks } from './components/sections/HowItWorks';
 import { Aftercare } from './components/sections/Aftercare';
 import { Experience } from './components/sections/Experience';
@@ -47,7 +46,6 @@ function App() {
           <SkinConcerns />
           <Treatments />
           <FeaturedTreatments />
-          <PersonalAssessment />
           <HowItWorks />
           <Aftercare />
           <Experience />
