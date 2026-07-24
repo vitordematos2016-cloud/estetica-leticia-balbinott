@@ -2,6 +2,7 @@ import { SelectionProvider } from './context/SelectionContext';
 import { TreatmentsFilterProvider } from './context/TreatmentsFilterContext';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
+import { Splash } from './components/layout/Splash';
 import { SelectionWidget } from './components/selection/SelectionWidget';
 import { BackToTop } from './components/ui/BackToTop';
 import { Hero } from './components/sections/Hero';
@@ -32,6 +33,7 @@ function App() {
   return (
     <SelectionProvider>
       <TreatmentsFilterProvider>
+        <Splash />
         <Header />
         <main>
           <Hero />
