@@ -151,11 +151,11 @@ export const siteContent: SiteContent = {
   experience: {
     title: 'Um ambiente preparado para cuidar de você',
     text: 'Um ambiente acolhedor, preparado para que cada cliente possa desacelerar, se sentir à vontade e receber um atendimento atento, respeitoso e personalizado.',
-    placeholders: [
-      { label: 'Entrada', description: 'Foto oficial em preparação' },
-      { label: 'Recepção', description: 'Foto oficial em preparação' },
-      { label: 'Equipamentos', description: 'Foto oficial em preparação' },
-      { label: 'Detalhes do ambiente', description: 'Foto oficial em preparação' },
+    additionalBlocks: [
+      {
+        title: 'Conforto em cada atendimento',
+        text: 'Um espaço organizado, tranquilo e preparado para que cada cuidado seja realizado com atenção, segurança e conforto.',
+      },
     ],
   },
 

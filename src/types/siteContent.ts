@@ -71,10 +71,15 @@ export interface ValueItem {
   text: string;
 }
 
+export interface ExperienceBlock {
+  title: string;
+  text: string;
+}
+
 export interface ExperienceContent {
   title: string;
   text: string;
-  placeholders: { label: string; description: string }[];
+  additionalBlocks: ExperienceBlock[];
 }
 
 export interface FacadeContent {
