@@ -5,19 +5,16 @@ export function BrandLoop() {
   const { brandLoop } = siteContent;
   const prefersReducedMotion = useReducedMotion();
 
-  const track = (keyPrefix: string) => (
-    <div className="flex shrink-0 items-center" aria-hidden={keyPrefix === 'b'}>
-      {brandLoop.items.map((item, index) => (
-        <span key={`${keyPrefix}-${item}`} className="flex items-center">
+  const track = (keyPrefix: string, ariaHidden: boolean) => (
+    <div className="flex shrink-0 items-center" aria-hidden={ariaHidden || undefined}>
+      {brandLoop.items.map((item) => (
+        <span key={`${keyPrefix}-${item}`} className="flex shrink-0 items-center">
           <span className="whitespace-nowrap px-5 text-[0.7rem] uppercase tracking-[0.3em] text-brown/75 sm:text-xs">
             {item}
           </span>
-          {index < brandLoop.items.length - 1 && (
-            <span aria-hidden="true" className="h-1 w-1 shrink-0 rounded-full bg-gold/40" />
-          )}
+          <span aria-hidden="true" className="h-1 w-1 shrink-0 rounded-full bg-gold/45" />
         </span>
       ))}
-      <span aria-hidden="true" className="mx-5 h-1 w-1 shrink-0 rounded-full bg-gold/40" />
     </div>
   );
 
@@ -32,8 +29,8 @@ export function BrandLoop() {
         </p>
       ) : (
         <div className="flex w-max marquee-track">
-          {track('a')}
-          {track('b')}
+          {track('a', false)}
+          {track('b', true)}
         </div>
       )}
     </section>

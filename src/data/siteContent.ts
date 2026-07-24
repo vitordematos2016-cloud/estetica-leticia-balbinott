@@ -54,12 +54,12 @@ export const siteContent: SiteContent = {
 
   brandLoop: {
     items: [
-      'LEH ESTETIC',
       '8 ANOS DE EXPERIÊNCIA',
       'ESTÉTICA FACIAL',
       'ESTÉTICA REGENERATIVA',
-      'CUIDADO PERSONALIZADO',
       'BELEZA NATURAL',
+      'LEH ESTETIC',
+      '+1000 CLIENTES ATENDIDOS',
     ],
     ariaLabel: 'Leh Estetic — 8 anos de experiência em estética facial e regenerativa',
   },
