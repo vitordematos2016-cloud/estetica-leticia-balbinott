@@ -89,6 +89,9 @@ export interface ExperienceContent {
 export interface FacadeContent {
   title: string;
   years: number;
+  yearsLabel: string;
+  clients: number;
+  clientsLabel: string;
   text: string;
 }
 

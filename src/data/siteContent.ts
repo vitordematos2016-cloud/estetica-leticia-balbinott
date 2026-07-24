@@ -174,7 +174,10 @@ export const siteContent: SiteContent = {
   facade: {
     title: 'Leh Estetic',
     years: 8,
-    text: '8 anos de cuidado, confiança e respeito à beleza natural.',
+    yearsLabel: 'anos de experiência',
+    clients: 1000,
+    clientsLabel: 'clientes atendidos',
+    text: 'Uma trajetória construída com cuidado, confiança e respeito à beleza natural.',
   },
 
   authorizedResults: {
