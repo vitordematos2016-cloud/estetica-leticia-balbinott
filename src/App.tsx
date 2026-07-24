@@ -4,6 +4,7 @@ import { TreatmentsFilterProvider } from './context/TreatmentsFilterContext';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { Splash } from './components/layout/Splash';
+import { CompactReloadIntro } from './components/layout/CompactReloadIntro';
 import { SelectionWidget } from './components/selection/SelectionWidget';
 import { BackToTop } from './components/ui/BackToTop';
 import { Hero } from './components/sections/Hero';
@@ -31,17 +32,22 @@ import { Location } from './components/sections/Location';
 import { FinalCta } from './components/sections/FinalCta';
 import { wasSplashAlreadyShown } from './utils/splashSession';
 
+type OpeningType = 'completa' | 'compacta' | 'finalizada';
+
 function App() {
-  const [splashFinished, setSplashFinished] = useState(() => wasSplashAlreadyShown());
-  const handleSplashFinish = useCallback(() => setSplashFinished(true), []);
+  const [openingType, setOpeningType] = useState<OpeningType>(() =>
+    wasSplashAlreadyShown() ? 'compacta' : 'completa',
+  );
+  const finishOpening = useCallback(() => setOpeningType('finalizada'), []);
 
   return (
     <SelectionProvider>
       <TreatmentsFilterProvider>
-        <Splash onFinish={handleSplashFinish} />
+        {openingType === 'completa' && <Splash onFinish={finishOpening} />}
+        {openingType === 'compacta' && <CompactReloadIntro onFinish={finishOpening} />}
         <Header />
         <main>
-          <Hero splashFinished={splashFinished} />
+          <Hero splashFinished={openingType === 'finalizada'} />
           <BrandLoop />
           <Manifesto />
           <About />

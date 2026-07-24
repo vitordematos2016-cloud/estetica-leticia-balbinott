@@ -199,4 +199,71 @@
       transform: scaleX(1);
     }
   }
+
+  .compact-word-in {
+    animation: compact-word-in 300ms ease-out both;
+  }
+
+  @keyframes compact-word-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .compact-name-in {
+    animation: compact-name-in 450ms ease-out 150ms both;
+  }
+
+  @keyframes compact-name-in {
+    from {
+      opacity: 0;
+      letter-spacing: 0.2em;
+    }
+    to {
+      opacity: 1;
+      letter-spacing: normal;
+    }
+  }
+
+  .compact-line-grow {
+    transform-origin: center;
+    animation: compact-line-grow 400ms ease-out 500ms both;
+  }
+
+  @keyframes compact-line-grow {
+    from {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+    to {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+  }
+
+  .compact-shine {
+    background: linear-gradient(
+      100deg,
+      transparent 30%,
+      rgba(255, 224, 160, 0.5) 50%,
+      transparent 70%
+    );
+    filter: blur(4px);
+    mix-blend-mode: screen;
+    animation: compact-shine-sweep 500ms ease-in-out 550ms both;
+  }
+
+  @keyframes compact-shine-sweep {
+    from {
+      transform: translateX(-120%);
+    }
+    to {
+      transform: translateX(120%);
+    }
+  }
 }
