@@ -156,6 +156,10 @@ export const siteContent: SiteContent = {
         title: 'Conforto em cada atendimento',
         text: 'Um espaço organizado, tranquilo e preparado para que cada cuidado seja realizado com atenção, segurança e conforto.',
       },
+      {
+        title: 'Um ambiente pensado para você',
+        text: 'Cada elemento foi escolhido para proporcionar uma experiência acolhedora desde a chegada até o final do atendimento.',
+      },
     ],
   },
 

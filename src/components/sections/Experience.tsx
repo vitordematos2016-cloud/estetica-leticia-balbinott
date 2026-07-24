@@ -4,10 +4,24 @@ import { SectionHeading } from '../ui/SectionHeading';
 import { PhotoFrame } from '../ui/PhotoFrame';
 import corredorImage from '../../assets/leh-estetic/corredor-leh-estetic.webp';
 import salaImage from '../../assets/leh-estetic/sala-principal-leh-estetic.webp';
+import salaSecundariaImage from '../../assets/leh-estetic/sala-secundaria-leh-estetic.webp';
 
 export function Experience() {
   const { experience, brand } = siteContent;
-  const [salaBlock] = experience.additionalBlocks;
+  const [salaBlock, salaSecundariaBlock] = experience.additionalBlocks;
+
+  const additionalPhotos = [
+    salaBlock && {
+      block: salaBlock,
+      image: salaImage,
+      alt: `Sala de atendimento da ${brand.name}, com maca profissional, iluminação aconchegante e decoração em tons de bege e dourado.`,
+    },
+    salaSecundariaBlock && {
+      block: salaSecundariaBlock,
+      image: salaSecundariaImage,
+      alt: `Sala de atendimento da ${brand.name}, com maca profissional e parede em mármore com iluminação decorativa.`,
+    },
+  ].filter((entry): entry is { block: (typeof experience.additionalBlocks)[number]; image: string; alt: string } => !!entry);
 
   return (
     <section id="experiencia" className="bg-cream-light/40 py-24 sm:py-28">
@@ -23,19 +37,27 @@ export function Experience() {
           <p className="text-base leading-relaxed text-brown/75 sm:text-lg">{experience.text}</p>
         </div>
 
-        {salaBlock && (
-          <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-16">
-            <PhotoFrame
-              src={salaImage}
-              alt={`Sala de atendimento da ${brand.name}, com maca profissional, iluminação aconchegante e decoração em tons de bege e dourado.`}
-              className="mx-auto w-full max-w-sm lg:order-2 lg:max-w-none"
-            />
-            <div className="flex flex-col gap-3 lg:order-1">
-              <h3 className="text-2xl text-brown-dark sm:text-3xl">{salaBlock.title}</h3>
-              <p className="text-base leading-relaxed text-brown/75 sm:text-lg">{salaBlock.text}</p>
+        {additionalPhotos.map(({ block, image, alt }, index) => {
+          const imageOnRight = index % 2 === 0;
+          return (
+            <div
+              key={block.title}
+              className={`grid gap-10 lg:items-center lg:gap-16 ${
+                imageOnRight ? 'lg:grid-cols-[1.15fr_0.85fr]' : 'lg:grid-cols-[0.85fr_1.15fr]'
+              }`}
+            >
+              <PhotoFrame
+                src={image}
+                alt={alt}
+                className={`mx-auto w-full max-w-sm lg:max-w-none ${imageOnRight ? 'lg:order-2' : 'lg:order-1'}`}
+              />
+              <div className={`flex flex-col gap-3 ${imageOnRight ? 'lg:order-1' : 'lg:order-2'}`}>
+                <h3 className="text-2xl text-brown-dark sm:text-3xl">{block.title}</h3>
+                <p className="text-base leading-relaxed text-brown/75 sm:text-lg">{block.text}</p>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })}
       </Container>
     </section>
   );

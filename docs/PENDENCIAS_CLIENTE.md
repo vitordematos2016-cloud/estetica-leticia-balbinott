@@ -16,6 +16,7 @@ está preparado para recebê-los assim que estiverem disponíveis.
 - [x] Foto do corredor/espera — usada na seção Experience (`corredor-leh-estetic.webp`)
 - [x] Foto dos biscoitos personalizados — usada na seção "Cuidado presente em cada detalhe" (`cuidado-detalhes-leh-estetic.webp`)
 - [x] Foto da sala de atendimento — usada na seção Experience, como segundo bloco ("Conforto em cada atendimento"), ao lado da foto do corredor (`sala-principal-leh-estetic.webp`)
+- [x] Segunda foto da sala de atendimento — usada na seção Experience, como terceiro bloco ("Um ambiente pensado para você") (`sala-secundaria-leh-estetic.webp`)
 - [ ] Fotos adicionais do ambiente (entrada, recepção, equipamentos, outros detalhes) — a cliente pediu para remover os cards vazios/placeholder da seção Experience; quando houver fotos reais novas (sem repetir as já usadas), podem virar um novo bloco alternado na mesma seção, seguindo o padrão de `src/components/sections/Experience.tsx`
 - [ ] Imagens para a Galeria — nenhuma foto adicional (distinta das já usadas) foi fornecida ainda; a seção segue com o aviso "em breve"
 
