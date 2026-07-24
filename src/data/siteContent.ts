@@ -347,7 +347,12 @@ export const siteContent: SiteContent = {
   },
 
   footer: {
-    developedBy: 'Desenvolvido por Matos Soluções',
+    developedByPrefix: 'Desenvolvido por ',
+    developerName: 'Matos Soluções',
+    developerWhatsappNumber: '5545933005119',
+    developerWhatsappMessage:
+      'Olá! Acessei o site da Estética Letícia Balbinott e vi que ele foi desenvolvido pela Matos Soluções. Gostaria de conversar sobre a criação ou modernização de um site para o meu negócio. Poderia me explicar como funciona?',
+    copyright: '© Estética Letícia Balbinott — Todos os direitos reservados.',
   },
 
   legal: {

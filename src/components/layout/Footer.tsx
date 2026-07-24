@@ -8,6 +8,10 @@ import { buildWhatsAppUrl } from '../../utils/whatsapp';
 export function Footer() {
   const { brand, contact, address, nav, footer, legal } = siteContent;
   const whatsappUrl = buildWhatsAppUrl(contact.whatsappNumber, siteContent.whatsappDefaultMessage);
+  const developerWhatsappUrl = buildWhatsAppUrl(
+    footer.developerWhatsappNumber,
+    footer.developerWhatsappMessage,
+  );
   const [openPolicy, setOpenPolicy] = useState<LegalPolicyContent | null>(null);
 
   return (
@@ -64,7 +68,15 @@ export function Footer() {
 
         <div className="flex flex-col gap-3">
           <p className="text-xs font-medium uppercase tracking-[0.24em] text-gold">Endereço</p>
-          <p className="text-sm text-cream-light/80">{address.street}</p>
+          <a
+            href={address.googleMapsUrl}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Abrir localização da Estética Letícia Balbinott no mapa"
+            className="text-sm text-cream-light/80 transition-colors hover:text-gold"
+          >
+            {address.street}
+          </a>
           <p className="text-sm text-cream-light/60">{address.reference}</p>
         </div>
       </Container>
@@ -87,7 +99,19 @@ export function Footer() {
               {legal.cancellationPolicy.title}
             </button>
           </div>
-          <p className="text-center text-[0.7rem] text-cream-light/40">{footer.developedBy}</p>
+          <p className="text-center text-[0.7rem] text-cream-light/40">{footer.copyright}</p>
+          <p className="text-center text-[0.7rem] text-cream-light/40">
+            {footer.developedByPrefix}
+            <a
+              href={developerWhatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Conversar com a Matos Soluções pelo WhatsApp"
+              className="text-gold/90 underline decoration-gold/40 underline-offset-2 transition-colors hover:text-gold hover:decoration-gold"
+            >
+              {footer.developerName}
+            </a>
+          </p>
         </Container>
       </div>
 

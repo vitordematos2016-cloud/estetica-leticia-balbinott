@@ -260,7 +260,11 @@ export interface SeoContent {
 }
 
 export interface FooterContent {
-  developedBy: string;
+  developedByPrefix: string;
+  developerName: string;
+  developerWhatsappNumber: string;
+  developerWhatsappMessage: string;
+  copyright: string;
 }
 
 export interface SiteContent {
