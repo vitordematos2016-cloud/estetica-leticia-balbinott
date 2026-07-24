@@ -165,6 +165,11 @@ export interface AftercareContent {
   text: string;
 }
 
+export interface ThoughtfulDetailsContent {
+  title: string;
+  text: string;
+}
+
 export interface TechnologyItem {
   id: string;
   name: string;
@@ -267,6 +272,7 @@ export interface SiteContent {
   treatmentsCatalogNotice: string;
   personalAssessment: PersonalAssessmentContent;
   aftercare: AftercareContent;
+  thoughtfulDetails: ThoughtfulDetailsContent;
   technologies: TechnologiesContent;
   instagramShowcase: InstagramContent;
   finalCta: FinalCtaContent;

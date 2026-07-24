@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
+import { PhotoFrame } from '../ui/PhotoFrame';
 import { copyToClipboard } from '../../utils/clipboard';
+import fachadaImage from '../../assets/leh-estetic/fachada-leh-estetic.webp';
 
 export function Location() {
   const { address } = siteContent;
@@ -58,20 +60,18 @@ export function Location() {
           </div>
         </div>
 
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] border border-gold/30 bg-gradient-to-br from-cream via-cream-light to-beige/40 shadow-warm-sm">
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true" className="text-gold">
-              <path
-                d="M20 4c-7 0-12.5 5.5-12.5 12.4C7.5 25 20 36 20 36s12.5-11 12.5-19.6C32.5 9.5 27 4 20 4Z"
-                stroke="currentColor"
-                strokeWidth="1.4"
-              />
-              <circle cx="20" cy="16.5" r="4.5" stroke="currentColor" strokeWidth="1.4" />
-            </svg>
-            <p className="max-w-[16rem] text-sm text-brown/60">
-              Mapa interativo disponível pelo link do Google Maps acima
-            </p>
-          </div>
+        <div className="flex flex-col gap-3">
+          <PhotoFrame
+            src={fachadaImage}
+            alt={`Fachada do prédio espelhado onde fica a ${siteContent.brand.name}, na ${address.street}`}
+            className="w-full max-w-sm mx-auto lg:max-w-none"
+          />
+          <p className="text-center text-sm text-brown/60">
+            {siteContent.brand.name} — {address.street}
+          </p>
+          <p className="text-center text-sm text-brown/60">
+            Mapa interativo disponível pelo link do Google Maps acima
+          </p>
         </div>
       </Container>
     </section>

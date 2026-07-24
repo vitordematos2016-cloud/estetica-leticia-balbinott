@@ -6,13 +6,15 @@ está preparado para recebê-los assim que estiverem disponíveis.
 
 ## Identidade visual
 - [ ] Logotipo oficial da Leh Estetic
-- [ ] Foto oficial da profissional (Letícia Balbinott)
-- [ ] Foto principal para o Hero
+- [ ] Foto oficial da profissional (Letícia Balbinott) — a seção "Sobre" ainda usa um placeholder para o retrato dela; a foto real usada no Hero é da sala de atendimento, não um retrato
 
 ## Ambiente e imagens
-- [ ] Foto da fachada
-- [ ] Fotos do ambiente (entrada, recepção, sala de atendimento, equipamentos, detalhes)
-- [ ] Imagens para a Galeria
+- [x] Foto da fachada — usada na seção Localização (`src/assets/leh-estetic/fachada-leh-estetic.webp`)
+- [x] Foto principal da sala de atendimento — usada no Hero (`sala-principal-leh-estetic.webp`)
+- [x] Foto do corredor/espera — usada na seção Experience (`corredor-leh-estetic.webp`)
+- [x] Foto dos biscoitos personalizados — usada na seção "Cuidado presente em cada detalhe" (`cuidado-detalhes-leh-estetic.webp`)
+- [ ] Fotos adicionais do ambiente (entrada, recepção, equipamentos, outros detalhes) — os 4 placeholders restantes na seção Experience aguardam material real; não reaproveitar as 4 fotos já usadas em outros lugares
+- [ ] Imagens para a Galeria — nenhuma foto adicional (distinta das já usadas) foi fornecida ainda
 
 ## Tratamentos
 - [ ] Lista oficial completa de tratamentos

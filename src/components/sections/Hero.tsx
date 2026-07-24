@@ -2,6 +2,8 @@ import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
+import { PhotoFrame } from '../ui/PhotoFrame';
+import salaImage from '../../assets/leh-estetic/sala-principal-leh-estetic.webp';
 
 export function Hero() {
   const { hero } = siteContent;
@@ -40,9 +42,11 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative mx-auto aspect-[4/5] w-full max-w-md fade-up" style={{ animationDelay: '0.15s' }}>
-          <div className="absolute inset-0 rounded-[3rem] rounded-tr-[6rem] bg-gradient-to-br from-beige via-cream-light to-cream shadow-warm" />
-          <div className="absolute inset-4 rounded-[2.5rem] rounded-tr-[5rem] border border-gold/40" />
+        <div className="relative mx-auto w-full max-w-xs fade-up sm:max-w-sm" style={{ animationDelay: '0.15s' }}>
+          <div
+            aria-hidden="true"
+            className="absolute -inset-4 -z-10 rounded-[3rem] bg-gradient-to-br from-beige/60 via-cream-light/40 to-transparent blur-2xl"
+          />
 
           <svg
             aria-hidden="true"
@@ -57,23 +61,13 @@ export function Hero() {
             />
           </svg>
 
-          <div className="absolute inset-x-8 bottom-8 top-8 flex flex-col items-center justify-center gap-4 rounded-[2rem] border border-gold/30 bg-cream/40 text-center backdrop-blur-sm">
-            <span className="flex h-16 w-16 items-center justify-center rounded-full border border-gold/50 text-gold">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                <circle cx="14" cy="10" r="5" stroke="currentColor" strokeWidth="1.2" />
-                <path
-                  d="M4 24c1.2-6.5 5-9.5 10-9.5S22.8 17.5 24 24"
-                  stroke="currentColor"
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </span>
-            <p className="px-6 text-xs font-medium uppercase tracking-[0.2em] text-brown/60">
-              {siteContent.brand.professional}
-            </p>
-            <p className="px-8 text-[0.7rem] text-brown/45">Foto oficial em preparação</p>
-          </div>
+          <PhotoFrame
+            src={salaImage}
+            alt={`Sala de atendimento da ${siteContent.brand.name}, com maca profissional, iluminação aconchegante e decoração em tons de bege e dourado.`}
+            rounded="rounded-[3rem] rounded-tr-[6rem]"
+            priority
+            className="relative shadow-warm"
+          />
 
           <div
             aria-hidden="true"

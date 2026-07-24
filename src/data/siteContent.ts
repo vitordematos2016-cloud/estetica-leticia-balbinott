@@ -149,13 +149,11 @@ export const siteContent: SiteContent = {
   },
 
   experience: {
-    title: 'Um espaço para você se sentir acolhida',
+    title: 'Um ambiente preparado para cuidar de você',
     text: 'Um ambiente acolhedor, preparado para que cada cliente possa desacelerar, se sentir à vontade e receber um atendimento atento, respeitoso e personalizado.',
     placeholders: [
-      { label: 'Fachada', description: 'Foto oficial em preparação' },
       { label: 'Entrada', description: 'Foto oficial em preparação' },
       { label: 'Recepção', description: 'Foto oficial em preparação' },
-      { label: 'Sala de atendimento', description: 'Foto oficial em preparação' },
       { label: 'Equipamentos', description: 'Foto oficial em preparação' },
       { label: 'Detalhes do ambiente', description: 'Foto oficial em preparação' },
     ],
@@ -288,6 +286,11 @@ export const siteContent: SiteContent = {
   aftercare: {
     title: 'Cuidados após o atendimento',
     text: 'O cuidado não termina quando o procedimento acaba. Você recebe orientações claras sobre os cuidados necessários e permanece acompanhada nos dias seguintes, com atenção para qualquer dúvida que surgir.',
+  },
+
+  thoughtfulDetails: {
+    title: 'Cuidado presente em cada detalhe',
+    text: 'Na Leh Estetic, cada detalhe é pensado para proporcionar uma experiência acolhedora, especial e personalizada.',
   },
 
   technologies: {

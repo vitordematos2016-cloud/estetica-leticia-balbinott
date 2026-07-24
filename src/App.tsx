@@ -18,6 +18,7 @@ import { PersonalAssessment } from './components/sections/PersonalAssessment';
 import { HowItWorks } from './components/sections/HowItWorks';
 import { Aftercare } from './components/sections/Aftercare';
 import { Experience } from './components/sections/Experience';
+import { ThoughtfulDetails } from './components/sections/ThoughtfulDetails';
 import { Technologies } from './components/sections/Technologies';
 import { Gallery } from './components/sections/Gallery';
 import { FacadeYears } from './components/sections/FacadeYears';
@@ -52,6 +53,7 @@ function App() {
           <HowItWorks />
           <Aftercare />
           <Experience />
+          <ThoughtfulDetails />
           <Technologies />
           <Gallery />
           <FacadeYears />
