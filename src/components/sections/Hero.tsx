@@ -41,11 +41,9 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-xs fade-up sm:max-w-sm" style={{ animationDelay: '0.15s' }}>
-          <div
-            aria-hidden="true"
-            className="absolute -inset-4 -z-10 rounded-[3rem] bg-gradient-to-br from-beige/60 via-cream-light/40 to-transparent blur-2xl"
-          />
+        <div className="relative mx-auto aspect-[4/5] w-full max-w-md fade-up" style={{ animationDelay: '0.15s' }}>
+          <div className="absolute inset-0 rounded-[3rem] rounded-tr-[6rem] bg-gradient-to-br from-beige via-cream-light to-cream shadow-warm" />
+          <div className="absolute inset-4 rounded-[2.5rem] rounded-tr-[5rem] border border-gold/40" />
 
           <svg
             aria-hidden="true"
@@ -63,16 +61,8 @@ export function Hero() {
           <div
             role="img"
             aria-label={`Foto profissional da ${professionalFirstName}: em preparação`}
-            className="relative flex aspect-[941/1672] w-full flex-col items-center justify-center gap-4 overflow-hidden rounded-[3rem] rounded-tr-[6rem] border border-gold/40 bg-gradient-to-br from-cream-light via-cream to-beige/40 text-center shadow-warm"
+            className="absolute inset-x-8 bottom-8 top-8 flex flex-col items-center justify-center gap-4 rounded-[2rem] border border-gold/30 bg-cream/40 text-center backdrop-blur-sm"
           >
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -left-10 -top-10 h-32 w-32 rounded-full bg-gold/10 blur-2xl"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -bottom-12 -right-6 h-40 w-40 rounded-full bg-brown/10 blur-2xl"
-            />
             <span className="flex h-16 w-16 items-center justify-center rounded-full border border-gold/50 text-gold">
               <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
                 <circle cx="14" cy="10" r="5" stroke="currentColor" strokeWidth="1.2" />
@@ -84,10 +74,10 @@ export function Hero() {
                 />
               </svg>
             </span>
-            <p className="px-8 text-sm font-medium uppercase tracking-[0.18em] text-brown/70">
+            <p className="px-6 text-xs font-medium uppercase tracking-[0.2em] text-brown/60">
               Foto profissional da {professionalFirstName}
             </p>
-            <p className="px-8 text-xs text-brown/50">Em preparação</p>
+            <p className="px-8 text-[0.7rem] text-brown/45">Em preparação</p>
           </div>
 
           <div

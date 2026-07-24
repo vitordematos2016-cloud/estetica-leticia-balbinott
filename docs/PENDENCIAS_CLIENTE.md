@@ -9,7 +9,7 @@ está preparado para recebê-los assim que estiverem disponíveis.
 - [ ] **Foto profissional da Letícia Balbinott para o Hero** — o espaço já está pronto e reservado exclusivamente para essa foto (retrato dela, rosto e parte superior do corpo). Quando enviada:
   - salvar o arquivo como `src/assets/leh-estetic/leticia-balbinott-profissional.webp`;
   - importar em `src/components/sections/Hero.tsx` e trocar o bloco placeholder (o `<div role="img">` com "Foto profissional da Letícia / Em preparação") por um `<img>` com `object-fit: cover`, sem deformar, e `object-position` centralizado no rosto/parte superior do corpo;
-  - manter a mesma área reservada (`aspect-[941/1672]`, `max-w-xs sm:max-w-sm`, `rounded-[3rem] rounded-tr-[6rem]`, borda dourada) para não alterar o layout do Hero.
+  - manter a mesma área reservada (`aspect-[4/5]`, `max-w-md`, cartão com cantos `rounded-[3rem] rounded-tr-[6rem]`, borda dourada) para não alterar o layout do Hero.
 
 ## Ambiente e imagens
 - [x] Foto da fachada — usada na seção Localização (`src/assets/leh-estetic/fachada-leh-estetic.webp`)
