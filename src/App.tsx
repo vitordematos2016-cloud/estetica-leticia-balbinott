@@ -22,8 +22,6 @@ import { Experience } from './components/sections/Experience';
 import { ThoughtfulDetails } from './components/sections/ThoughtfulDetails';
 import { Technologies } from './components/sections/Technologies';
 import { FacadeYears } from './components/sections/FacadeYears';
-import { AuthorizedResults } from './components/sections/AuthorizedResults';
-import { Offers } from './components/sections/Offers';
 import { Reviews } from './components/sections/Reviews';
 import { Faq } from './components/sections/Faq';
 import { InstagramShowcase } from './components/sections/InstagramShowcase';
@@ -62,8 +60,6 @@ function App() {
           <ThoughtfulDetails />
           <Technologies />
           <FacadeYears />
-          <AuthorizedResults />
-          <Offers />
           <Reviews />
           <Faq />
           <InstagramShowcase />

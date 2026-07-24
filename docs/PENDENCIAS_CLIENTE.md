@@ -20,34 +20,35 @@ está preparado para recebê-los assim que estiverem disponíveis.
 - [ ] Fotos adicionais do ambiente (entrada, recepção, equipamentos, outros detalhes) — a cliente pediu para remover os cards vazios/placeholder da seção Experience; quando houver fotos reais novas (sem repetir as já usadas), podem virar um novo bloco alternado na mesma seção, seguindo o padrão de `src/components/sections/Experience.tsx`
 
 ## Tratamentos
-- [ ] Lista oficial completa de tratamentos
-- [ ] Categoria de cada tratamento
-- [ ] Resumo e descrição de cada tratamento
-- [ ] Imagem de cada tratamento
-- [ ] Benefícios de cada tratamento
-- [ ] Indicação de cada tratamento
-- [ ] Cuidados recomendados
-- [ ] Duração de cada procedimento
-- [ ] Preço de cada tratamento
-- [ ] Quais tratamentos devem aparecer em destaque
-
-### Tratamentos identificados no Instagram (@leh_estetic), aguardando confirmação
-A seção Tratamentos já mostra estes 6 nomes vistos em destaques fixos do Instagram
-(`pendingTreatments` em `src/data/siteContent.ts`), cada um só com uma lista do que
-falta confirmar — nenhum benefício, preço, duração ou categoria foi inventado:
-- [ ] **Limp GHK-CU** — nome completo, descrição/benefícios, indicação, duração/sessões, preço
-- [ ] **Herbal Peel** — nome comercial exato, composição, indicação/benefícios, cuidados, duração, preço
-- [ ] **Dep. Laser H** — nome completo (o que "H" significa), se ainda é oferecido, indicação, duração/sessões, preço
-- [ ] **Jato de Plasma** — nome comercial do equipamento, indicação/benefícios, contraindicações, duração, preço
-- [ ] **Remoção de Tatuagem** — técnica utilizada, nº de sessões, indicação, contraindicações, preço
-- [ ] **Skin Class** — o que exatamente é (tratamento, curso ou linha de produto) e todas as demais informações
-
-Assim que a Letícia confirmar os dados de qualquer um destes, mover o item de
-`pendingTreatments` para `treatments` (com todos os campos do tipo `Treatment`
-preenchidos) e remover a entrada correspondente de `pendingTreatments`.
+Os 6 tratamentos abaixo já são considerados oficiais e confirmados pela cliente
+(deixaram de ser tratados como "em identificação"/"aguardando confirmação").
+Cada um existe em `treatments` (`src/data/siteContent.ts`, tipo `Treatment` em
+`src/types/siteContent.ts`) apenas com `id`/`name` preenchidos — todos os demais
+campos do tipo são opcionais e, enquanto ausentes, a interface mostra avisos
+honestos ("Descrição completa em atualização.", sem selo de categoria, sem
+seção de benefícios/indicação/cuidados/antes e depois) em vez de inventar
+conteúdo. Assim que a Letícia confirmar qualquer campo de um item, é só
+preenchê-lo diretamente no objeto correspondente — a interface passa a exibir
+automaticamente, sem precisar mexer em nenhum componente:
+- [ ] **Limp GHK-CU** — categoria, nome completo do procedimento, descrição/benefícios, indicação, duração/sessões, preço
+- [ ] **Herbal Peel** — categoria, nome comercial exato, composição, indicação/benefícios, cuidados, duração, preço
+- [ ] **Dep. Laser H** — categoria, nome completo (o que "H" significa), se ainda é oferecido, indicação, duração/sessões, preço
+- [ ] **Jato de Plasma** — categoria, nome comercial do equipamento, indicação/benefícios, contraindicações, duração, preço
+- [ ] **Remoção de Tatuagem** — categoria, técnica utilizada, nº de sessões, indicação, contraindicações, preço
+- [ ] **Skin Class** — categoria, o que exatamente é (tratamento, curso ou linha de produto) e todas as demais informações
+- [ ] Imagem principal de cada tratamento (campo `image`)
 
 ## Ofertas e condições comerciais
-- [ ] Ofertas ativas (título, descrição, validade)
+Não existe mais uma seção separada de "Ofertas" — condições especiais agora
+vivem dentro de cada tratamento, em `treatments[].specialOffer` (tipo
+`TreatmentSpecialOffer` em `src/types/siteContent.ts`: `active`, `title`,
+`description`, `originalPrice`, `promoPrice`, `validUntil`). Enquanto nenhum
+tratamento tiver `specialOffer.active: true`, o filtro "Condições especiais"
+em Tratamentos fica completamente oculto (não é só uma mensagem vazia — o
+botão do filtro nem é renderizado). Assim que a Letícia confirmar uma
+condição especial real de algum tratamento, preencher o `specialOffer`
+correspondente com `active: true`.
+- [ ] Ofertas ativas (tratamento correspondente, título, descrição, validade, preço original/promocional)
 - [ ] Formas de pagamento aceitas
 - [ ] Políticas de cancelamento/remarcação (prazos e condições — o site já tem uma seção preliminar em `src/data/siteContent.ts` → `legal.cancellationPolicy`, marcada como conteúdo em revisão)
 
@@ -64,7 +65,13 @@ preenchidos) e remover a entrada correspondente de `pendingTreatments`.
 
 ## Avaliações e resultados
 - [ ] Avaliações de clientes autorizadas para publicação
-- [ ] Resultados (antes/depois) autorizados para publicação
+- [ ] Resultados antes/depois autorizados para publicação — não existe mais uma
+      seção separada de "Resultados autorizados"; cada resultado agora entra
+      dentro do tratamento correspondente, em `treatments[].beforeAfter`
+      (tipo `TreatmentBeforeAfter`: `before`, `beforeAlt`, `after`, `afterAlt`
+      — os quatro preenchidos juntos, com imagens reais autorizadas pela
+      cliente). Enquanto ausente, a seção "Antes e depois" simplesmente não
+      aparece nos detalhes daquele tratamento (sem placeholder, sem aviso).
 
 ## Horários e agendamento
 - [ ] Horários de funcionamento
@@ -75,7 +82,7 @@ preenchidos) e remover a entrada correspondente de `pendingTreatments`.
 
 ## Técnico (não depende da cliente)
 - [ ] `src/components/NotFoundPage.tsx` está pronto mas não está montado — o site hoje é uma página única com âncoras, sem rotas. Só faz sentido ativá-lo se o site ganhar páginas internas separadas (ex.: `/gestao`, política de privacidade em página própria) no futuro.
-- [ ] **Atalho "Qual cuidado sua pele precisa?" → tratamento específico**: `requestCategoryHighlight` (em `src/context/TreatmentsFilterContext.tsx`) já localiza o primeiro tratamento confirmado de cada categoria, rola até ele (`servico-${id}`) e o destaca por ~2s. Hoje, como `treatments` está vazio, todo clique cai no fallback (âncora simples para a seção Tratamentos, filtro por categoria) — sem erro, mas sem destaque, porque não há nenhum card confirmado ainda para apontar. Assim que a Letícia confirmar tratamentos reais (com `categoryId` preenchido), o destaque passa a funcionar automaticamente, sem precisar mexer no código.
+- [ ] **Atalho "Qual cuidado sua pele precisa?" → tratamento específico**: `requestCategoryHighlight` (em `src/context/TreatmentsFilterContext.tsx`) já localiza o primeiro tratamento confirmado de cada categoria, rola até ele (`servico-${id}`) e o destaca por ~2s. Hoje, os 6 tratamentos oficiais existem em `treatments`, mas nenhum tem `categoryId` preenchido ainda — então todo clique cai no fallback (âncora simples para a seção Tratamentos, filtro por categoria) sem erro, mas sem destaque, porque nenhum card confirmado aponta para nenhuma categoria ainda. Assim que a Letícia confirmar a categoria de qualquer tratamento (campo `categoryId`), o destaque passa a funcionar automaticamente para essa categoria, sem precisar mexer no código.
 
 ## Observação
 Todos os textos, valores e dados já publicados no site (nome, profissional,

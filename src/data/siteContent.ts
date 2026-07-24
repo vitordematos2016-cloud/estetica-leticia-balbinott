@@ -180,12 +180,6 @@ export const siteContent: SiteContent = {
     text: 'Uma trajetória construída com cuidado, confiança e respeito à beleza natural.',
   },
 
-  authorizedResults: {
-    title: 'Resultados autorizados',
-    text: 'Em breve, resultados reais autorizados pelas clientes da Estética Letícia Balbinott.',
-    placeholder: 'Nenhum resultado autorizado publicado até o momento.',
-  },
-
   credentials: {
     title: 'Conhecimento que se transforma em cuidado',
     text: 'A busca constante por atualização é o que sustenta cada indicação feita na Estética Letícia Balbinott — sempre com responsabilidade sobre o que é apresentado.',
@@ -279,72 +273,18 @@ export const siteContent: SiteContent = {
     },
   ],
 
-  treatments: [],
-  pendingTreatments: [
-    {
-      id: 'limp-ghk-cu',
-      name: 'Limp GHK-CU',
-      source: 'Identificado em destaque fixo do Instagram @leh_estetic',
-      pendingInfo: [
-        'Nome completo do procedimento',
-        'Descrição e benefícios',
-        'Indicação',
-        'Duração e número de sessões',
-        'Preço',
-      ],
-    },
-    {
-      id: 'herbal-peel',
-      name: 'Herbal Peel',
-      source: 'Identificado em destaque fixo do Instagram @leh_estetic',
-      pendingInfo: [
-        'Nome comercial exato',
-        'Composição',
-        'Indicação e benefícios',
-        'Cuidados antes e depois',
-        'Duração',
-        'Preço',
-      ],
-    },
-    {
-      id: 'dep-laser-h',
-      name: 'Dep. Laser H',
-      source: 'Identificado em destaque fixo do Instagram @leh_estetic',
-      pendingInfo: [
-        'Nome completo do serviço (o que "H" significa)',
-        'Se ainda é oferecido pela clínica',
-        'Indicação',
-        'Duração e número de sessões',
-        'Preço',
-      ],
-    },
-    {
-      id: 'jato-de-plasma',
-      name: 'Jato de Plasma',
-      source: 'Identificado em destaque fixo do Instagram @leh_estetic',
-      pendingInfo: [
-        'Nome comercial do equipamento',
-        'Indicação e benefícios',
-        'Contraindicações',
-        'Duração',
-        'Preço',
-      ],
-    },
-    {
-      id: 'rem-tatuagem',
-      name: 'Remoção de Tatuagem',
-      source: 'Identificado em destaque fixo do Instagram @leh_estetic',
-      pendingInfo: ['Técnica utilizada', 'Número de sessões', 'Indicação', 'Contraindicações', 'Preço'],
-    },
-    {
-      id: 'skin-class',
-      name: 'Skin Class',
-      source: 'Identificado em destaque fixo do Instagram @leh_estetic',
-      pendingInfo: [
-        'O que exatamente é "Skin Class" (tratamento, curso ou linha de produto)',
-        'Todas as demais informações',
-      ],
-    },
+  // Tratamentos oficiais confirmados pela cliente. Os 6 abaixo (identificados
+  // originalmente em destaques fixos do Instagram @leh_estetic) ainda não têm
+  // categoria, descrição, benefícios, imagem ou preço confirmados -- por isso
+  // só têm id/name preenchidos. Nada disso foi inventado; ver
+  // docs/PENDENCIAS_CLIENTE.md para o que falta de cada um.
+  treatments: [
+    { id: 'limp-ghk-cu', name: 'Limp GHK-CU' },
+    { id: 'herbal-peel', name: 'Herbal Peel' },
+    { id: 'dep-laser-h', name: 'Dep. Laser H' },
+    { id: 'jato-de-plasma', name: 'Jato de Plasma' },
+    { id: 'rem-tatuagem', name: 'Remoção de Tatuagem' },
+    { id: 'skin-class', name: 'Skin Class' },
   ],
 
   aftercare: {
@@ -371,9 +311,6 @@ export const siteContent: SiteContent = {
     notice: 'Publicações em seleção — em breve, destaques direto do Instagram.',
     postsPlaceholderCount: 6,
   },
-
-  offers: [],
-  offersNotice: 'Nenhuma oferta ativa no momento.',
 
   reviews: [],
   reviewsNotice: 'As avaliações de clientes serão publicadas em breve.',

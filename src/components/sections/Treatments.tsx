@@ -5,11 +5,28 @@ import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
 import { TreatmentCard } from '../treatments/TreatmentCard';
 import { TreatmentModal } from '../treatments/TreatmentModal';
-import { PendingTreatmentsList } from '../treatments/PendingTreatmentsList';
 import { useTreatmentsFilter } from '../../context/TreatmentsFilterContext';
 
+const SPECIAL_OFFERS_FILTER_ID = 'condicoes-especiais';
+
+function SparkleIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+      <path
+        d="M6.5 0.5c.3 2.1 1.1 2.9 3.2 3.2-2.1.3-2.9 1.1-3.2 3.2-.3-2.1-1.1-2.9-3.2-3.2 2.1-.3 2.9-1.1 3.2-3.2Z"
+        fill="currentColor"
+      />
+      <path
+        d="M10.8 7.3c.16 1.05.55 1.44 1.6 1.6-1.05.16-1.44.55-1.6 1.6-.16-1.05-.55-1.44-1.6-1.6 1.05-.16 1.44-.55 1.6-1.6Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 export function Treatments() {
-  const { treatments, treatmentCategories, pendingTreatments } = siteContent;
+  const { treatments, treatmentCategories } = siteContent;
+  const hasActiveSpecialOffers = treatments.some((treatment) => treatment.specialOffer?.active);
   const { activeCategoryId, selectCategory, highlightTreatmentId, clearHighlight } =
     useTreatmentsFilter();
   const [search, setSearch] = useState('');
@@ -38,11 +55,15 @@ export function Treatments() {
 
   const filteredTreatments = useMemo(() => {
     return treatments.filter((treatment) => {
-      const matchesCategory = !activeCategoryId || treatment.categoryId === activeCategoryId;
+      const matchesCategory =
+        !activeCategoryId ||
+        (activeCategoryId === SPECIAL_OFFERS_FILTER_ID
+          ? treatment.specialOffer?.active === true
+          : treatment.categoryId === activeCategoryId);
       const matchesSearch =
         search.trim().length === 0 ||
         treatment.name.toLowerCase().includes(search.toLowerCase()) ||
-        treatment.summary.toLowerCase().includes(search.toLowerCase());
+        (treatment.summary ?? '').toLowerCase().includes(search.toLowerCase());
       return matchesCategory && matchesSearch;
     });
   }, [treatments, activeCategoryId, search]);
@@ -85,6 +106,21 @@ export function Treatments() {
               {category.name}
             </button>
           ))}
+          {hasActiveSpecialOffers && (
+            <button
+              type="button"
+              onClick={() => selectCategory(SPECIAL_OFFERS_FILTER_ID)}
+              aria-pressed={activeCategoryId === SPECIAL_OFFERS_FILTER_ID}
+              className={`flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 font-heading text-xs tracking-wide transition-colors ${
+                activeCategoryId === SPECIAL_OFFERS_FILTER_ID
+                  ? 'border-gold bg-brown-dark text-cream-light'
+                  : 'border-gold/60 bg-beige/40 text-brown-dark hover:border-gold'
+              }`}
+            >
+              <SparkleIcon />
+              Condições especiais
+            </button>
+          )}
         </div>
 
         {treatments.length > 0 && (
@@ -133,12 +169,6 @@ export function Treatments() {
             </button>
           </div>
         )}
-
-        {/* Os tratamentos "em identificação" ainda não têm categoria confirmada,
-            então só fazem sentido dentro de "Todos os tratamentos" -- exibi-los
-            durante um filtro de categoria específica pareceria uma segunda
-            lista ignorando o filtro. */}
-        {activeCategoryId === null && <PendingTreatmentsList items={pendingTreatments} />}
       </Container>
 
       <TreatmentModal treatment={selectedTreatment} onClose={() => setSelectedTreatment(null)} />

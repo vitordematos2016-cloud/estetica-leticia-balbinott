@@ -1,5 +1,7 @@
 import type { Treatment } from '../../types/siteContent';
 import { Modal } from '../ui/Modal';
+import { PlaceholderMedia } from '../ui/PlaceholderMedia';
+import { BeforeAfterGallery } from './BeforeAfterGallery';
 import { useSelection } from '../../context/SelectionContext';
 import { buildWhatsAppUrl } from '../../utils/whatsapp';
 import { getTreatmentCategoryName } from '../../utils/treatments';
@@ -16,6 +18,8 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
   if (!treatment) return null;
 
   const alreadySelected = isSelected(treatment.id);
+  const categoryName = getTreatmentCategoryName(treatment.categoryId);
+  const specialOffer = treatment.specialOffer?.active ? treatment.specialOffer : undefined;
   const whatsappUrl = buildWhatsAppUrl(
     siteContent.contact.whatsappNumber,
     treatment.whatsappMessage || siteContent.whatsappDefaultMessage,
@@ -24,10 +28,77 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
   return (
     <Modal isOpen={!!treatment} onClose={onClose} title={treatment.name}>
       <div className="flex flex-col gap-5">
-        <span className="w-fit text-xs font-medium uppercase tracking-[0.2em] text-gold">
-          {getTreatmentCategoryName(treatment.categoryId)}
-        </span>
-        <p className="text-sm leading-relaxed text-brown/80">{treatment.description}</p>
+        <div className="flex flex-wrap items-center gap-2">
+          {categoryName && (
+            <span className="w-fit text-xs font-medium uppercase tracking-[0.2em] text-gold">
+              {categoryName}
+            </span>
+          )}
+          {specialOffer && (
+            <span className="rounded-full border border-gold/50 bg-beige/40 px-2.5 py-0.5 text-[0.65rem] font-medium uppercase tracking-[0.15em] text-brown-dark">
+              Condição especial
+            </span>
+          )}
+        </div>
+
+        {treatment.image ? (
+          <div className="aspect-[4/3] w-full overflow-hidden rounded-2xl border border-gold/30">
+            <img
+              src={treatment.image}
+              alt={treatment.name}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-contain"
+            />
+          </div>
+        ) : (
+          <PlaceholderMedia label={treatment.name} description="Imagem em preparação" ratio="landscape" />
+        )}
+
+        <p className="text-sm leading-relaxed text-brown/80">
+          {treatment.description ?? 'Descrição completa em atualização.'}
+        </p>
+
+        {specialOffer && (
+          <div className="rounded-2xl border border-gold/30 bg-beige/25 p-4">
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
+              {specialOffer.title || 'Condição especial'}
+            </p>
+            {specialOffer.description && (
+              <p className="mt-1.5 text-sm leading-relaxed text-brown-dark">
+                {specialOffer.description}
+              </p>
+            )}
+            <p className="mt-1.5 text-xs font-medium text-gold">
+              {specialOffer.validUntil
+                ? `Válida até ${specialOffer.validUntil}`
+                : 'Condição disponível por tempo limitado'}
+            </p>
+            {specialOffer.promoPrice && (
+              <p className="mt-1.5 text-sm text-brown-dark">
+                {specialOffer.originalPrice && (
+                  <span className="mr-2 text-brown/50 line-through">{specialOffer.originalPrice}</span>
+                )}
+                <span className="font-medium">{specialOffer.promoPrice}</span>
+              </p>
+            )}
+          </div>
+        )}
+
+        {treatment.benefits && treatment.benefits.length > 0 && (
+          <div>
+            <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-brown/50">
+              Benefícios
+            </p>
+            <ul className="flex flex-col gap-1.5">
+              {treatment.benefits.map((benefit) => (
+                <li key={benefit} className="text-sm text-brown/75">
+                  • {benefit}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {treatment.indication && (
           <div>
@@ -47,43 +118,30 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
           </div>
         )}
 
-        {treatment.benefits.length > 0 && (
-          <div>
-            <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-brown/50">
-              Benefícios
-            </p>
-            <ul className="flex flex-col gap-1.5">
-              {treatment.benefits.map((benefit) => (
-                <li key={benefit} className="text-sm text-brown/75">
-                  • {benefit}
-                </li>
-              ))}
-            </ul>
-          </div>
+        {(treatment.duration || treatment.sessions || treatment.price || treatment.professional) && (
+          <dl className="grid grid-cols-2 gap-4 rounded-2xl bg-cream-light/50 p-4 text-sm">
+            <div>
+              <dt className="text-xs uppercase tracking-wide text-brown/50">Duração</dt>
+              <dd className="text-brown-dark">{treatment.duration || '—'}</dd>
+            </div>
+            <div>
+              <dt className="text-xs uppercase tracking-wide text-brown/50">Sessões</dt>
+              <dd className="text-brown-dark">{treatment.sessions || '—'}</dd>
+            </div>
+            <div>
+              <dt className="text-xs uppercase tracking-wide text-brown/50">Investimento</dt>
+              <dd className="text-brown-dark">{treatment.price || 'Sob consulta'}</dd>
+            </div>
+            <div>
+              <dt className="text-xs uppercase tracking-wide text-brown/50">Profissional</dt>
+              <dd className="text-brown-dark">{treatment.professional || '—'}</dd>
+            </div>
+          </dl>
         )}
 
-        <dl className="grid grid-cols-2 gap-4 rounded-2xl bg-cream-light/50 p-4 text-sm">
-          <div>
-            <dt className="text-xs uppercase tracking-wide text-brown/50">Duração</dt>
-            <dd className="text-brown-dark">{treatment.duration || '—'}</dd>
-          </div>
-          <div>
-            <dt className="text-xs uppercase tracking-wide text-brown/50">Sessões</dt>
-            <dd className="text-brown-dark">{treatment.sessions || '—'}</dd>
-          </div>
-          <div>
-            <dt className="text-xs uppercase tracking-wide text-brown/50">Investimento</dt>
-            <dd className="text-brown-dark">{treatment.price || 'Sob consulta'}</dd>
-          </div>
-          <div>
-            <dt className="text-xs uppercase tracking-wide text-brown/50">Profissional</dt>
-            <dd className="text-brown-dark">{treatment.professional || '—'}</dd>
-          </div>
-        </dl>
-
-        {(treatment.careBefore.length > 0 || treatment.careAfter.length > 0) && (
+        {((treatment.careBefore?.length ?? 0) > 0 || (treatment.careAfter?.length ?? 0) > 0) && (
           <div className="grid gap-4 sm:grid-cols-2">
-            {treatment.careBefore.length > 0 && (
+            {treatment.careBefore && treatment.careBefore.length > 0 && (
               <div>
                 <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-brown/50">
                   Cuidados antes
@@ -97,7 +155,7 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
                 </ul>
               </div>
             )}
-            {treatment.careAfter.length > 0 && (
+            {treatment.careAfter && treatment.careAfter.length > 0 && (
               <div>
                 <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-brown/50">
                   Cuidados depois
@@ -114,7 +172,7 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
           </div>
         )}
 
-        {treatment.contraindications.length > 0 && (
+        {treatment.contraindications && treatment.contraindications.length > 0 && (
           <div>
             <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-brown/50">
               Contraindicações gerais
@@ -129,6 +187,10 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
           </div>
         )}
 
+        {treatment.beforeAfter && <BeforeAfterGallery beforeAfter={treatment.beforeAfter} />}
+
+        <p className="text-xs text-brown/50">Cada atendimento é avaliado individualmente.</p>
+
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <button
             type="button"
@@ -137,7 +199,7 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
                 id: treatment.id,
                 type: 'treatment',
                 name: treatment.name,
-                category: getTreatmentCategoryName(treatment.categoryId),
+                category: categoryName,
               })
             }
             className={`flex-1 rounded-full px-6 py-3 text-sm font-medium transition-colors ${

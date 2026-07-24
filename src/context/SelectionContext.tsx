@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 
 export interface SelectionItem {
   id: string;
-  type: 'treatment' | 'offer';
+  type: 'treatment';
   name: string;
   category?: string;
 }

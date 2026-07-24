@@ -114,32 +114,42 @@ export interface SkinConcernsContent {
   items: SkinConcern[];
 }
 
+export interface TreatmentBeforeAfter {
+  before: string;
+  beforeAlt: string;
+  after: string;
+  afterAlt: string;
+}
+
+export interface TreatmentSpecialOffer {
+  active: boolean;
+  title?: string;
+  description?: string;
+  originalPrice?: string;
+  promoPrice?: string;
+  validUntil?: string;
+}
+
 export interface Treatment {
   id: string;
   name: string;
-  categoryId: string;
-  summary: string;
-  description: string;
+  categoryId?: string;
+  summary?: string;
+  description?: string;
   image?: string;
-  indication: string;
-  howItWorks: string;
-  benefits: string[];
+  indication?: string;
+  howItWorks?: string;
+  benefits?: string[];
   sessions?: string;
-  duration: string;
-  careBefore: string[];
-  careAfter: string[];
-  contraindications: string[];
-  price: string;
-  featured: boolean;
-  professional: string;
-  whatsappMessage: string;
-}
-
-export interface PendingTreatment {
-  id: string;
-  name: string;
-  source: string;
-  pendingInfo: string[];
+  duration?: string;
+  careBefore?: string[];
+  careAfter?: string[];
+  contraindications?: string[];
+  price?: string;
+  professional?: string;
+  whatsappMessage?: string;
+  beforeAfter?: TreatmentBeforeAfter;
+  specialOffer?: TreatmentSpecialOffer;
 }
 
 export type CredentialType =
@@ -231,13 +241,6 @@ export interface SchedulingConsentContent {
   error: string;
 }
 
-export interface Offer {
-  id: string;
-  title: string;
-  description: string;
-  validUntil?: string;
-}
-
 export interface Review {
   id: string;
   author: string;
@@ -276,19 +279,15 @@ export interface SiteContent {
   howItWorks: { title: string; text: string; steps: { title: string; text: string }[] };
   experience: ExperienceContent;
   facade: FacadeContent;
-  authorizedResults: { title: string; text: string; placeholder: string };
   credentials: CredentialsContent;
   skinConcerns: SkinConcernsContent;
   treatmentCategories: TreatmentCategory[];
   treatments: Treatment[];
-  pendingTreatments: PendingTreatment[];
   aftercare: AftercareContent;
   thoughtfulDetails: ThoughtfulDetailsContent;
   technologies: TechnologiesContent;
   instagramShowcase: InstagramContent;
   finalCta: FinalCtaContent;
-  offers: Offer[];
-  offersNotice: string;
   reviews: Review[];
   reviewsNotice: string;
   faq: FaqItem[];
