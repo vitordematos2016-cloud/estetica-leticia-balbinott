@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
@@ -13,10 +13,50 @@ const icons = [
   <path key="excellence" d="m14 3 3 6.5 7 1-5 5 1.3 7L14 19l-6.3 3.5L9 15.5l-5-5 7-1L14 3Z" />,
 ];
 
+function ToggleIcon({ up }: { up: boolean }) {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      aria-hidden="true"
+      className={`text-gold transition-transform duration-300 ${up ? 'rotate-180' : ''}`}
+    >
+      <path d="M2 5l5 5 5-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+const toggleButtonClassName =
+  'flex items-center gap-2.5 rounded-full border border-gold/40 bg-cream-light/60 px-6 py-3 text-sm font-medium text-brown-dark shadow-warm-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/70 hover:shadow-warm';
+
 export function Differentials() {
   const { differential, values } = siteContent;
   const { ref, isVisible } = useScrollReveal<HTMLDivElement>(0.2);
   const [isOpen, setIsOpen] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const bottomMarkerRef = useRef<HTMLParagraphElement>(null);
+
+  // Só observa a frase final enquanto os diferenciais estão abertos --
+  // fechado, o botão inferior nunca deve aparecer, então não há necessidade
+  // de rastrear a posição de rolagem.
+  useEffect(() => {
+    if (!isOpen) {
+      setIsAtBottom(false);
+      return;
+    }
+
+    const node = bottomMarkerRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(([entry]) => setIsAtBottom(entry.isIntersecting), {
+      threshold: 0.4,
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [isOpen]);
 
   function revealStyle(delayMs: number): CSSProperties {
     return isVisible
@@ -33,8 +73,20 @@ export function Differentials() {
       : { opacity: 0, transform: 'translateY(16px)', transitionDelay: '0ms' };
   }
 
+  // Nunca ambos ao mesmo tempo: o botão superior cobre "fechado" e "aberto,
+  // ainda no topo"; o inferior só existe quando aberto E a frase final já
+  // entrou na tela. Quando um está oculto, ele é removido da renderização
+  // (não apenas opacity:0), então nunca fica clicável nem focável por engano.
+  const topButtonVisible = !(isOpen && isAtBottom);
+  const bottomButtonVisible = isOpen && isAtBottom;
+
+  function handleCloseFromBottom() {
+    setIsOpen(false);
+    sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   return (
-    <section className="relative overflow-hidden bg-cream-light/30 py-24 sm:py-28">
+    <section ref={sectionRef} className="relative overflow-hidden bg-cream-light/30 py-24 sm:py-28">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -left-20 top-10 h-72 w-72 rounded-full bg-beige/40 blur-3xl"
@@ -62,76 +114,63 @@ export function Differentials() {
             {differential.text}
           </p>
 
-          <button
-            type="button"
-            onClick={() => setIsOpen((current) => !current)}
-            aria-expanded={isOpen}
-            aria-controls="conteudo-diferenciais"
-            className="mt-2 flex items-center gap-2.5 rounded-full border border-gold/40 bg-cream-light/60 px-6 py-3 text-sm font-medium text-brown-dark shadow-warm-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/70 hover:shadow-warm"
-          >
-            {isOpen ? 'Fechar diferenciais' : 'Abrir diferenciais'}
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              aria-hidden="true"
-              className={`text-gold transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+          {topButtonVisible && (
+            <button
+              type="button"
+              onClick={() => setIsOpen((current) => !current)}
+              aria-expanded={isOpen}
+              aria-controls="conteudo-diferenciais"
+              className={`mt-2 ${toggleButtonClassName}`}
             >
-              <path
-                d="M2 5l5 5 5-5"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
+              {isOpen ? 'Fechar diferenciais' : 'Abrir diferenciais'}
+              <ToggleIcon up={isOpen} />
+            </button>
+          )}
         </div>
 
         <div
           id="conteudo-diferenciais"
           aria-hidden={!isOpen}
           className={`overflow-hidden transition-[max-height] duration-700 ease-in-out ${
-            isOpen
-              ? 'max-h-[1800px] sm:max-h-[1100px] lg:max-h-[800px]'
-              : 'max-h-0'
+            isOpen ? 'max-h-[1800px] sm:max-h-[1100px] lg:max-h-[800px]' : 'max-h-0'
           }`}
         >
           <div className="flex flex-col gap-14 pt-4">
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {values.map((value, index) => (
-                  <div
-                    key={value.title}
-                    className="group relative flex flex-col gap-4 rounded-[1.75rem] border border-gold/20 bg-cream p-7 shadow-warm-sm transition-[opacity,transform,box-shadow,border-color] duration-500 ease-out hover:-translate-y-1 hover:border-gold/50 hover:shadow-warm"
-                    style={cardOpenStyle(index)}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="font-heading text-2xl text-gold/70">
-                        {String(index + 1).padStart(2, '0')}
-                      </span>
-                      <span className="flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 text-brown-dark">
-                        <svg width="18" height="18" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                          <g stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                            {icons[index]}
-                          </g>
-                        </svg>
-                      </span>
-                    </div>
-
-                    <h3 className="text-lg text-brown-dark">{value.title}</h3>
-                    <p className="text-sm leading-relaxed text-brown/70">{value.text}</p>
-
-                    <span
-                      aria-hidden="true"
-                      className="mt-1 h-px w-10 bg-gold/60 transition-[width,opacity] duration-500 ease-out group-hover:w-16"
-                      style={{ opacity: isOpen ? 1 : 0, transitionDelay: isOpen ? `${450 + index * 80}ms` : '0ms' }}
-                    />
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {values.map((value, index) => (
+                <div
+                  key={value.title}
+                  className="group relative flex flex-col gap-4 rounded-[1.75rem] border border-gold/20 bg-cream p-7 shadow-warm-sm transition-[opacity,transform,box-shadow,border-color] duration-500 ease-out hover:-translate-y-1 hover:border-gold/50 hover:shadow-warm"
+                  style={cardOpenStyle(index)}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="font-heading text-2xl text-gold/70">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 text-brown-dark">
+                      <svg width="18" height="18" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <g stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                          {icons[index]}
+                        </g>
+                      </svg>
+                    </span>
                   </div>
-                ))}
-              </div>
 
+                  <h3 className="text-lg text-brown-dark">{value.title}</h3>
+                  <p className="text-sm leading-relaxed text-brown/70">{value.text}</p>
+
+                  <span
+                    aria-hidden="true"
+                    className="mt-1 h-px w-10 bg-gold/60 transition-[width,opacity] duration-500 ease-out group-hover:w-16"
+                    style={{ opacity: isOpen ? 1 : 0, transitionDelay: isOpen ? `${450 + index * 80}ms` : '0ms' }}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col items-center gap-6 pb-2">
               <p
+                ref={bottomMarkerRef}
                 className="mx-auto max-w-xl text-center text-base italic leading-relaxed text-brown/70 transition-opacity duration-500 ease-out"
                 style={{
                   opacity: isOpen ? 1 : 0,
@@ -140,7 +179,21 @@ export function Differentials() {
               >
                 {differential.closing}
               </p>
+
+              {bottomButtonVisible && (
+                <button
+                  type="button"
+                  onClick={handleCloseFromBottom}
+                  aria-expanded={isOpen}
+                  aria-controls="conteudo-diferenciais"
+                  className={`mb-4 ${toggleButtonClassName}`}
+                >
+                  Fechar diferenciais
+                  <ToggleIcon up={true} />
+                </button>
+              )}
             </div>
+          </div>
         </div>
       </Container>
     </section>
