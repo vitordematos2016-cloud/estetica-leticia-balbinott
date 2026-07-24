@@ -3,7 +3,11 @@ import { Container } from '../ui/Container';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 
-export function Hero() {
+interface HeroProps {
+  splashFinished: boolean;
+}
+
+export function Hero({ splashFinished }: HeroProps) {
   const { hero } = siteContent;
   const professionalFirstName = siteContent.brand.professional.split(' ')[0];
 
@@ -23,7 +27,7 @@ export function Hero() {
       />
 
       <Container className="relative grid items-center gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
-        <div className="flex flex-col items-start gap-7 fade-up">
+        <div className={`flex flex-col items-start gap-7 ${splashFinished ? 'fade-up' : 'opacity-0'}`}>
           <Badge>{hero.eyebrow}</Badge>
           <h1 className="text-4xl leading-[1.15] text-brown-dark sm:text-5xl lg:text-[3.4rem]">
             {hero.title}
@@ -41,7 +45,10 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative mx-auto aspect-[4/5] w-full max-w-md fade-up" style={{ animationDelay: '0.15s' }}>
+        <div
+          className={`relative mx-auto aspect-[4/5] w-full max-w-md ${splashFinished ? 'fade-up' : 'opacity-0'}`}
+          style={splashFinished ? { animationDelay: '0.15s' } : undefined}
+        >
           <div className="absolute inset-0 rounded-[3rem] rounded-tr-[6rem] bg-gradient-to-br from-beige via-cream-light to-cream shadow-warm" />
           <div className="absolute inset-4 rounded-[2.5rem] rounded-tr-[5rem] border border-gold/40" />
 

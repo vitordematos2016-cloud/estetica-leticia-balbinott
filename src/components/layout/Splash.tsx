@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import splashImage from '../../assets/images/branding/abertura-estetica-leticia-balbinott.webp';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useScrollLock } from '../../hooks/useScrollLock';
-
-const STORAGE_KEY = 'splash-leticia-exibido';
+import { markSplashAsShown, wasSplashAlreadyShown } from '../../utils/splashSession';
 
 if (typeof document !== 'undefined' && !document.head.querySelector(`link[href="${splashImage}"]`)) {
   const preloadLink = document.createElement('link');
@@ -15,17 +14,8 @@ if (typeof document !== 'undefined' && !document.head.querySelector(`link[href="
 
 type Phase = 'enter' | 'beam' | 'hold' | 'exit';
 
-const TIMING = { enter: 700, beam: 1150, hold: 400, exit: 550 };
-const REDUCED_TIMING = { enter: 0, beam: 0, hold: 250, exit: 200 };
-
-function alreadyShown() {
-  if (typeof window === 'undefined') return true;
-  try {
-    return window.sessionStorage.getItem(STORAGE_KEY) === 'true';
-  } catch {
-    return false;
-  }
-}
+const TIMING = { enter: 600, beam: 1100, hold: 300, exit: 600 };
+const REDUCED_TIMING = { enter: 0, beam: 0, hold: 200, exit: 200 };
 
 interface GlowRect {
   top: number;
@@ -33,9 +23,13 @@ interface GlowRect {
   width: number;
 }
 
-export function Splash() {
+interface SplashProps {
+  onFinish: () => void;
+}
+
+export function Splash({ onFinish }: SplashProps) {
   const prefersReducedMotion = useReducedMotion();
-  const [visible, setVisible] = useState(() => !alreadyShown());
+  const [visible, setVisible] = useState(() => !wasSplashAlreadyShown());
   const [phase, setPhase] = useState<Phase>('enter');
   const [showSkip, setShowSkip] = useState(false);
   const [glowRect, setGlowRect] = useState<GlowRect | null>(null);
@@ -93,12 +87,9 @@ export function Splash() {
   function finish() {
     if (finishedRef.current) return;
     finishedRef.current = true;
-    try {
-      window.sessionStorage.setItem(STORAGE_KEY, 'true');
-    } catch {
-      /* sessionStorage indisponível — apenas segue sem persistir */
-    }
+    markSplashAsShown();
     setVisible(false);
+    onFinish();
   }
 
   if (!visible) return null;
@@ -113,11 +104,13 @@ export function Splash() {
       aria-modal="true"
       aria-label="Apresentação da Estética Letícia Balbinott"
       tabIndex={-1}
-      className="fixed inset-0 z-[200] overflow-hidden bg-brown-dark outline-none transition-[opacity,filter] duration-500 ease-out"
+      className={`fixed inset-0 z-[9999] overflow-hidden bg-brown-dark outline-none transition-[opacity,filter,transform] duration-[600ms] ease-out ${
+        isExiting ? 'pointer-events-none' : ''
+      }`}
       style={
         isExiting
-          ? { opacity: 0, filter: 'blur(10px) brightness(0.85)' }
-          : { opacity: 1, filter: 'blur(0px) brightness(1)' }
+          ? { opacity: 0, filter: 'blur(8px)', transform: 'scale(0.99)' }
+          : { opacity: 1, filter: 'blur(0px)', transform: 'scale(1)' }
       }
     >
       <div
@@ -125,6 +118,13 @@ export function Splash() {
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(255,218,145,0.16),transparent_60%)] transition-opacity duration-700 ease-out"
         style={{ opacity: prefersReducedMotion || phase !== 'enter' ? 1 : 0 }}
       />
+
+      {showBeam && (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_44%,rgba(255,224,160,0.35),transparent_55%)] splash-center-glow"
+        />
+      )}
 
       <img
         ref={imgRef}
@@ -137,7 +137,7 @@ export function Splash() {
         className={`relative h-full w-full object-contain ${prefersReducedMotion ? '' : 'splash-image-in'}`}
       />
 
-      {showBeam && <span aria-hidden="true" className="splash-beam pointer-events-none absolute inset-0" />}
+      {showBeam && <span aria-hidden="true" className="splash-beam pointer-events-none" />}
 
       {showBeam && glowRect && (
         <span

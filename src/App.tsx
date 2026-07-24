@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { SelectionProvider } from './context/SelectionContext';
 import { TreatmentsFilterProvider } from './context/TreatmentsFilterContext';
 import { Header } from './components/layout/Header';
@@ -28,15 +29,18 @@ import { InstagramShowcase } from './components/sections/InstagramShowcase';
 import { Scheduling } from './components/sections/Scheduling';
 import { Location } from './components/sections/Location';
 import { FinalCta } from './components/sections/FinalCta';
+import { wasSplashAlreadyShown } from './utils/splashSession';
 
 function App() {
+  const [splashFinished, setSplashFinished] = useState(() => wasSplashAlreadyShown());
+
   return (
     <SelectionProvider>
       <TreatmentsFilterProvider>
-        <Splash />
+        <Splash onFinish={() => setSplashFinished(true)} />
         <Header />
         <main>
-          <Hero />
+          <Hero splashFinished={splashFinished} />
           <BrandLoop />
           <Manifesto />
           <About />
