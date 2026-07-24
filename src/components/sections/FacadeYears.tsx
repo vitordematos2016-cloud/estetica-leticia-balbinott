@@ -46,7 +46,7 @@ export function FacadeYears() {
               className="font-heading whitespace-nowrap text-[3rem] leading-none text-gold sm:text-[3.75rem] lg:text-[4.5rem]"
               aria-label={`Mais de ${facade.years} ${facade.yearsLabel}`}
             >
-              <span aria-hidden="true">+</span>
+              <span aria-hidden="true">+ DE </span>
               <span>{yearsValue}</span>
             </span>
             <p

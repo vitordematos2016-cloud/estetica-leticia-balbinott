@@ -54,14 +54,14 @@ export const siteContent: SiteContent = {
 
   brandLoop: {
     items: [
-      '8 ANOS DE EXPERIÊNCIA',
+      '+ DE 8 ANOS DE EXPERIÊNCIA',
       'ESTÉTICA FACIAL',
       'ESTÉTICA REGENERATIVA',
       'BELEZA NATURAL',
       'LEH ESTETIC',
       '+1000 CLIENTES ATENDIDOS',
     ],
-    ariaLabel: 'Estética Letícia Balbinott — 8 anos de experiência em estética facial e regenerativa',
+    ariaLabel: 'Estética Letícia Balbinott — mais de 8 anos de experiência em estética facial e regenerativa',
   },
 
   manifesto: {
@@ -71,12 +71,12 @@ export const siteContent: SiteContent = {
 
   about: {
     title: 'Cuidado que respeita a individualidade de cada pele',
-    text: 'Letícia Balbinott é especialista em estética facial, com foco em estética regenerativa e 8 anos de experiência. Seu trabalho é baseado em tratamentos personalizados, atendimento acolhedor, segurança e respeito às características únicas de cada pele.',
+    text: 'Letícia Balbinott é especialista em estética facial, com foco em estética regenerativa e + de 8 anos de experiência. Seu trabalho é baseado em tratamentos personalizados, atendimento acolhedor, segurança e respeito às características únicas de cada pele.',
     highlights: [
       'Letícia Balbinott',
       'Especialista em estética facial',
       'Estética regenerativa',
-      '8 anos de experiência',
+      '+ de 8 anos de experiência',
       '+ de 1000 clientes atendidas',
     ],
   },
