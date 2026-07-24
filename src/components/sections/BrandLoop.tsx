@@ -5,10 +5,15 @@ export function BrandLoop() {
   const { brandLoop } = siteContent;
   const prefersReducedMotion = useReducedMotion();
 
+  // Repetida para garantir que cada grupo seja mais largo que a tela,
+  // mesmo em monitores ultrawide — sem isso, o loop translateX(-50%)
+  // mostraria fundo vazio depois do fim de um grupo curto.
+  const sequence = [...brandLoop.items, ...brandLoop.items, ...brandLoop.items];
+
   const track = (keyPrefix: string, ariaHidden: boolean) => (
     <div className="flex shrink-0 items-center" aria-hidden={ariaHidden || undefined}>
-      {brandLoop.items.map((item) => (
-        <span key={`${keyPrefix}-${item}`} className="flex shrink-0 items-center">
+      {sequence.map((item, index) => (
+        <span key={`${keyPrefix}-${index}-${item}`} className="flex shrink-0 items-center">
           <span className="whitespace-nowrap px-5 text-[0.7rem] uppercase tracking-[0.3em] text-brown/75 sm:text-xs">
             {item}
           </span>
