@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { CSSProperties } from 'react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
@@ -15,6 +16,7 @@ const icons = [
 export function Differentials() {
   const { differential, values } = siteContent;
   const { ref, isVisible } = useScrollReveal<HTMLDivElement>(0.2);
+  const [isOpen, setIsOpen] = useState(false);
 
   function revealStyle(delayMs: number): CSSProperties {
     return isVisible
@@ -22,18 +24,13 @@ export function Differentials() {
       : { opacity: 0, transform: 'translateY(20px)', transitionDelay: `${delayMs}ms` };
   }
 
-  // Transição própria (não depende da classe utilitária .reveal), para não
-  // colidir com as classes de transform/shadow/border do hover do card.
-  // Usa apenas propriedades longhand (nunca a shorthand `transition`) para
-  // não conflitar com `transitionDelay` no mesmo objeto de estilo.
-  function cardRevealStyle(delayMs: number): CSSProperties {
-    return {
-      ...(isVisible ? { opacity: 1 } : { opacity: 0, transform: 'translateY(20px)' }),
-      transitionProperty: 'opacity, transform, box-shadow, border-color',
-      transitionDuration: '750ms, 500ms, 300ms, 300ms',
-      transitionTimingFunction: 'ease-out',
-      transitionDelay: `${delayMs}ms`,
-    };
+  // Anima de acordo com isOpen (não com o scroll). Ao abrir, cada card tem um
+  // pequeno atraso em sequência; ao fechar, todos recolhem juntos (delay 0),
+  // sem elementos "sobrando" visíveis durante o fechamento.
+  function cardOpenStyle(index: number): CSSProperties {
+    return isOpen
+      ? { opacity: 1, transitionDelay: `${150 + index * 80}ms` }
+      : { opacity: 0, transform: 'translateY(16px)', transitionDelay: '0ms' };
   }
 
   return (
@@ -47,7 +44,7 @@ export function Differentials() {
         className="pointer-events-none absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-gold/10 blur-3xl"
       />
 
-      <Container className="relative flex flex-col gap-14">
+      <Container className="relative flex flex-col gap-10">
         <div ref={ref} className="mx-auto flex max-w-2xl flex-col items-center gap-4 text-center">
           <span
             className="reveal text-xs font-medium uppercase tracking-[0.28em] text-gold"
@@ -64,46 +61,87 @@ export function Differentials() {
           <p className="reveal text-base leading-relaxed text-brown/75 sm:text-lg" style={revealStyle(200)}>
             {differential.text}
           </p>
+
+          <button
+            type="button"
+            onClick={() => setIsOpen((current) => !current)}
+            aria-expanded={isOpen}
+            aria-controls="conteudo-diferenciais"
+            className="mt-2 flex items-center gap-2.5 rounded-full border border-gold/40 bg-cream-light/60 px-6 py-3 text-sm font-medium text-brown-dark shadow-warm-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/70 hover:shadow-warm"
+          >
+            {isOpen ? 'Fechar diferenciais' : 'Abrir diferenciais'}
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              aria-hidden="true"
+              className={`text-gold transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+            >
+              <path
+                d="M2 5l5 5 5-5"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {values.map((value, index) => (
-            <div
-              key={value.title}
-              className="group relative flex flex-col gap-4 rounded-[1.75rem] border border-gold/20 bg-cream p-7 shadow-warm-sm hover:-translate-y-1 hover:border-gold/50 hover:shadow-warm"
-              style={cardRevealStyle(350 + index * 100)}
-            >
-              <div className="flex items-center gap-3">
-                <span className="font-heading text-2xl text-gold/70">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 text-brown-dark">
-                  <svg width="18" height="18" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                    <g stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                      {icons[index]}
-                    </g>
-                  </svg>
-                </span>
+        <div
+          id="conteudo-diferenciais"
+          aria-hidden={!isOpen}
+          className={`overflow-hidden transition-[max-height] duration-700 ease-in-out ${
+            isOpen
+              ? 'max-h-[1800px] sm:max-h-[1100px] lg:max-h-[800px]'
+              : 'max-h-0'
+          }`}
+        >
+          <div className="flex flex-col gap-14 pt-4">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {values.map((value, index) => (
+                  <div
+                    key={value.title}
+                    className="group relative flex flex-col gap-4 rounded-[1.75rem] border border-gold/20 bg-cream p-7 shadow-warm-sm transition-[opacity,transform,box-shadow,border-color] duration-500 ease-out hover:-translate-y-1 hover:border-gold/50 hover:shadow-warm"
+                    style={cardOpenStyle(index)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="font-heading text-2xl text-gold/70">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 text-brown-dark">
+                        <svg width="18" height="18" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                          <g stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                            {icons[index]}
+                          </g>
+                        </svg>
+                      </span>
+                    </div>
+
+                    <h3 className="text-lg text-brown-dark">{value.title}</h3>
+                    <p className="text-sm leading-relaxed text-brown/70">{value.text}</p>
+
+                    <span
+                      aria-hidden="true"
+                      className="mt-1 h-px w-10 bg-gold/60 transition-[width,opacity] duration-500 ease-out group-hover:w-16"
+                      style={{ opacity: isOpen ? 1 : 0, transitionDelay: isOpen ? `${450 + index * 80}ms` : '0ms' }}
+                    />
+                  </div>
+                ))}
               </div>
 
-              <h3 className="text-lg text-brown-dark">{value.title}</h3>
-              <p className="text-sm leading-relaxed text-brown/70">{value.text}</p>
-
-              <span
-                aria-hidden="true"
-                className="mt-1 h-px w-10 bg-gold/60 transition-[width,opacity] duration-500 ease-out group-hover:w-16"
-                style={{ opacity: isVisible ? 1 : 0, transitionDelay: `${450 + index * 100}ms` }}
-              />
+              <p
+                className="mx-auto max-w-xl text-center text-base italic leading-relaxed text-brown/70 transition-opacity duration-500 ease-out"
+                style={{
+                  opacity: isOpen ? 1 : 0,
+                  transitionDelay: isOpen ? `${150 + values.length * 80 + 100}ms` : '0ms',
+                }}
+              >
+                {differential.closing}
+              </p>
             </div>
-          ))}
         </div>
-
-        <p
-          className="reveal mx-auto max-w-xl text-center text-base italic leading-relaxed text-brown/70"
-          style={revealStyle(350 + values.length * 100 + 150)}
-        >
-          {differential.closing}
-        </p>
       </Container>
     </section>
   );
