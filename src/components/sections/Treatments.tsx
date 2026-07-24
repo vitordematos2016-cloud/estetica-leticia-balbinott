@@ -56,18 +56,18 @@ export function Treatments() {
           text="Cada tratamento é indicado a partir de uma avaliação personalizada, com transparência sobre benefícios e cuidados."
         />
 
-        <div className="flex flex-wrap justify-center gap-2.5">
+        <div className="-mx-5 flex gap-2.5 overflow-x-auto px-5 pb-1 lg:mx-0 lg:flex-wrap lg:justify-center lg:overflow-visible lg:px-0 lg:pb-0">
           <button
             type="button"
             onClick={() => selectCategory(null)}
             aria-pressed={activeCategoryId === null}
-            className={`rounded-full border px-4 py-2 text-xs font-medium uppercase tracking-wide transition-colors ${
+            className={`shrink-0 rounded-full border px-4 py-2 text-xs font-medium uppercase tracking-wide transition-colors ${
               activeCategoryId === null
                 ? 'border-gold bg-gold/15 text-brown-dark'
                 : 'border-gold/30 text-brown/60 hover:border-gold'
             }`}
           >
-            Todos
+            Todos os tratamentos
           </button>
           {treatmentCategories.map((category) => (
             <button
@@ -76,7 +76,7 @@ export function Treatments() {
               onClick={() => selectCategory(category.id)}
               aria-pressed={activeCategoryId === category.id}
               title={category.description}
-              className={`rounded-full border px-4 py-2 text-xs font-medium uppercase tracking-wide transition-colors ${
+              className={`shrink-0 rounded-full border px-4 py-2 text-xs font-medium uppercase tracking-wide transition-colors ${
                 activeCategoryId === category.id
                   ? 'border-gold bg-gold/15 text-brown-dark'
                   : 'border-gold/30 text-brown/60 hover:border-gold'
@@ -102,19 +102,22 @@ export function Treatments() {
 
         {treatments.length > 0 && filteredTreatments.length === 0 && (
           <p className="text-center text-sm text-brown/60">
-            Nenhum tratamento encontrado para essa busca.
+            {search.trim().length > 0
+              ? 'Nenhum tratamento encontrado para essa busca.'
+              : 'Nenhum tratamento disponível nesta categoria no momento.'}
           </p>
         )}
 
         {filteredTreatments.length > 0 && (
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {filteredTreatments.map((treatment) => (
-              <TreatmentCard
-                key={treatment.id}
-                treatment={treatment}
-                onViewDetails={setSelectedTreatment}
-                isHighlighted={treatment.id === highlightTreatmentId}
-              />
+              <div key={`${activeCategoryId ?? 'all'}-${treatment.id}`} className="fade-up">
+                <TreatmentCard
+                  treatment={treatment}
+                  onViewDetails={setSelectedTreatment}
+                  isHighlighted={treatment.id === highlightTreatmentId}
+                />
+              </div>
             ))}
           </div>
         )}
