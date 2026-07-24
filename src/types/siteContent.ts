@@ -64,8 +64,10 @@ export interface PurposeContent {
 }
 
 export interface DifferentialContent {
+  eyebrow: string;
   title: string;
   text: string;
+  closing: string;
 }
 
 export interface ValueItem {

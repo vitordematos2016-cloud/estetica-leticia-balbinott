@@ -95,8 +95,11 @@ export const siteContent: SiteContent = {
   },
 
   differential: {
-    title: 'Diferencial',
-    text: 'Transparência nas orientações, responsabilidade em cada indicação e preocupação verdadeira com o cuidado de cada pele.',
+    eyebrow: 'Nosso diferencial',
+    title: 'Um cuidado pensado em cada detalhe',
+    text: 'Cada atendimento é conduzido com atenção, responsabilidade e respeito às necessidades de cada pessoa, criando uma experiência que vai além do procedimento.',
+    closing:
+      'Cuidado, conhecimento e atenção unidos em uma experiência verdadeiramente personalizada.',
   },
 
   values: [
