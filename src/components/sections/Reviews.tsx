@@ -8,7 +8,7 @@ export function Reviews() {
   return (
     <section id="avaliacoes" className="bg-cream-light/40 py-24 sm:py-28">
       <Container className="flex flex-col gap-12">
-        <SectionHeading eyebrow="Avaliações" title="O que dizem sobre a Leh Estetic" />
+        <SectionHeading eyebrow="Avaliações" title="O que dizem sobre a Estética Letícia Balbinott" />
 
         {reviews.length === 0 ? (
           <div className="mx-auto max-w-xl rounded-[2rem] border border-dashed border-gold/40 bg-cream px-8 py-14 text-center">

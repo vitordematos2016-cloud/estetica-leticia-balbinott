@@ -7,7 +7,7 @@ import type { SiteContent } from '../types/siteContent';
  */
 export const siteContent: SiteContent = {
   brand: {
-    name: 'Leh Estetic',
+    name: 'Estética Letícia Balbinott',
     professional: 'Letícia Balbinott',
     role: 'Especialista em estética facial',
     focus: 'Estética regenerativa',
@@ -61,7 +61,7 @@ export const siteContent: SiteContent = {
       'LEH ESTETIC',
       '+1000 CLIENTES ATENDIDOS',
     ],
-    ariaLabel: 'Leh Estetic — 8 anos de experiência em estética facial e regenerativa',
+    ariaLabel: 'Estética Letícia Balbinott — 8 anos de experiência em estética facial e regenerativa',
   },
 
   manifesto: {
@@ -172,7 +172,7 @@ export const siteContent: SiteContent = {
   },
 
   facade: {
-    title: 'Leh Estetic',
+    title: 'Estética Letícia Balbinott',
     years: 8,
     yearsLabel: 'anos de experiência',
     clients: 1000,
@@ -182,13 +182,13 @@ export const siteContent: SiteContent = {
 
   authorizedResults: {
     title: 'Resultados autorizados',
-    text: 'Em breve, resultados reais autorizados pelas clientes da Leh Estetic.',
+    text: 'Em breve, resultados reais autorizados pelas clientes da Estética Letícia Balbinott.',
     placeholder: 'Nenhum resultado autorizado publicado até o momento.',
   },
 
   credentials: {
     title: 'Conhecimento que se transforma em cuidado',
-    text: 'A busca constante por atualização é o que sustenta cada indicação feita na Leh Estetic — sempre com responsabilidade sobre o que é apresentado.',
+    text: 'A busca constante por atualização é o que sustenta cada indicação feita na Estética Letícia Balbinott — sempre com responsabilidade sobre o que é apresentado.',
     moduleTitle: 'Formações e Certificações',
     moduleTeaser:
       'Conheça as formações, especializações e atualizações profissionais que sustentam cada atendimento.',
@@ -355,19 +355,19 @@ export const siteContent: SiteContent = {
 
   thoughtfulDetails: {
     title: 'Cuidado presente em cada detalhe',
-    text: 'Na Leh Estetic, cada detalhe é pensado para proporcionar uma experiência acolhedora, especial e personalizada.',
+    text: 'Na Estética Letícia Balbinott, cada detalhe é pensado para proporcionar uma experiência acolhedora, especial e personalizada.',
   },
 
   technologies: {
     title: 'Tecnologias e produtos utilizados',
-    text: 'Equipamentos e linhas profissionais utilizados nos tratamentos da Leh Estetic.',
+    text: 'Equipamentos e linhas profissionais utilizados nos tratamentos da Estética Letícia Balbinott.',
     notice: 'Informações sobre tecnologias e produtos em atualização.',
     items: [],
   },
 
   instagramShowcase: {
-    title: 'Acompanhe cuidados, resultados e bastidores da Leh Estetic',
-    text: 'Uma seleção de publicações do Instagram da Leh Estetic.',
+    title: 'Acompanhe cuidados, resultados e bastidores da Estética Letícia Balbinott',
+    text: 'Uma seleção de publicações do Instagram da Estética Letícia Balbinott.',
     notice: 'Publicações em seleção — em breve, destaques direto do Instagram.',
     postsPlaceholderCount: 6,
   },
@@ -390,7 +390,7 @@ export const siteContent: SiteContent = {
         'Sim. Cada indicação é feita de forma individual, respeitando as características e necessidades de cada pele.',
     },
     {
-      question: 'Onde fica localizada a Leh Estetic?',
+      question: 'Onde fica localizada a Estética Letícia Balbinott?',
       answer:
         'Na Rua José Sampaio, sala 101, 1º andar — no prédio espelhado próximo à Audisom.',
     },
@@ -404,9 +404,9 @@ export const siteContent: SiteContent = {
   },
 
   seo: {
-    title: 'Leh Estetic | Estética Facial e Regenerativa',
+    title: 'Estética Letícia Balbinott | Estética Facial e Regenerativa',
     description:
-      'Conheça a Leh Estetic, especializada em estética facial e regenerativa, com atendimento personalizado, acolhedor e responsável.',
+      'Conheça a Estética Letícia Balbinott, especializada em estética facial e regenerativa, com atendimento personalizado, acolhedor e responsável.',
   },
 
   footer: {
@@ -417,7 +417,7 @@ export const siteContent: SiteContent = {
     privacyPolicy: {
       title: 'Política de Privacidade',
       reviewNotice:
-        'Conteúdo preliminar, ainda pendente de revisão e confirmação pela Leh Estetic antes da publicação definitiva.',
+        'Conteúdo preliminar, ainda pendente de revisão e confirmação pela Estética Letícia Balbinott antes da publicação definitiva.',
       sections: [
         {
           heading: 'Quais dados são coletados',
@@ -436,7 +436,7 @@ export const siteContent: SiteContent = {
     cancellationPolicy: {
       title: 'Política de Cancelamento e Reagendamento',
       reviewNotice:
-        'Conteúdo preliminar, ainda pendente de definição e confirmação pela Leh Estetic antes da publicação definitiva.',
+        'Conteúdo preliminar, ainda pendente de definição e confirmação pela Estética Letícia Balbinott antes da publicação definitiva.',
       sections: [
         {
           heading: 'Como cancelar ou reagendar',
@@ -444,7 +444,7 @@ export const siteContent: SiteContent = {
         },
         {
           heading: 'Prazos e condições',
-          text: 'Os prazos mínimos de antecedência e eventuais condições específicas ainda serão definidos pela Leh Estetic e publicados aqui assim que confirmados.',
+          text: 'Os prazos mínimos de antecedência e eventuais condições específicas ainda serão definidos pela Estética Letícia Balbinott e publicados aqui assim que confirmados.',
         },
       ],
     },
@@ -456,5 +456,5 @@ export const siteContent: SiteContent = {
   },
 
   whatsappDefaultMessage:
-    'Olá! Conheci a Leh Estetic pelo site e gostaria de solicitar informações sobre os tratamentos e horários disponíveis.',
+    'Olá! Conheci a Estética Letícia Balbinott pelo site e gostaria de solicitar informações sobre os tratamentos e horários disponíveis.',
 };

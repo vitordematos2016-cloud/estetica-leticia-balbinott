@@ -18,7 +18,7 @@ function isFilled(value: string | undefined | null): value is string {
 }
 
 export function buildSchedulingMessage(fields: SchedulingMessageFields): string {
-  const lines: string[] = ['Olá! Gostaria de agendar uma avaliação na Leh Estetic.'];
+  const lines: string[] = ['Olá! Gostaria de agendar uma avaliação na Estética Letícia Balbinott.'];
 
   if (isFilled(fields.name)) lines.push(`Nome: ${fields.name}`);
   if (isFilled(fields.phone)) lines.push(`Telefone: ${fields.phone}`);
@@ -34,7 +34,7 @@ export function buildSchedulingMessage(fields: SchedulingMessageFields): string 
 }
 
 export function buildSelectionWhatsAppMessage(itemNames: string[]): string {
-  const lines = ['Olá, gostaria de agendar um horário na Leh Estetic.', '', 'Serviços selecionados:'];
+  const lines = ['Olá, gostaria de agendar um horário na Estética Letícia Balbinott.', '', 'Serviços selecionados:'];
   itemNames.forEach((name) => lines.push(`• ${name}`));
   lines.push('', 'Gostaria de verificar os horários disponíveis.');
   return lines.join('\n');

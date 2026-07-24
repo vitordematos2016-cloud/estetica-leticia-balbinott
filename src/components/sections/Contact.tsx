@@ -37,7 +37,7 @@ export function Contact() {
   return (
     <section id="contato" className="py-24 sm:py-28">
       <Container className="flex flex-col items-center gap-12 text-center">
-        <SectionHeading eyebrow="Contato" title="Fale com a Leh Estetic" />
+        <SectionHeading eyebrow="Contato" title="Fale com a Estética Letícia Balbinott" />
 
         <div className="grid w-full gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {items.map((item) => (
