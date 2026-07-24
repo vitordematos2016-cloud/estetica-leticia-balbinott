@@ -1,4 +1,4 @@
-const SPLASH_STORAGE_KEY = 'splash-leticia-exibido';
+const SPLASH_STORAGE_KEY = 'splash-leticia-exibido-v2';
 
 export function wasSplashAlreadyShown(): boolean {
   if (typeof window === 'undefined') return true;

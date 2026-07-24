@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { SelectionProvider } from './context/SelectionContext';
 import { TreatmentsFilterProvider } from './context/TreatmentsFilterContext';
 import { Header } from './components/layout/Header';
@@ -33,11 +33,12 @@ import { wasSplashAlreadyShown } from './utils/splashSession';
 
 function App() {
   const [splashFinished, setSplashFinished] = useState(() => wasSplashAlreadyShown());
+  const handleSplashFinish = useCallback(() => setSplashFinished(true), []);
 
   return (
     <SelectionProvider>
       <TreatmentsFilterProvider>
-        <Splash onFinish={() => setSplashFinished(true)} />
+        <Splash onFinish={handleSplashFinish} />
         <Header />
         <main>
           <Hero splashFinished={splashFinished} />

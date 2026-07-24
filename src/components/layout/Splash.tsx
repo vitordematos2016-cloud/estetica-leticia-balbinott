@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import splashImage from '../../assets/images/branding/abertura-estetica-leticia-balbinott.webp';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useScrollLock } from '../../hooks/useScrollLock';
@@ -36,6 +36,14 @@ export function Splash({ onFinish }: SplashProps) {
   const finishedRef = useRef(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+
+  const finish = useCallback(() => {
+    if (finishedRef.current) return;
+    finishedRef.current = true;
+    markSplashAsShown();
+    setVisible(false);
+    onFinish();
+  }, [onFinish]);
 
   useScrollLock(visible);
 
@@ -81,16 +89,7 @@ export function Splash({ onFinish }: SplashProps) {
     return () => {
       timers.forEach((id) => window.clearTimeout(id));
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible, prefersReducedMotion]);
-
-  function finish() {
-    if (finishedRef.current) return;
-    finishedRef.current = true;
-    markSplashAsShown();
-    setVisible(false);
-    onFinish();
-  }
+  }, [visible, prefersReducedMotion, finish]);
 
   if (!visible) return null;
 
