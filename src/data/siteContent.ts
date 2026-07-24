@@ -277,7 +277,6 @@ export const siteContent: SiteContent = {
   ],
 
   treatments: [],
-  treatmentsCatalogNotice: 'Catálogo oficial em atualização.',
   pendingTreatments: [
     {
       id: 'limp-ghk-cu',

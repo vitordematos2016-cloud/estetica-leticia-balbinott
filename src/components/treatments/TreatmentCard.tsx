@@ -6,14 +6,20 @@ import { getTreatmentCategoryName } from '../../utils/treatments';
 interface TreatmentCardProps {
   treatment: Treatment;
   onViewDetails: (treatment: Treatment) => void;
+  isHighlighted?: boolean;
 }
 
-export function TreatmentCard({ treatment, onViewDetails }: TreatmentCardProps) {
+export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false }: TreatmentCardProps) {
   const { addItem, removeItem, isSelected } = useSelection();
   const alreadySelected = isSelected(treatment.id);
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-[1.75rem] border border-gold/25 bg-cream shadow-warm-sm transition-shadow hover:shadow-warm">
+    <article
+      id={`servico-${treatment.id}`}
+      className={`flex scroll-mt-28 flex-col overflow-hidden rounded-[1.75rem] border bg-cream shadow-warm-sm transition-[box-shadow,border-color] duration-700 ease-out hover:shadow-warm ${
+        isHighlighted ? 'border-gold shadow-warm' : 'border-gold/25'
+      }`}
+    >
       <PlaceholderMedia label={treatment.name} description="Imagem em preparação" ratio="landscape" className="rounded-none rounded-t-[1.75rem]" />
 
       <div className="flex flex-1 flex-col gap-3 p-6">
@@ -27,6 +33,7 @@ export function TreatmentCard({ treatment, onViewDetails }: TreatmentCardProps) 
           <button
             type="button"
             onClick={() => onViewDetails(treatment)}
+            aria-label={`Ver detalhes do tratamento ${treatment.name}`}
             className="text-sm font-medium text-brown-dark underline decoration-gold/50 underline-offset-4 hover:text-gold"
           >
             Ver detalhes

@@ -278,7 +278,6 @@ export interface SiteContent {
   skinConcerns: SkinConcernsContent;
   treatmentCategories: TreatmentCategory[];
   treatments: Treatment[];
-  treatmentsCatalogNotice: string;
   pendingTreatments: PendingTreatment[];
   aftercare: AftercareContent;
   thoughtfulDetails: ThoughtfulDetailsContent;

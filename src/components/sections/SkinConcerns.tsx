@@ -5,7 +5,7 @@ import { useTreatmentsFilter } from '../../context/TreatmentsFilterContext';
 
 export function SkinConcerns() {
   const { skinConcerns } = siteContent;
-  const { selectCategory } = useTreatmentsFilter();
+  const { requestCategoryHighlight } = useTreatmentsFilter();
 
   return (
     <section className="bg-cream-light/40 py-24 sm:py-28">
@@ -17,7 +17,12 @@ export function SkinConcerns() {
             <a
               key={concern.id}
               href="#tratamentos"
-              onClick={() => selectCategory(concern.categoryId)}
+              onClick={(event) => {
+                // Se já existir um tratamento cadastrado nessa categoria, rolamos e
+                // destacamos esse card específico em vez do salto genérico do link.
+                const matchedId = requestCategoryHighlight(concern.categoryId);
+                if (matchedId) event.preventDefault();
+              }}
               className="group flex flex-col gap-2 rounded-[1.75rem] border border-gold/25 bg-cream p-6 text-left shadow-warm-sm transition-all hover:-translate-y-1 hover:border-gold hover:shadow-warm"
             >
               <span className="text-lg text-brown-dark">{concern.label}</span>

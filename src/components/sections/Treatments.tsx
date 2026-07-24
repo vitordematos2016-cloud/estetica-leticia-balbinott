@@ -9,14 +9,32 @@ import { PendingTreatmentsList } from '../treatments/PendingTreatmentsList';
 import { useTreatmentsFilter } from '../../context/TreatmentsFilterContext';
 
 export function Treatments() {
-  const { treatments, treatmentsCatalogNotice, treatmentCategories, pendingTreatments } = siteContent;
-  const { activeCategoryId, selectCategory } = useTreatmentsFilter();
+  const { treatments, treatmentCategories, pendingTreatments } = siteContent;
+  const { activeCategoryId, selectCategory, highlightTreatmentId, clearHighlight } =
+    useTreatmentsFilter();
   const [search, setSearch] = useState('');
   const [selectedTreatment, setSelectedTreatment] = useState<Treatment | null>(null);
 
   useEffect(() => {
     if (activeCategoryId) setSearch('');
   }, [activeCategoryId]);
+
+  // Rola até o tratamento pedido pelos cards de "Qual cuidado sua pele
+  // precisa?" e o destaca por ~2s. Se o id não existir mais no DOM (ex.:
+  // catálogo mudou), apenas limpa o estado sem quebrar nada.
+  useEffect(() => {
+    if (!highlightTreatmentId) return;
+
+    const node = document.getElementById(`servico-${highlightTreatmentId}`);
+    if (!node) {
+      clearHighlight();
+      return;
+    }
+
+    node.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const timeout = window.setTimeout(clearHighlight, 2000);
+    return () => window.clearTimeout(timeout);
+  }, [highlightTreatmentId, clearHighlight]);
 
   const filteredTreatments = useMemo(() => {
     return treatments.filter((treatment) => {
@@ -82,25 +100,20 @@ export function Treatments() {
           </label>
         )}
 
-        {treatments.length === 0 ? (
-          <div className="rounded-[2rem] border border-dashed border-gold/40 bg-cream-light/40 px-8 py-16 text-center">
-            <p className="text-lg text-brown-dark">{treatmentsCatalogNotice}</p>
-            <p className="mt-2 text-sm text-brown/60">
-              Em breve, os tratamentos completos estarão disponíveis aqui, com descrição,
-              benefícios, indicações e valores.
-            </p>
-          </div>
-        ) : filteredTreatments.length === 0 ? (
+        {treatments.length > 0 && filteredTreatments.length === 0 && (
           <p className="text-center text-sm text-brown/60">
             Nenhum tratamento encontrado para essa busca.
           </p>
-        ) : (
+        )}
+
+        {filteredTreatments.length > 0 && (
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {filteredTreatments.map((treatment) => (
               <TreatmentCard
                 key={treatment.id}
                 treatment={treatment}
                 onViewDetails={setSelectedTreatment}
+                isHighlighted={treatment.id === highlightTreatmentId}
               />
             ))}
           </div>

@@ -75,6 +75,7 @@ preenchidos) e remover a entrada correspondente de `pendingTreatments`.
 
 ## Técnico (não depende da cliente)
 - [ ] `src/components/NotFoundPage.tsx` está pronto mas não está montado — o site hoje é uma página única com âncoras, sem rotas. Só faz sentido ativá-lo se o site ganhar páginas internas separadas (ex.: `/gestao`, política de privacidade em página própria) no futuro.
+- [ ] **Atalho "Qual cuidado sua pele precisa?" → tratamento específico**: `requestCategoryHighlight` (em `src/context/TreatmentsFilterContext.tsx`) já localiza o primeiro tratamento confirmado de cada categoria, rola até ele (`servico-${id}`) e o destaca por ~2s. Hoje, como `treatments` está vazio, todo clique cai no fallback (âncora simples para a seção Tratamentos, filtro por categoria) — sem erro, mas sem destaque, porque não há nenhum card confirmado ainda para apontar. Assim que a Letícia confirmar tratamentos reais (com `categoryId` preenchido), o destaque passa a funcionar automaticamente, sem precisar mexer no código.
 
 ## Observação
 Todos os textos, valores e dados já publicados no site (nome, profissional,
