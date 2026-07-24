@@ -31,6 +31,21 @@ está preparado para recebê-los assim que estiverem disponíveis.
 - [ ] Preço de cada tratamento
 - [ ] Quais tratamentos devem aparecer em destaque
 
+### Tratamentos identificados no Instagram (@leh_estetic), aguardando confirmação
+A seção Tratamentos já mostra estes 6 nomes vistos em destaques fixos do Instagram
+(`pendingTreatments` em `src/data/siteContent.ts`), cada um só com uma lista do que
+falta confirmar — nenhum benefício, preço, duração ou categoria foi inventado:
+- [ ] **Limp GHK-CU** — nome completo, descrição/benefícios, indicação, duração/sessões, preço
+- [ ] **Herbal Peel** — nome comercial exato, composição, indicação/benefícios, cuidados, duração, preço
+- [ ] **Dep. Laser H** — nome completo (o que "H" significa), se ainda é oferecido, indicação, duração/sessões, preço
+- [ ] **Jato de Plasma** — nome comercial do equipamento, indicação/benefícios, contraindicações, duração, preço
+- [ ] **Remoção de Tatuagem** — técnica utilizada, nº de sessões, indicação, contraindicações, preço
+- [ ] **Skin Class** — o que exatamente é (tratamento, curso ou linha de produto) e todas as demais informações
+
+Assim que a Letícia confirmar os dados de qualquer um destes, mover o item de
+`pendingTreatments` para `treatments` (com todos os campos do tipo `Treatment`
+preenchidos) e remover a entrada correspondente de `pendingTreatments`.
+
 ## Ofertas e condições comerciais
 - [ ] Ofertas ativas (título, descrição, validade)
 - [ ] Formas de pagamento aceitas
@@ -66,3 +81,8 @@ Todos os textos, valores e dados já publicados no site (nome, profissional,
 foco, anos de experiência, WhatsApp, e-mail, Instagram, endereço, propósito,
 objetivo, diferencial e valores) foram confirmados diretamente pela cliente
 e não devem ser alterados sem uma nova confirmação.
+
+O item "+ de 1000 clientes atendidas" (em `about.highlights`) é uma exceção
+pontual: veio direto da bio pública do Instagram @leh_estetic (texto literal,
+não deduzido), aprovado pela cliente em 2026-07-24 para uso no site. Se esse
+número mudar no Instagram, atualizar aqui também.

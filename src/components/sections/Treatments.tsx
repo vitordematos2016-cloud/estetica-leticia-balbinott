@@ -5,10 +5,11 @@ import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
 import { TreatmentCard } from '../treatments/TreatmentCard';
 import { TreatmentModal } from '../treatments/TreatmentModal';
+import { PendingTreatmentsList } from '../treatments/PendingTreatmentsList';
 import { useTreatmentsFilter } from '../../context/TreatmentsFilterContext';
 
 export function Treatments() {
-  const { treatments, treatmentsCatalogNotice, treatmentCategories } = siteContent;
+  const { treatments, treatmentsCatalogNotice, treatmentCategories, pendingTreatments } = siteContent;
   const { activeCategoryId, selectCategory } = useTreatmentsFilter();
   const [search, setSearch] = useState('');
   const [selectedTreatment, setSelectedTreatment] = useState<Treatment | null>(null);
@@ -104,6 +105,8 @@ export function Treatments() {
             ))}
           </div>
         )}
+
+        <PendingTreatmentsList items={pendingTreatments} />
       </Container>
 
       <TreatmentModal treatment={selectedTreatment} onClose={() => setSelectedTreatment(null)} />

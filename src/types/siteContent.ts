@@ -128,6 +128,13 @@ export interface Treatment {
   whatsappMessage: string;
 }
 
+export interface PendingTreatment {
+  id: string;
+  name: string;
+  source: string;
+  pendingInfo: string[];
+}
+
 export type CredentialType =
   | 'formacao'
   | 'especializacao'
@@ -274,6 +281,7 @@ export interface SiteContent {
   treatmentCategories: TreatmentCategory[];
   treatments: Treatment[];
   treatmentsCatalogNotice: string;
+  pendingTreatments: PendingTreatment[];
   personalAssessment: PersonalAssessmentContent;
   aftercare: AftercareContent;
   thoughtfulDetails: ThoughtfulDetailsContent;

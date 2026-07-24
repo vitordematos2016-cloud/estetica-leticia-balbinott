@@ -77,6 +77,7 @@ export const siteContent: SiteContent = {
       'Especialista em estética facial',
       'Estética regenerativa',
       '8 anos de experiência',
+      '+ de 1000 clientes atendidas',
     ],
   },
 
@@ -270,6 +271,72 @@ export const siteContent: SiteContent = {
 
   treatments: [],
   treatmentsCatalogNotice: 'Catálogo oficial em atualização.',
+  pendingTreatments: [
+    {
+      id: 'limp-ghk-cu',
+      name: 'Limp GHK-CU',
+      source: 'Identificado em destaque fixo do Instagram @leh_estetic',
+      pendingInfo: [
+        'Nome completo do procedimento',
+        'Descrição e benefícios',
+        'Indicação',
+        'Duração e número de sessões',
+        'Preço',
+      ],
+    },
+    {
+      id: 'herbal-peel',
+      name: 'Herbal Peel',
+      source: 'Identificado em destaque fixo do Instagram @leh_estetic',
+      pendingInfo: [
+        'Nome comercial exato',
+        'Composição',
+        'Indicação e benefícios',
+        'Cuidados antes e depois',
+        'Duração',
+        'Preço',
+      ],
+    },
+    {
+      id: 'dep-laser-h',
+      name: 'Dep. Laser H',
+      source: 'Identificado em destaque fixo do Instagram @leh_estetic',
+      pendingInfo: [
+        'Nome completo do serviço (o que "H" significa)',
+        'Se ainda é oferecido pela clínica',
+        'Indicação',
+        'Duração e número de sessões',
+        'Preço',
+      ],
+    },
+    {
+      id: 'jato-de-plasma',
+      name: 'Jato de Plasma',
+      source: 'Identificado em destaque fixo do Instagram @leh_estetic',
+      pendingInfo: [
+        'Nome comercial do equipamento',
+        'Indicação e benefícios',
+        'Contraindicações',
+        'Duração',
+        'Preço',
+      ],
+    },
+    {
+      id: 'rem-tatuagem',
+      name: 'Remoção de Tatuagem',
+      source: 'Identificado em destaque fixo do Instagram @leh_estetic',
+      pendingInfo: ['Técnica utilizada', 'Número de sessões', 'Indicação', 'Contraindicações', 'Preço'],
+    },
+    {
+      id: 'skin-class',
+      name: 'Skin Class',
+      source: 'Identificado em destaque fixo do Instagram @leh_estetic',
+      pendingInfo: [
+        'O que exatamente é "Skin Class" (tratamento, curso ou linha de produto)',
+        'Todas as demais informações',
+      ],
+    },
+  ],
 
   personalAssessment: {
     title: 'Cada pele precisa de uma avaliação individual',
