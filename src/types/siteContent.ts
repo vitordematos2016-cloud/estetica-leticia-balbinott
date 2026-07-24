@@ -236,12 +236,6 @@ export interface FaqItem {
   answer: string;
 }
 
-export interface GalleryImage {
-  id: string;
-  label: string;
-  category: string;
-}
-
 export interface SeoContent {
   title: string;
   description: string;
@@ -267,7 +261,6 @@ export interface SiteContent {
   values: ValueItem[];
   howItWorks: { title: string; text: string; steps: { title: string; text: string }[] };
   experience: ExperienceContent;
-  gallery: { title: string; text: string; images: GalleryImage[] };
   facade: FacadeContent;
   authorizedResults: { title: string; text: string; placeholder: string };
   credentials: CredentialsContent;

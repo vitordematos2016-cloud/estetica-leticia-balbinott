@@ -163,12 +163,6 @@ export const siteContent: SiteContent = {
     ],
   },
 
-  gallery: {
-    title: 'Galeria',
-    text: 'Em breve, imagens reais do espaço e dos atendimentos da Leh Estetic.',
-    images: [],
-  },
-
   facade: {
     title: 'Leh Estetic',
     years: 8,
