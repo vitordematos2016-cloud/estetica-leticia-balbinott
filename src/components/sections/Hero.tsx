@@ -2,11 +2,10 @@ import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
-import { PhotoFrame } from '../ui/PhotoFrame';
-import salaImage from '../../assets/leh-estetic/sala-principal-leh-estetic.webp';
 
 export function Hero() {
   const { hero } = siteContent;
+  const professionalFirstName = siteContent.brand.professional.split(' ')[0];
 
   return (
     <section id="inicio" className="relative overflow-hidden pb-20 pt-32 sm:pb-28 sm:pt-40">
@@ -61,13 +60,35 @@ export function Hero() {
             />
           </svg>
 
-          <PhotoFrame
-            src={salaImage}
-            alt={`Sala de atendimento da ${siteContent.brand.name}, com maca profissional, iluminação aconchegante e decoração em tons de bege e dourado.`}
-            rounded="rounded-[3rem] rounded-tr-[6rem]"
-            priority
-            className="relative shadow-warm"
-          />
+          <div
+            role="img"
+            aria-label={`Foto profissional da ${professionalFirstName}: em preparação`}
+            className="relative flex aspect-[941/1672] w-full flex-col items-center justify-center gap-4 overflow-hidden rounded-[3rem] rounded-tr-[6rem] border border-gold/40 bg-gradient-to-br from-cream-light via-cream to-beige/40 text-center shadow-warm"
+          >
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -left-10 -top-10 h-32 w-32 rounded-full bg-gold/10 blur-2xl"
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -bottom-12 -right-6 h-40 w-40 rounded-full bg-brown/10 blur-2xl"
+            />
+            <span className="flex h-16 w-16 items-center justify-center rounded-full border border-gold/50 text-gold">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                <circle cx="14" cy="10" r="5" stroke="currentColor" strokeWidth="1.2" />
+                <path
+                  d="M4 24c1.2-6.5 5-9.5 10-9.5S22.8 17.5 24 24"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>
+            <p className="px-8 text-sm font-medium uppercase tracking-[0.18em] text-brown/70">
+              Foto profissional da {professionalFirstName}
+            </p>
+            <p className="px-8 text-xs text-brown/50">Em preparação</p>
+          </div>
 
           <div
             aria-hidden="true"

@@ -6,14 +6,17 @@ está preparado para recebê-los assim que estiverem disponíveis.
 
 ## Identidade visual
 - [ ] Logotipo oficial da Leh Estetic
-- [ ] Foto oficial da profissional (Letícia Balbinott) — a seção "Sobre" ainda usa um placeholder para o retrato dela; a foto real usada no Hero é da sala de atendimento, não um retrato
+- [ ] **Foto profissional da Letícia Balbinott para o Hero** — o espaço já está pronto e reservado exclusivamente para essa foto (retrato dela, rosto e parte superior do corpo). Quando enviada:
+  - salvar o arquivo como `src/assets/leh-estetic/leticia-balbinott-profissional.webp`;
+  - importar em `src/components/sections/Hero.tsx` e trocar o bloco placeholder (o `<div role="img">` com "Foto profissional da Letícia / Em preparação") por um `<img>` com `object-fit: cover`, sem deformar, e `object-position` centralizado no rosto/parte superior do corpo;
+  - manter a mesma área reservada (`aspect-[941/1672]`, `max-w-xs sm:max-w-sm`, `rounded-[3rem] rounded-tr-[6rem]`, borda dourada) para não alterar o layout do Hero.
 
 ## Ambiente e imagens
 - [x] Foto da fachada — usada na seção Localização (`src/assets/leh-estetic/fachada-leh-estetic.webp`)
-- [x] Foto principal da sala de atendimento — usada no Hero (`sala-principal-leh-estetic.webp`)
 - [x] Foto do corredor/espera — usada na seção Experience (`corredor-leh-estetic.webp`)
 - [x] Foto dos biscoitos personalizados — usada na seção "Cuidado presente em cada detalhe" (`cuidado-detalhes-leh-estetic.webp`)
-- [ ] Fotos adicionais do ambiente (entrada, recepção, equipamentos, outros detalhes) — os 4 placeholders restantes na seção Experience aguardam material real; não reaproveitar as 4 fotos já usadas em outros lugares
+- [ ] Foto da sala de atendimento (`sala-principal-leh-estetic.webp`) — já convertida e disponível em `src/assets/leh-estetic/`, mas **não está em uso em nenhuma página no momento** (removida do Hero a pedido da cliente). Só pode ser usada na seção "Um ambiente preparado para cuidar de você" (Experience) ou na Galeria — nunca no Hero.
+- [ ] Fotos adicionais do ambiente (entrada, recepção, equipamentos, outros detalhes) — os 4 placeholders restantes na seção Experience aguardam material real; não reaproveitar as fotos já usadas em outros lugares
 - [ ] Imagens para a Galeria — nenhuma foto adicional (distinta das já usadas) foi fornecida ainda
 
 ## Tratamentos
