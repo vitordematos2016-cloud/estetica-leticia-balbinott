@@ -13,7 +13,6 @@ import { Purpose } from './components/sections/Purpose';
 import { Differentials } from './components/sections/Differentials';
 import { SkinConcerns } from './components/sections/SkinConcerns';
 import { Treatments } from './components/sections/Treatments';
-import { FeaturedTreatments } from './components/sections/FeaturedTreatments';
 import { HowItWorks } from './components/sections/HowItWorks';
 import { Aftercare } from './components/sections/Aftercare';
 import { Experience } from './components/sections/Experience';
@@ -45,7 +44,6 @@ function App() {
           <Differentials />
           <SkinConcerns />
           <Treatments />
-          <FeaturedTreatments />
           <HowItWorks />
           <Aftercare />
           <Experience />
