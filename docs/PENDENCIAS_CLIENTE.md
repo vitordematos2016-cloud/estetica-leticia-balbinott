@@ -56,9 +56,7 @@ está preparado para recebê-los assim que estiverem disponíveis.
 - [ ] Regras específicas de agendamento (antecedência mínima, intervalos, etc.)
 
 ## Sobre a profissional
-- [ ] Formação acadêmica
-- [ ] Cursos e especializações
-- [ ] Certificados e registros profissionais
+- [ ] Formação acadêmica, cursos, especializações e certificados — o módulo "Formações e Certificações" (seção Autoridade → botão "Ver formações e certificações") já está pronto para receber cada item com: nome, instituição, ano, carga horária, categoria, imagem real do certificado/diploma e uma breve descrição. Ver `credentials.items` em `src/data/siteContent.ts` (tipo `CredentialItem` em `src/types/siteContent.ts`) — enquanto vazio, o módulo mostra apenas "As formações e certificações profissionais serão adicionadas em breve." Utilizar somente documentos reais fornecidos pela Letícia, nunca certificados genéricos ou gerados por IA.
 
 ## Técnico (não depende da cliente)
 - [ ] `src/components/NotFoundPage.tsx` está pronto mas não está montado — o site hoje é uma página única com âncoras, sem rotas. Só faz sentido ativá-lo se o site ganhar páginas internas separadas (ex.: `/gestao`, política de privacidade em página própria) no futuro.

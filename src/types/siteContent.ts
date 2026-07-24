@@ -140,13 +140,19 @@ export interface CredentialItem {
   id: string;
   type: CredentialType;
   title: string;
-  description?: string;
+  institution?: string;
   year?: string;
+  hours?: string;
+  description?: string;
+  image?: string;
 }
 
 export interface CredentialsContent {
   title: string;
   text: string;
+  moduleTitle: string;
+  moduleTeaser: string;
+  moduleCta: string;
   notice: string;
   items: CredentialItem[];
 }

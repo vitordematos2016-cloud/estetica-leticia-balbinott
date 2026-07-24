@@ -178,7 +178,11 @@ export const siteContent: SiteContent = {
   credentials: {
     title: 'Conhecimento que se transforma em cuidado',
     text: 'A busca constante por atualização é o que sustenta cada indicação feita na Leh Estetic — sempre com responsabilidade sobre o que é apresentado.',
-    notice: 'Formações, especializações e certificações em atualização.',
+    moduleTitle: 'Formações e Certificações',
+    moduleTeaser:
+      'Conheça as formações, especializações e atualizações profissionais que sustentam cada atendimento.',
+    moduleCta: 'Ver formações e certificações',
+    notice: 'As formações e certificações profissionais serão adicionadas em breve.',
     items: [],
   },
 
