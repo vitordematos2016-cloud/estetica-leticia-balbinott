@@ -122,7 +122,23 @@ export function Treatments() {
           </div>
         )}
 
-        <PendingTreatmentsList items={pendingTreatments} />
+        {activeCategoryId !== null && (
+          <div className="flex justify-center">
+            <button
+              type="button"
+              onClick={() => selectCategory(null)}
+              className="rounded-full border border-gold/40 bg-cream-light/60 px-6 py-3 text-sm font-medium text-brown-dark shadow-warm-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/70 hover:shadow-warm"
+            >
+              Ver todos os tratamentos
+            </button>
+          </div>
+        )}
+
+        {/* Os tratamentos "em identificação" ainda não têm categoria confirmada,
+            então só fazem sentido dentro de "Todos os tratamentos" -- exibi-los
+            durante um filtro de categoria específica pareceria uma segunda
+            lista ignorando o filtro. */}
+        {activeCategoryId === null && <PendingTreatmentsList items={pendingTreatments} />}
       </Container>
 
       <TreatmentModal treatment={selectedTreatment} onClose={() => setSelectedTreatment(null)} />
