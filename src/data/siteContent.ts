@@ -328,7 +328,49 @@ export const siteContent: SiteContent = {
     postsPlaceholderCount: 6,
   },
 
-  reviews: [],
+  // Avaliações reais do perfil oficial da Estética Letícia Balbinott no
+  // Google (mesmo endereço/nome confirmados pelo googleMapsUrl já usado no
+  // site). Coletadas manualmente em 2026-07-25 -- texto e nome exatamente
+  // como publicados no Google, sem correção de estilo. Nenhuma nota, nome
+  // ou comentário foi inventado.
+  reviews: [
+    {
+      id: 'ana-luiza-portolan',
+      author: 'Ana Luiza Portolan',
+      text: 'Ótimo atendimento, excelente profissional, e a leh é uma querida, fiz uma compra via Instagram e fui super bem atendida, ganhei até brindezinhos.',
+      rating: 5,
+    },
+    {
+      id: 'fernanda-cristina-rocha',
+      author: 'Fernanda Cristina Rocha',
+      text: 'Já faço meus procedimentos a 4 anos,indico demais essa estética,além do atendimento excelente os produtos que ela usa são de qualidade e os resultados são incríveis melhor estética de Guaraniaçu 👏👏❤️…',
+      rating: 5,
+    },
+    {
+      id: 'carolina-harley',
+      author: 'Carolina Harley',
+      text: 'Ótimo atendimento, ambiente agradável e excelência nos procedimentos 🥰',
+      rating: 5,
+    },
+    {
+      id: 'lionara-dall-agnolo',
+      author: 'Lionara Dall Agnolo',
+      text: 'Excelente profissional, procedimento de qualidade, é uma pessoa incrível 😍😍',
+      rating: 5,
+    },
+    {
+      id: 'adriana-alves',
+      author: 'Adriana Alves',
+      text: 'Sempre fui muito bem atendida, produtos de ótima qualidade, super recomendo ☺️',
+      rating: 5,
+    },
+    {
+      id: 'daiane-f-marinello',
+      author: 'Daiane F Marinello',
+      text: 'Fui atendida sempre muito bem, ela tem uma paciência e amor pelo que faz, tem um grande cuidado com a gente, o espaço é maravilhoso aconchegante você se sente em casa com ela, sem contar que os preços dos produtos são bem em conta, super recomendoo ❤️😍…',
+      rating: 5,
+    },
+  ],
   reviewsNotice: 'As avaliações de clientes serão publicadas em breve.',
 
   faq: [

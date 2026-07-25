@@ -246,4 +246,47 @@
     }
   }
 
+  .review-slide-next {
+    animation: review-slide-next 380ms ease-out both;
+  }
+
+  @keyframes review-slide-next {
+    from {
+      opacity: 0;
+      transform: translateX(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .review-slide-prev {
+    animation: review-slide-prev 380ms ease-out both;
+  }
+
+  @keyframes review-slide-prev {
+    from {
+      opacity: 0;
+      transform: translateX(-14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .review-fade-only {
+    animation: review-fade-only 380ms ease-out both;
+  }
+
+  @keyframes review-fade-only {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
 }
