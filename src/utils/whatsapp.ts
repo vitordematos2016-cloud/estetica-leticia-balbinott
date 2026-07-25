@@ -30,45 +30,36 @@ function formatPhoneDisplay(rawPhone: string): string {
   return rawPhone.trim();
 }
 
-const DIVIDER = '--------------------------------';
-
 export function buildSchedulingMessage(fields: SchedulingMessageFields): string {
   const treatmentsFormatted =
     fields.treatments && fields.treatments.length > 0
       ? fields.treatments.map((name) => `- ${name}`).join('\n')
       : '';
 
-  const notesBlock = isFilled(fields.notes) ? `\n*Observações:*\n${fields.notes.trim()}\n` : '';
+  const notesBlock = isFilled(fields.notes) ? `\n*Observacoes:*\n${fields.notes.trim()}\n` : '';
 
   const phoneFormatted = isFilled(fields.phone) ? formatPhoneDisplay(fields.phone.trim()) : '';
 
-  return `*SOLICITAÇÃO DE AGENDAMENTO*
-_Estética Letícia Balbinott_
+  return `*SOLICITACAO DE AGENDAMENTO*
+Estetica Leticia Balbinott
 
-Olá! Meu nome é *${(fields.name ?? '').trim()}* e gostaria de solicitar um agendamento.
+Ola, meu nome e *${(fields.name ?? '').trim()}*.
 
-${DIVIDER}
+Gostaria de verificar a disponibilidade para o seguinte agendamento:
 
-*Tratamento(s) de interesse:*
-
+*Tratamentos selecionados:*
 ${treatmentsFormatted}
 
-*Data de preferência:*
+*Data de preferencia:*
 ${fields.date ?? ''}
 
-*Período de preferência:*
+*Periodo de preferencia:*
 ${fields.period ?? ''}
 
 *Telefone para contato:*
 ${phoneFormatted}
 ${notesBlock}
-${DIVIDER}
-
-Estou ciente de que a data e o período informados representam apenas uma preferência.
-
-A confirmação do agendamento dependerá do retorno da equipe e da disponibilidade da agenda.
-
-Fico no aguardo do retorno.`;
+A data e o periodo informados representam apenas uma preferencia. Ficarei no aguardo do retorno da equipe para confirmar a disponibilidade e o agendamento.`;
 }
 
 export function buildSelectionWhatsAppMessage(itemNames: string[]): string {
