@@ -17,29 +17,37 @@ function isFilled(value: string | undefined | null): value is string {
 }
 
 export function buildSchedulingMessage(fields: SchedulingMessageFields): string {
-  const lines: string[] = ['Olá! Gostaria de solicitar um agendamento na Estética Letícia Balbinott.', ''];
+  const treatmentsFormatted =
+    fields.treatments && fields.treatments.length > 0
+      ? fields.treatments.map((name) => `• ${name}`).join('\n')
+      : '';
 
-  if (isFilled(fields.name)) lines.push(`Nome: ${fields.name}`);
-  if (isFilled(fields.phone)) lines.push(`Telefone: ${fields.phone}`);
+  const notesBlock = isFilled(fields.notes) ? `\n📝 *Observações:*\n${fields.notes.trim()}\n` : '';
 
-  if (fields.treatments && fields.treatments.length > 0) {
-    lines.push('', 'Tratamento(s) de interesse:');
-    fields.treatments.forEach((name) => lines.push(`• ${name}`));
-  }
+  return `✨ *SOLICITAÇÃO DE AGENDAMENTO* ✨
+_Estética Letícia Balbinott_
 
-  const preferenceLines: string[] = [];
-  if (isFilled(fields.date)) preferenceLines.push(`Data de preferência: ${fields.date}`);
-  if (isFilled(fields.period)) preferenceLines.push(`Período de preferência: ${fields.period}`);
-  if (preferenceLines.length > 0) lines.push('', ...preferenceLines);
+Olá! Meu nome é *${(fields.name ?? '').trim()}* e gostaria de solicitar um agendamento. 🤎
 
-  if (isFilled(fields.notes)) lines.push('', `Observações: ${fields.notes}`);
+━━━━━━━━━━━━━━
 
-  lines.push(
-    '',
-    'Estou ciente de que a data e o período representam uma preferência e que o agendamento será confirmado após o retorno da equipe.',
-  );
+🌿 *Tratamento(s) de interesse:*
+${treatmentsFormatted}
 
-  return lines.join('\n');
+📅 *Data de preferência:*
+${fields.date ?? ''}
+
+🕐 *Período de preferência:*
+${fields.period ?? ''}
+
+📱 *Telefone para contato:*
+${fields.phone ?? ''}
+${notesBlock}
+━━━━━━━━━━━━━━
+
+Estou ciente de que a data e o período informados representam apenas uma preferência. A confirmação do agendamento dependerá do retorno da equipe e da disponibilidade da agenda.
+
+Aguardo o retorno. Obrigada! ✨`;
 }
 
 export function buildSelectionWhatsAppMessage(itemNames: string[]): string {
