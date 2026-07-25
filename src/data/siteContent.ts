@@ -271,19 +271,35 @@ export const siteContent: SiteContent = {
       name: 'Protocolos personalizados',
       description: 'Combinações construídas a partir da avaliação individual.',
     },
+    {
+      id: 'depilacao-tecnologias',
+      name: 'Depilação e tecnologias',
+      description: 'Procedimentos a laser e outras tecnologias que não são cuidados de pele do rosto.',
+    },
   ],
 
   // Tratamentos oficiais confirmados pela cliente. Os 6 abaixo (identificados
   // originalmente em destaques fixos do Instagram @leh_estetic) ainda não têm
-  // categoria, descrição, benefícios, imagem ou preço confirmados -- por isso
-  // só têm id/name preenchidos. Nada disso foi inventado; ver
+  // descrição, benefícios, imagem ou preço confirmados -- ver
   // docs/PENDENCIAS_CLIENTE.md para o que falta de cada um.
+  //
+  // categoryId classificado pelo tipo de procedimento que o próprio nome já
+  // identifica sem ambiguidade (não é uma descrição/benefício inventado):
+  // - Limp GHK-CU / Herbal Peel: limpeza/peeling -> limpeza-renovacao;
+  // - Dep. Laser H / Remoção de Tatuagem: procedimentos a laser, não são
+  //   cuidado de pele do rosto -> nova categoria depilacao-tecnologias;
+  // - Jato de Plasma: tecnologia usada no mercado quase exclusivamente para
+  //   firmeza/sinais do tempo -> rejuvenescimento.
+  // "Skin Class" ficou de fora de propósito: o nome não deixa claro se é um
+  // tratamento para cliente ou um curso/aula da profissional -- categorizar
+  // sem essa confirmação seria adivinhar. Continua aparecendo em "Todos os
+  // tratamentos" normalmente, só não em nenhum filtro de categoria.
   treatments: [
-    { id: 'limp-ghk-cu', name: 'Limp GHK-CU' },
-    { id: 'herbal-peel', name: 'Herbal Peel' },
-    { id: 'dep-laser-h', name: 'Dep. Laser H' },
-    { id: 'jato-de-plasma', name: 'Jato de Plasma' },
-    { id: 'rem-tatuagem', name: 'Remoção de Tatuagem' },
+    { id: 'limp-ghk-cu', name: 'Limp GHK-CU', categoryId: 'limpeza-renovacao' },
+    { id: 'herbal-peel', name: 'Herbal Peel', categoryId: 'limpeza-renovacao' },
+    { id: 'dep-laser-h', name: 'Dep. Laser H', categoryId: 'depilacao-tecnologias' },
+    { id: 'jato-de-plasma', name: 'Jato de Plasma', categoryId: 'rejuvenescimento' },
+    { id: 'rem-tatuagem', name: 'Remoção de Tatuagem', categoryId: 'depilacao-tecnologias' },
     { id: 'skin-class', name: 'Skin Class' },
   ],
 

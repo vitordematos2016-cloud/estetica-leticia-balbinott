@@ -27,6 +27,9 @@ function SparkleIcon() {
 export function Treatments() {
   const { treatments, treatmentCategories } = siteContent;
   const hasActiveSpecialOffers = treatments.some((treatment) => treatment.specialOffer?.active);
+  const availableCategories = treatmentCategories.filter((category) =>
+    treatments.some((treatment) => treatment.categoryId === category.id),
+  );
   const { activeCategoryId, selectCategory, highlightTreatmentId, clearHighlight } =
     useTreatmentsFilter();
   const [search, setSearch] = useState('');
@@ -90,7 +93,7 @@ export function Treatments() {
           >
             Todos os tratamentos
           </button>
-          {treatmentCategories.map((category) => (
+          {availableCategories.map((category) => (
             <button
               key={category.id}
               type="button"

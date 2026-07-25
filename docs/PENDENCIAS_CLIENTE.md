@@ -23,20 +23,30 @@ está preparado para recebê-los assim que estiverem disponíveis.
 Os 6 tratamentos abaixo já são considerados oficiais e confirmados pela cliente
 (deixaram de ser tratados como "em identificação"/"aguardando confirmação").
 Cada um existe em `treatments` (`src/data/siteContent.ts`, tipo `Treatment` em
-`src/types/siteContent.ts`) apenas com `id`/`name` preenchidos — todos os demais
-campos do tipo são opcionais e, enquanto ausentes, a interface mostra avisos
-honestos ("Descrição completa em atualização.", sem selo de categoria, sem
-seção de benefícios/indicação/cuidados/antes e depois) em vez de inventar
-conteúdo. Assim que a Letícia confirmar qualquer campo de um item, é só
-preenchê-lo diretamente no objeto correspondente — a interface passa a exibir
+`src/types/siteContent.ts`) apenas com `id`/`name`/`categoryId` preenchidos —
+todos os demais campos do tipo são opcionais e, enquanto ausentes, a interface
+mostra avisos honestos ("Descrição completa em atualização.", sem seção de
+benefícios/indicação/cuidados/antes e depois) em vez de inventar conteúdo.
+Assim que a Letícia confirmar qualquer campo de um item, é só preenchê-lo
+diretamente no objeto correspondente — a interface passa a exibir
 automaticamente, sem precisar mexer em nenhum componente:
-- [ ] **Limp GHK-CU** — categoria, nome completo do procedimento, descrição/benefícios, indicação, duração/sessões, preço
-- [ ] **Herbal Peel** — categoria, nome comercial exato, composição, indicação/benefícios, cuidados, duração, preço
-- [ ] **Dep. Laser H** — categoria, nome completo (o que "H" significa), se ainda é oferecido, indicação, duração/sessões, preço
-- [ ] **Jato de Plasma** — categoria, nome comercial do equipamento, indicação/benefícios, contraindicações, duração, preço
-- [ ] **Remoção de Tatuagem** — categoria, técnica utilizada, nº de sessões, indicação, contraindicações, preço
-- [ ] **Skin Class** — categoria, o que exatamente é (tratamento, curso ou linha de produto) e todas as demais informações
+- [ ] **Limp GHK-CU** (categoria: Limpeza e renovação) — nome completo do procedimento, descrição/benefícios, indicação, duração/sessões, preço
+- [ ] **Herbal Peel** (categoria: Limpeza e renovação) — nome comercial exato, composição, indicação/benefícios, cuidados, duração, preço
+- [ ] **Dep. Laser H** (categoria: Depilação e tecnologias) — nome completo (o que "H" significa), se ainda é oferecido, indicação, duração/sessões, preço
+- [ ] **Jato de Plasma** (categoria: Rejuvenescimento) — nome comercial do equipamento, indicação/benefícios, contraindicações, duração, preço
+- [ ] **Remoção de Tatuagem** (categoria: Depilação e tecnologias) — técnica utilizada, nº de sessões, indicação, contraindicações, preço
+- [ ] **Skin Class** — **sem categoria de propósito**: o nome não deixa claro se é um tratamento para cliente ou um curso/aula da profissional; categorizar sem essa confirmação seria adivinhar. Confirmar com a Letícia o que é, e então a categoria correta e as demais informações. Continua aparecendo em "Todos os tratamentos", só não em nenhum filtro de categoria até ser confirmado.
 - [ ] Imagem principal de cada tratamento (campo `image`)
+
+As 4 categorias que não têm nenhum tratamento hoje (Estética regenerativa,
+Manchas e uniformização, Acne e oleosidade, Protocolos personalizados) ficam
+automaticamente ocultas do filtro em Tratamentos (`Treatments.tsx` só renderiza
+o botão de uma categoria quando `treatments.some(t => t.categoryId === category.id)`)
+— reaparecem sozinhas assim que houver um tratamento real classificado nelas,
+sem precisar mexer em código. Foi criada uma nova categoria, **Depilação e
+tecnologias**, para os dois procedimentos a laser que não são cuidado de pele
+do rosto (Dep. Laser H, Remoção de Tatuagem) e que não se encaixavam em
+nenhuma das categorias já existentes.
 
 ## Ofertas e condições comerciais
 Não existe mais uma seção separada de "Ofertas" — condições especiais agora
