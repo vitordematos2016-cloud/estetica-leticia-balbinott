@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import monogramImage from '../../assets/images/branding/monograma-lb.webp';
 import { siteContent } from '../../data/siteContent';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useScrollLock } from '../../hooks/useScrollLock';
 
 type Phase = 'enter' | 'exit';
 
-const TIMING = { hold: 1050, exit: 300 };
+const TIMING = { hold: 1100, exit: 350 };
 const REDUCED_TIMING = { hold: 200, exit: 300 };
 
 interface CompactReloadIntroProps {
@@ -50,7 +51,9 @@ export function CompactReloadIntro({ onFinish }: CompactReloadIntroProps) {
       aria-modal="true"
       aria-label={siteContent.brand.name}
       tabIndex={-1}
-      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-brown-dark outline-none transition-[opacity,transform] duration-300 ease-out"
+      className={`fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-brown-dark outline-none transition-[opacity,transform] duration-300 ease-out ${
+        isExiting ? 'pointer-events-none' : ''
+      }`}
       style={
         isExiting
           ? { opacity: 0, transform: 'translateY(-6px)' }
@@ -62,27 +65,28 @@ export function CompactReloadIntro({ onFinish }: CompactReloadIntroProps) {
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(255,218,145,0.12),transparent_60%)]"
       />
 
-      <div className="relative flex flex-col items-center gap-3 text-center">
-        <span
-          className={`text-xs font-medium uppercase tracking-[0.4em] text-gold ${
-            prefersReducedMotion ? '' : 'compact-word-in'
-          }`}
-        >
-          Estética
-        </span>
-
-        <span className="relative inline-block">
-          <span
-            className={`font-heading text-3xl text-cream-light sm:text-4xl ${
-              prefersReducedMotion ? '' : 'compact-name-in'
-            }`}
-          >
-            {siteContent.brand.professional}
-          </span>
+      <div className="relative flex flex-col items-center gap-4 px-6 text-center">
+        <div className="relative w-32 sm:w-40 lg:w-48">
+          <img
+            src={monogramImage}
+            alt=""
+            width={1024}
+            height={1024}
+            decoding="async"
+            className={`w-full ${prefersReducedMotion ? '' : 'monogram-reveal'}`}
+          />
           {!prefersReducedMotion && (
             <span aria-hidden="true" className="compact-shine pointer-events-none absolute inset-0" />
           )}
-        </span>
+        </div>
+
+        <p
+          className={`max-w-xs font-heading text-xl text-cream-light sm:text-2xl lg:text-3xl ${
+            prefersReducedMotion ? '' : 'compact-name-in'
+          }`}
+        >
+          {siteContent.brand.name}
+        </p>
 
         <span
           aria-hidden="true"
