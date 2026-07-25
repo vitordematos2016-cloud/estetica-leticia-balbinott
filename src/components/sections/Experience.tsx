@@ -26,7 +26,7 @@ export function Experience() {
   return (
     <section id="experiencia" className="bg-cream-light/40 py-24 sm:py-28">
       <Container className="flex flex-col gap-16">
-        <SectionHeading title={experience.title} />
+        <SectionHeading eyebrow="Experiência" title={experience.title} />
 
         <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-16">
           <PhotoFrame
