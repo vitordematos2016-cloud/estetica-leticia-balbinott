@@ -7,9 +7,8 @@ export interface SchedulingMessageFields {
   name?: string;
   phone?: string;
   treatments?: string[];
-  professional?: string;
   date?: string;
-  time?: string;
+  period?: string;
   notes?: string;
 }
 
@@ -18,17 +17,27 @@ function isFilled(value: string | undefined | null): value is string {
 }
 
 export function buildSchedulingMessage(fields: SchedulingMessageFields): string {
-  const lines: string[] = ['Olá! Gostaria de agendar uma avaliação na Estética Letícia Balbinott.'];
+  const lines: string[] = ['Olá! Gostaria de solicitar um agendamento na Estética Letícia Balbinott.', ''];
 
   if (isFilled(fields.name)) lines.push(`Nome: ${fields.name}`);
   if (isFilled(fields.phone)) lines.push(`Telefone: ${fields.phone}`);
+
   if (fields.treatments && fields.treatments.length > 0) {
-    lines.push(`Tratamentos: ${fields.treatments.join(', ')}`);
+    lines.push('', 'Tratamento(s) de interesse:');
+    fields.treatments.forEach((name) => lines.push(`• ${name}`));
   }
-  if (isFilled(fields.professional)) lines.push(`Profissional: ${fields.professional}`);
-  if (isFilled(fields.date)) lines.push(`Data: ${fields.date}`);
-  if (isFilled(fields.time)) lines.push(`Horário: ${fields.time}`);
-  if (isFilled(fields.notes)) lines.push(`Observações: ${fields.notes}`);
+
+  const preferenceLines: string[] = [];
+  if (isFilled(fields.date)) preferenceLines.push(`Data de preferência: ${fields.date}`);
+  if (isFilled(fields.period)) preferenceLines.push(`Período de preferência: ${fields.period}`);
+  if (preferenceLines.length > 0) lines.push('', ...preferenceLines);
+
+  if (isFilled(fields.notes)) lines.push('', `Observações: ${fields.notes}`);
+
+  lines.push(
+    '',
+    'Estou ciente de que a data e o período representam uma preferência e que o agendamento será confirmado após o retorno da equipe.',
+  );
 
   return lines.join('\n');
 }

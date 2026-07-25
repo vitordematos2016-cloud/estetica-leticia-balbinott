@@ -4,28 +4,37 @@ import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
 import { LegalPolicyModal } from '../ui/LegalPolicyModal';
+import { TreatmentPicker } from '../scheduling/TreatmentPicker';
 import { useSelection } from '../../context/SelectionContext';
 import { buildSchedulingMessage, buildWhatsAppUrl } from '../../utils/whatsapp';
-import { getLocalTodayISO, getLocalNowTime, isPastDate, isPastTimeToday } from '../../utils/date';
+import { getLocalTodayISO, isPastDate, formatDateBR } from '../../utils/date';
+
+type Period = 'manha' | 'tarde' | 'noite';
+
+const PERIOD_OPTIONS: { value: Period; label: string }[] = [
+  { value: 'manha', label: 'Manhã' },
+  { value: 'tarde', label: 'Tarde' },
+  { value: 'noite', label: 'Noite' },
+];
 
 interface FormState {
   name: string;
   phone: string;
   professional: string;
   date: string;
-  time: string;
+  period: Period | '';
   notes: string;
   consent: boolean;
 }
 
-type FieldErrors = Partial<Record<keyof FormState, string>>;
+type FieldErrors = Partial<Record<keyof FormState | 'treatments', string>>;
 
 const initialState: FormState = {
   name: '',
   phone: '',
   professional: siteContent.brand.professional,
   date: '',
-  time: '',
+  period: '',
   notes: '',
   consent: false,
 };
@@ -39,15 +48,17 @@ export function Scheduling() {
 
   const nameRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
+  const treatmentsTriggerRef = useRef<HTMLButtonElement>(null);
   const dateRef = useRef<HTMLInputElement>(null);
-  const timeRef = useRef<HTMLInputElement>(null);
+  const periodRef = useRef<HTMLButtonElement>(null);
   const consentRef = useRef<HTMLInputElement>(null);
 
-  const fieldRefs: Record<string, RefObject<HTMLInputElement | null>> = {
+  const fieldRefs: Record<string, RefObject<HTMLElement | null>> = {
     name: nameRef,
     phone: phoneRef,
+    treatments: treatmentsTriggerRef,
     date: dateRef,
-    time: timeRef,
+    period: periodRef,
     consent: consentRef,
   };
 
@@ -62,17 +73,17 @@ export function Scheduling() {
     if (!form.name.trim()) nextErrors.name = 'Informe seu nome.';
     if (!form.phone.trim()) nextErrors.phone = 'Informe seu telefone.';
 
+    if (items.length === 0) {
+      nextErrors.treatments = 'Selecione pelo menos um tratamento.';
+    }
+
     if (!form.date) {
       nextErrors.date = 'Selecione uma data.';
     } else if (isPastDate(form.date)) {
       nextErrors.date = 'A data não pode ser anterior a hoje.';
     }
 
-    if (!form.time) {
-      nextErrors.time = 'Selecione um horário.';
-    } else if (form.date && isPastTimeToday(form.date, form.time)) {
-      nextErrors.time = 'O horário selecionado já passou para hoje.';
-    }
+    if (!form.period) nextErrors.period = 'Selecione um período de preferência.';
 
     if (!form.consent) nextErrors.consent = siteContent.schedulingConsent.error;
 
@@ -84,19 +95,20 @@ export function Scheduling() {
     const nextErrors = validate();
     setErrors(nextErrors);
 
-    const firstErrorField = (Object.keys(nextErrors) as (keyof FormState)[])[0];
+    const firstErrorField = (Object.keys(nextErrors) as (keyof typeof fieldRefs)[])[0];
     if (firstErrorField) {
       fieldRefs[firstErrorField]?.current?.focus();
       return;
     }
 
+    const periodLabel = PERIOD_OPTIONS.find((option) => option.value === form.period)?.label;
+
     const message = buildSchedulingMessage({
       name: form.name,
       phone: form.phone,
       treatments: items.map((item) => item.name),
-      professional: form.professional,
-      date: form.date,
-      time: form.time,
+      date: formatDateBR(form.date),
+      period: periodLabel?.toUpperCase(),
       notes: form.notes,
     });
 
@@ -163,14 +175,7 @@ export function Scheduling() {
             )}
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-brown-dark">Tratamentos selecionados</span>
-            <p className="rounded-xl border border-gold/20 bg-cream px-4 py-3 text-sm text-brown/70">
-              {items.length === 0
-                ? 'Nenhum tratamento selecionado até o momento.'
-                : items.map((item) => item.name).join(', ')}
-            </p>
-          </div>
+          <TreatmentPicker triggerRef={treatmentsTriggerRef} error={errors.treatments} />
 
           <div className="flex flex-col gap-1.5">
             <label htmlFor="scheduling-professional" className="text-sm font-medium text-brown-dark">
@@ -186,49 +191,67 @@ export function Scheduling() {
             </select>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="scheduling-date" className="text-sm font-medium text-brown-dark">
-                Data *
-              </label>
-              <input
-                id="scheduling-date"
-                ref={dateRef}
-                type="date"
-                min={getLocalTodayISO()}
-                value={form.date}
-                onChange={(event) => updateField('date', event.target.value)}
-                aria-invalid={!!errors.date}
-                aria-describedby={errors.date ? 'scheduling-date-error' : undefined}
-                className="rounded-xl border border-gold/30 bg-cream px-4 py-3 text-sm text-brown-dark focus:border-gold"
-              />
-              {errors.date && (
-                <p id="scheduling-date-error" className="text-xs text-red-700">
-                  {errors.date}
-                </p>
-              )}
-            </div>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="scheduling-date" className="text-sm font-medium text-brown-dark">
+              Data *
+            </label>
+            <input
+              id="scheduling-date"
+              ref={dateRef}
+              type="date"
+              min={getLocalTodayISO()}
+              value={form.date}
+              onChange={(event) => updateField('date', event.target.value)}
+              aria-invalid={!!errors.date}
+              aria-describedby={errors.date ? 'scheduling-date-error' : undefined}
+              className="rounded-xl border border-gold/30 bg-cream px-4 py-3 text-sm text-brown-dark focus:border-gold"
+            />
+            {errors.date && (
+              <p id="scheduling-date-error" className="text-xs text-red-700">
+                {errors.date}
+              </p>
+            )}
+          </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="scheduling-time" className="text-sm font-medium text-brown-dark">
-                Horário *
-              </label>
-              <input
-                id="scheduling-time"
-                ref={timeRef}
-                type="time"
-                min={form.date === getLocalTodayISO() ? getLocalNowTime() : undefined}
-                value={form.time}
-                onChange={(event) => updateField('time', event.target.value)}
-                aria-invalid={!!errors.time}
-                aria-describedby={errors.time ? 'scheduling-time-error' : undefined}
-                className="rounded-xl border border-gold/30 bg-cream px-4 py-3 text-sm text-brown-dark focus:border-gold"
-              />
-              {errors.time && (
-                <p id="scheduling-time-error" className="text-xs text-red-700">
-                  {errors.time}
-                </p>
-              )}
+          <div className="flex flex-col gap-1.5">
+            <span className="text-sm font-medium text-brown-dark">Período de preferência *</span>
+            <div className="grid grid-cols-3 gap-2.5" role="group" aria-label="Período de preferência">
+              {PERIOD_OPTIONS.map((option, index) => (
+                <button
+                  key={option.value}
+                  ref={index === 0 ? periodRef : undefined}
+                  type="button"
+                  onClick={() => updateField('period', option.value)}
+                  aria-pressed={form.period === option.value}
+                  className={`rounded-full border px-4 py-2.5 text-xs font-medium uppercase tracking-wide transition-colors ${
+                    form.period === option.value
+                      ? 'border-gold bg-gold/15 text-brown-dark'
+                      : 'border-gold/30 text-brown/60 hover:border-gold'
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+            {errors.period && <p className="text-xs text-red-700">{errors.period}</p>}
+
+            <div className="mt-1 flex items-start gap-2 rounded-xl bg-cream-light/50 px-3.5 py-3 text-xs leading-relaxed text-brown/70">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 15 15"
+                fill="none"
+                aria-hidden="true"
+                className="mt-0.5 shrink-0 text-gold"
+              >
+                <circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" strokeWidth="1.2" />
+                <path d="M7.5 6.8v4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                <circle cx="7.5" cy="4.6" r="0.9" fill="currentColor" />
+              </svg>
+              <p>
+                O período selecionado representa apenas uma preferência de horário. O agendamento será
+                confirmado após o retorno da nossa equipe, conforme a disponibilidade da agenda.
+              </p>
             </div>
           </div>
 
