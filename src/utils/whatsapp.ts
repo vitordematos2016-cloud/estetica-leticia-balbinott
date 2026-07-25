@@ -30,55 +30,50 @@ function formatPhoneDisplay(rawPhone: string): string {
   return rawPhone.trim();
 }
 
-const EMOJI_BRILHO = '\u2728';
-const EMOJI_FOLHA = '\u{1F33F}';
-const EMOJI_CALENDARIO = '\u{1F4C5}';
-const EMOJI_RELOGIO = '\u{1F550}';
-const EMOJI_TELEFONE = '\u{1F4F1}';
-const EMOJI_ANOTACAO = '\u{1F4DD}';
-const EMOJI_CORACAO_MARROM = '\u{1F90E}';
+const DIVIDER = '--------------------------------';
 
 export function buildSchedulingMessage(fields: SchedulingMessageFields): string {
   const treatmentsFormatted =
     fields.treatments && fields.treatments.length > 0
-      ? fields.treatments.map((name) => `• ${name}`).join('\n')
+      ? fields.treatments.map((name) => `- ${name}`).join('\n')
       : '';
 
-  const notesBlock = isFilled(fields.notes)
-    ? `\n${EMOJI_ANOTACAO} *Observações:*\n${fields.notes.trim()}\n`
-    : '';
+  const notesBlock = isFilled(fields.notes) ? `\n*Observações:*\n${fields.notes.trim()}\n` : '';
 
   const phoneFormatted = isFilled(fields.phone) ? formatPhoneDisplay(fields.phone.trim()) : '';
 
-  return `${EMOJI_BRILHO} *SOLICITAÇÃO DE AGENDAMENTO* ${EMOJI_BRILHO}
+  return `*SOLICITAÇÃO DE AGENDAMENTO*
 _Estética Letícia Balbinott_
 
-Olá! Meu nome é *${(fields.name ?? '').trim()}* e gostaria de solicitar um agendamento. ${EMOJI_CORACAO_MARROM}
+Olá! Meu nome é *${(fields.name ?? '').trim()}* e gostaria de solicitar um agendamento.
 
-━━━━━━━━━━━━━━
+${DIVIDER}
 
-${EMOJI_FOLHA} *Tratamento(s) de interesse:*
+*Tratamento(s) de interesse:*
+
 ${treatmentsFormatted}
 
-${EMOJI_CALENDARIO} *Data de preferência:*
+*Data de preferência:*
 ${fields.date ?? ''}
 
-${EMOJI_RELOGIO} *Período de preferência:*
+*Período de preferência:*
 ${fields.period ?? ''}
 
-${EMOJI_TELEFONE} *Telefone para contato:*
+*Telefone para contato:*
 ${phoneFormatted}
 ${notesBlock}
-━━━━━━━━━━━━━━
+${DIVIDER}
 
-Estou ciente de que a data e o período informados representam apenas uma preferência. A confirmação do agendamento dependerá do retorno da equipe e da disponibilidade da agenda.
+Estou ciente de que a data e o período informados representam apenas uma preferência.
 
-Fico no aguardo do retorno da equipe. ${EMOJI_BRILHO}`;
+A confirmação do agendamento dependerá do retorno da equipe e da disponibilidade da agenda.
+
+Fico no aguardo do retorno.`;
 }
 
 export function buildSelectionWhatsAppMessage(itemNames: string[]): string {
   const lines = ['Olá, gostaria de agendar um horário na Estética Letícia Balbinott.', '', 'Serviços selecionados:'];
-  itemNames.forEach((name) => lines.push(`• ${name}`));
+  itemNames.forEach((name) => lines.push(`- ${name}`));
   lines.push('', 'Gostaria de verificar os horários disponíveis.');
   return lines.join('\n');
 }
