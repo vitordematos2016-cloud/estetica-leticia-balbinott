@@ -71,15 +71,15 @@ export function CompactReloadIntro({ onFinish }: CompactReloadIntroProps) {
             <img
               src={monogramImage}
               alt=""
-              width={1024}
-              height={1024}
+              width={501}
+              height={503}
               decoding="async"
               className={`w-full ${prefersReducedMotion ? '' : 'monogram-reveal'}`}
             />
           </div>
 
           <p
-            className={`max-w-xs font-heading text-xl text-cream-light sm:text-2xl lg:text-3xl ${
+            className={`max-w-sm font-heading text-xl text-cream-light sm:text-2xl lg:text-3xl ${
               prefersReducedMotion ? '' : 'compact-name-in'
             }`}
           >

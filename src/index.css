@@ -221,7 +221,7 @@
     from {
       opacity: 0;
       transform: translateY(8px);
-      letter-spacing: 0.2em;
+      letter-spacing: 0.05em;
     }
     to {
       opacity: 1;
