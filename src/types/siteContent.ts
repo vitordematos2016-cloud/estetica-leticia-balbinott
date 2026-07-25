@@ -227,7 +227,7 @@ export interface LegalPolicySection {
 
 export interface LegalPolicyContent {
   title: string;
-  reviewNotice: string;
+  reviewNotice?: string;
   sections: LegalPolicySection[];
 }
 

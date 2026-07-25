@@ -358,8 +358,6 @@ export const siteContent: SiteContent = {
   legal: {
     privacyPolicy: {
       title: 'Política de Privacidade',
-      reviewNotice:
-        'Conteúdo preliminar, ainda pendente de revisão e confirmação pela Estética Letícia Balbinott antes da publicação definitiva.',
       sections: [
         {
           heading: 'Quais dados são coletados',
@@ -377,16 +375,14 @@ export const siteContent: SiteContent = {
     },
     cancellationPolicy: {
       title: 'Política de Cancelamento e Reagendamento',
-      reviewNotice:
-        'Conteúdo preliminar, ainda pendente de definição e confirmação pela Estética Letícia Balbinott antes da publicação definitiva.',
       sections: [
         {
           heading: 'Como cancelar ou reagendar',
-          text: 'Cancelamentos e reagendamentos devem ser solicitados diretamente pelo WhatsApp, com a maior antecedência possível.',
+          text: 'Cancelamentos e reagendamentos devem ser solicitados diretamente pelo WhatsApp.',
         },
         {
-          heading: 'Prazos e condições',
-          text: 'Os prazos mínimos de antecedência e eventuais condições específicas ainda serão definidos pela Estética Letícia Balbinott e publicados aqui assim que confirmados.',
+          heading: 'Prazo mínimo',
+          text: 'Cancelamentos e reagendamentos devem ser solicitados com, no mínimo, 24 horas de antecedência.',
         },
       ],
     },

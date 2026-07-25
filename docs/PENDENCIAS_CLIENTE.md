@@ -50,7 +50,7 @@ condição especial real de algum tratamento, preencher o `specialOffer`
 correspondente com `active: true`.
 - [ ] Ofertas ativas (tratamento correspondente, título, descrição, validade, preço original/promocional)
 - [ ] Formas de pagamento aceitas
-- [ ] Políticas de cancelamento/remarcação (prazos e condições — o site já tem uma seção preliminar em `src/data/siteContent.ts` → `legal.cancellationPolicy`, marcada como conteúdo em revisão)
+- [x] Prazo de cancelamento/remarcação — confirmado: mínimo de 24 horas de antecedência (`legal.cancellationPolicy`). Sem multa, cobrança, perda de sinal ou outra penalidade até serem confirmadas.
 
 ## Tecnologias e produtos
 - [ ] Nome, finalidade e benefício de cada tecnologia/equipamento utilizado
@@ -60,8 +60,8 @@ correspondente com `active: true`.
 - [ ] Seleção de publicações reais para exibir na seção "Instagram" (a seção já está pronta, apenas sem posts)
 
 ## Políticas legais
-- [ ] Revisão e confirmação do texto de `legal.privacyPolicy` (Política de Privacidade) — conteúdo preliminar
-- [ ] Revisão e confirmação do texto de `legal.cancellationPolicy` (Política de Cancelamento e Reagendamento) — conteúdo preliminar, sem prazos definidos ainda
+- [x] `legal.privacyPolicy` (Política de Privacidade) — confirmada pela cliente, conteúdo oficial
+- [x] `legal.cancellationPolicy` (Política de Cancelamento e Reagendamento) — confirmada pela cliente, com o prazo mínimo de 24 horas de antecedência
 
 ## Avaliações e resultados
 - [ ] Avaliações de clientes autorizadas para publicação

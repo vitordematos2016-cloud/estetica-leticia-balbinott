@@ -12,9 +12,11 @@ export function LegalPolicyModal({ policy, onClose }: LegalPolicyModalProps) {
   return (
     <Modal isOpen={!!policy} onClose={onClose} title={policy.title}>
       <div className="flex flex-col gap-5">
-        <p className="rounded-xl border border-dashed border-gold/40 bg-cream-light/40 px-4 py-3 text-xs text-brown/60">
-          {policy.reviewNotice}
-        </p>
+        {policy.reviewNotice && (
+          <p className="rounded-xl border border-dashed border-gold/40 bg-cream-light/40 px-4 py-3 text-xs text-brown/60">
+            {policy.reviewNotice}
+          </p>
+        )}
 
         {policy.sections.map((section) => (
           <div key={section.heading}>
