@@ -66,27 +66,26 @@ export function CompactReloadIntro({ onFinish }: CompactReloadIntroProps) {
       />
 
       <div className="relative flex flex-col items-center gap-4 px-6 text-center">
-        <div className="relative w-32 sm:w-40 lg:w-48">
-          <img
-            src={monogramImage}
-            alt=""
-            width={1024}
-            height={1024}
-            decoding="async"
-            className={`w-full ${prefersReducedMotion ? '' : 'monogram-reveal'}`}
-          />
-          {!prefersReducedMotion && (
-            <span aria-hidden="true" className="compact-shine pointer-events-none absolute inset-0" />
-          )}
-        </div>
+        <div className="flex flex-col items-center gap-2">
+          <div className="w-32 sm:w-40 lg:w-48">
+            <img
+              src={monogramImage}
+              alt=""
+              width={1024}
+              height={1024}
+              decoding="async"
+              className={`w-full ${prefersReducedMotion ? '' : 'monogram-reveal'}`}
+            />
+          </div>
 
-        <p
-          className={`max-w-xs font-heading text-xl text-cream-light sm:text-2xl lg:text-3xl ${
-            prefersReducedMotion ? '' : 'compact-name-in'
-          }`}
-        >
-          {siteContent.brand.name}
-        </p>
+          <p
+            className={`max-w-xs font-heading text-xl text-cream-light sm:text-2xl lg:text-3xl ${
+              prefersReducedMotion ? '' : 'compact-name-in'
+            }`}
+          >
+            {siteContent.brand.name}
+          </p>
+        </div>
 
         <span
           aria-hidden="true"

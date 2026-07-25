@@ -246,24 +246,4 @@
     }
   }
 
-  .compact-shine {
-    background: linear-gradient(
-      100deg,
-      transparent 30%,
-      rgba(255, 224, 160, 0.5) 50%,
-      transparent 70%
-    );
-    filter: blur(4px);
-    mix-blend-mode: screen;
-    animation: compact-shine-sweep 400ms ease-in-out 600ms both;
-  }
-
-  @keyframes compact-shine-sweep {
-    from {
-      transform: translateX(-120%);
-    }
-    to {
-      transform: translateX(120%);
-    }
-  }
 }
