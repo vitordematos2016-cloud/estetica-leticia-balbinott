@@ -99,7 +99,7 @@ export function TreatmentPicker({ triggerRef, error }: TreatmentPickerProps) {
           aria-expanded={isOpen}
           aria-labelledby={labelId}
           aria-invalid={!!error}
-          className="flex w-full items-center justify-between rounded-xl border border-gold/30 bg-cream px-4 py-3 text-left text-sm text-brown-dark focus:border-gold"
+          className="flex min-h-11 w-full items-center justify-between rounded-xl border border-gold/30 bg-cream px-4 py-3 text-left text-sm text-brown-dark shadow-[inset_0_1px_2px_rgba(91,64,51,0.05)] transition-all duration-200 hover:border-gold/60 focus:border-gold focus:ring-2 focus:ring-gold/15 active:scale-[0.99]"
         >
           <span className={items.length === 0 ? 'text-brown/50' : ''}>
             {items.length === 0
@@ -175,17 +175,22 @@ export function TreatmentPicker({ triggerRef, error }: TreatmentPickerProps) {
           <span className="text-xs font-medium uppercase tracking-wide text-brown/50">
             Tratamentos selecionados
           </span>
-          <ul className="flex flex-wrap gap-2">
+          <ul className="flex flex-col gap-2">
             {items.map((item) => (
-              <li key={item.id}>
+              <li
+                key={item.id}
+                className="flex items-center justify-between gap-2 rounded-xl border border-gold/25 bg-cream py-1.5 pl-4 pr-1.5"
+              >
+                <span className="min-w-0 flex-1 break-words text-sm text-brown-dark">{item.name}</span>
                 <button
                   type="button"
                   onClick={() => removeItem(item.id)}
-                  className="flex items-center gap-1.5 rounded-full border border-gold/40 bg-cream px-3.5 py-1.5 text-xs font-medium text-brown-dark transition-colors hover:border-gold"
+                  aria-label={`Remover ${item.name} da seleção`}
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-brown/45 transition-colors hover:bg-gold/10 hover:text-brown-dark active:bg-gold/15"
                 >
-                  {item.name}
-                  <span aria-hidden="true">×</span>
-                  <span className="sr-only">Remover {item.name} da seleção</span>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path d="M1 1l10 10M11 1L1 11" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                  </svg>
                 </button>
               </li>
             ))}
