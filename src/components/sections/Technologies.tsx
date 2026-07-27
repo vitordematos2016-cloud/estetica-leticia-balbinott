@@ -1,27 +1,44 @@
+import { motion } from 'motion/react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
 import { useExpandableSection } from '../../hooks/useExpandableSection';
 import { RevealGroup, RevealItem } from '../motion/reveal';
+import { EASE_OUT } from '../motion/variants';
 
 function ToggleIcon({ up }: { up: boolean }) {
   return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      fill="none"
+    <span
       aria-hidden="true"
-      className={`text-gold transition-transform duration-300 ${up ? 'rotate-180' : ''}`}
+      className={`flex h-6 w-6 items-center justify-center rounded-full border transition-all duration-300 ${
+        up ? 'rotate-180 border-gold bg-gold/15' : 'border-gold/40'
+      }`}
     >
-      <path d="M2 5l5 5 5-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+      <svg width="11" height="11" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path
+          d="M2 5l5 5 5-5"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="text-gold"
+        />
+      </svg>
+    </span>
   );
 }
 
 const toggleButtonClassName =
-  'flex items-center gap-2.5 rounded-full border border-gold/40 bg-cream px-6 py-3 text-sm font-medium text-brown-dark shadow-warm-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/70 hover:shadow-warm';
+  'flex items-center gap-2.5 rounded-full border border-gold/40 bg-gradient-to-r from-cream via-cream to-beige/40 px-6 py-3 text-sm font-medium text-brown-dark shadow-warm-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/70 hover:shadow-warm';
 
+/**
+ * Cards puramente informativos (sem onClick/href/role) — a microinteração é
+ * só decorativa. `group-hover`/`whileHover` só disparam com hover real
+ * (Tailwind v4 compila `hover`/`group-hover` dentro de `@media
+ * (hover:hover)`), `group-active`/`whileTap` cobrem toque sem nunca ficar
+ * "presos", e o Motion é neutralizado automaticamente sob
+ * `prefers-reduced-motion` pelo `MotionConfig reducedMotion="user"` global.
+ */
 export function Technologies() {
   const { technologies } = siteContent;
   const {
@@ -66,9 +83,22 @@ export function Technologies() {
               <RevealGroup active={isOpen} as="div" className="w-full">
                 <RevealItem
                   direction="none"
-                  className="w-full rounded-[2rem] border border-dashed border-gold/40 bg-cream px-8 py-14 text-center"
+                  className="relative mx-auto flex w-full max-w-xl flex-col items-center gap-3 overflow-hidden rounded-[1.75rem] border border-dashed border-gold/35 bg-gradient-to-br from-cream via-cream to-beige/25 px-8 py-14 text-center shadow-warm-sm"
                 >
-                  <p className="text-base text-brown-dark">{technologies.notice}</p>
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(177,138,85,0.08),transparent_60%)]"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="relative flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold"
+                  >
+                    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <circle cx="8" cy="8" r="5.5" stroke="currentColor" strokeWidth="1.2" />
+                      <path d="M8 5v3.2l2 1.3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                  <p className="relative text-base text-brown-dark">{technologies.notice}</p>
                 </RevealItem>
               </RevealGroup>
             ) : (
@@ -79,17 +109,31 @@ export function Technologies() {
                 className="grid w-full gap-6 sm:grid-cols-2 lg:grid-cols-3"
               >
                 {technologies.items.map((item) => (
-                  <RevealItem
-                    key={item.id}
-                    className="flex flex-col gap-2 rounded-[1.75rem] border border-gold/25 bg-cream p-6 shadow-warm-sm"
-                  >
-                    <h3 className="text-lg text-brown-dark">{item.name}</h3>
-                    <p className="text-sm leading-relaxed text-brown/70">{item.purpose}</p>
-                    {item.benefit && (
-                      <p className="text-xs font-medium uppercase tracking-wide text-gold">
-                        {item.benefit}
-                      </p>
-                    )}
+                  <RevealItem key={item.id}>
+                    <motion.div
+                      className="group relative flex h-full flex-col gap-2 overflow-hidden rounded-[1.75rem_1.75rem_1.75rem_0.75rem] border border-gold/25 bg-gradient-to-br from-cream via-cream to-beige/30 p-6 shadow-warm-sm transition-all duration-300 hover:border-gold hover:shadow-warm active:border-gold active:shadow-warm"
+                      whileHover={{ y: -2.5 }}
+                      whileTap={{ scale: 0.99 }}
+                      transition={{ duration: 0.25, ease: EASE_OUT }}
+                    >
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full bg-gold/10 opacity-70 blur-2xl transition-opacity duration-300 group-hover:opacity-100 group-active:opacity-100"
+                      />
+                      <span
+                        aria-hidden="true"
+                        className="relative h-1.5 w-1.5 rounded-full bg-gold/60 transition-transform duration-300 group-hover:scale-150 group-active:scale-150"
+                      />
+                      <h3 className="relative text-lg text-brown-dark transition-colors duration-300 group-hover:text-gold group-active:text-gold">
+                        {item.name}
+                      </h3>
+                      <p className="relative text-sm leading-relaxed text-brown/70">{item.purpose}</p>
+                      {item.benefit && (
+                        <p className="relative text-xs font-medium uppercase tracking-wide text-gold">
+                          {item.benefit}
+                        </p>
+                      )}
+                    </motion.div>
                   </RevealItem>
                 ))}
               </RevealGroup>
