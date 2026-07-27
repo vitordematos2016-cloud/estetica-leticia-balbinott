@@ -22,7 +22,7 @@ export function Purpose() {
             delay={0}
             className="mx-auto flex max-w-2xl flex-col items-center gap-4 text-center"
           >
-            <span className="text-xs font-medium uppercase tracking-[0.28em] text-gold">
+            <span className="text-xs font-medium uppercase tracking-[0.28em] text-gold-deep">
               {purpose.eyebrow}
             </span>
             <h2 className="text-3xl leading-[1.2] text-brown-dark sm:text-4xl">{purpose.heading}</h2>
@@ -52,7 +52,7 @@ export function Purpose() {
                 direction="left"
                 delay={0.15}
                 aria-hidden={true}
-                className="absolute -left-10 top-8 flex h-8 w-8 items-center justify-center rounded-full border border-gold/50 bg-cream text-xs font-medium text-gold lg:hidden"
+                className="absolute -left-10 top-8 flex h-8 w-8 items-center justify-center rounded-full border border-gold/50 bg-cream text-xs font-medium text-gold-deep lg:hidden"
               >
                 01
               </Reveal>
@@ -69,7 +69,7 @@ export function Purpose() {
                 />
                 <span
                   aria-hidden="true"
-                  className="mb-4 hidden h-10 w-10 items-center justify-center rounded-full border border-gold/50 text-sm font-medium text-gold lg:flex"
+                  className="mb-4 hidden h-10 w-10 items-center justify-center rounded-full border border-gold/50 text-sm font-medium text-gold-deep lg:flex"
                 >
                   01
                 </span>
@@ -105,7 +105,7 @@ export function Purpose() {
                 direction="right"
                 delay={0.55}
                 aria-hidden={true}
-                className="absolute -left-10 top-8 flex h-8 w-8 items-center justify-center rounded-full border border-gold/50 bg-cream text-xs font-medium text-gold lg:hidden"
+                className="absolute -left-10 top-8 flex h-8 w-8 items-center justify-center rounded-full border border-gold/50 bg-cream text-xs font-medium text-gold-deep lg:hidden"
               >
                 02
               </Reveal>
@@ -122,7 +122,7 @@ export function Purpose() {
                 />
                 <span
                   aria-hidden="true"
-                  className="mb-4 hidden h-10 w-10 items-center justify-center rounded-full border border-gold/50 text-sm font-medium text-gold lg:flex"
+                  className="mb-4 hidden h-10 w-10 items-center justify-center rounded-full border border-gold/50 text-sm font-medium text-gold-deep lg:flex"
                 >
                   02
                 </span>

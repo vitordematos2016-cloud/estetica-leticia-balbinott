@@ -119,7 +119,7 @@ export function SelectionWidget() {
                   <div className="flex flex-col gap-0.5">
                     <span className="text-sm text-brown-dark">{item.name}</span>
                     {item.category && (
-                      <span className="text-xs uppercase tracking-wide text-gold">{item.category}</span>
+                      <span className="text-xs uppercase tracking-wide text-gold-deep">{item.category}</span>
                     )}
                   </div>
                   <button

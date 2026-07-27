@@ -48,7 +48,7 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
       <div className="flex flex-col gap-5">
         <div className="flex flex-wrap items-center gap-2">
           {categoryName && (
-            <span className="w-fit text-xs font-medium uppercase tracking-[0.2em] text-gold">
+            <span className="w-fit text-xs font-medium uppercase tracking-[0.2em] text-gold-deep">
               {categoryName}
             </span>
           )}
@@ -79,7 +79,7 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
 
         {specialOffer && (
           <div className="rounded-2xl border border-gold/30 bg-beige/25 p-4">
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-gold-deep">
               {specialOffer.title || 'Condição especial'}
             </p>
             {specialOffer.description && (
@@ -87,7 +87,7 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
                 {specialOffer.description}
               </p>
             )}
-            <p className="mt-1.5 text-xs font-medium text-gold">
+            <p className="mt-1.5 text-xs font-medium text-gold-deep">
               {specialOffer.validUntil
                 ? `Válida até ${specialOffer.validUntil}`
                 : 'Condição disponível por tempo limitado'}

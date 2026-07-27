@@ -129,7 +129,7 @@ export function Technologies() {
                       </h3>
                       <p className="relative text-sm leading-relaxed text-brown/70">{item.purpose}</p>
                       {item.benefit && (
-                        <p className="relative text-xs font-medium uppercase tracking-wide text-gold">
+                        <p className="relative text-xs font-medium uppercase tracking-wide text-gold-deep">
                           {item.benefit}
                         </p>
                       )}

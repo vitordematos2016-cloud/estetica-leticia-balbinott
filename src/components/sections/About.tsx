@@ -65,7 +65,7 @@ export function About() {
 
         <div className="group/content relative flex flex-col gap-6">
           <Reveal active={isInView} direction="right" delay={0.1}>
-            <span className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.28em] text-gold">
+            <span className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.28em] text-gold-deep">
               <motion.span
                 aria-hidden="true"
                 className="h-px w-5 origin-left bg-gold/60 transition-all duration-300 group-hover/content:w-7 group-active/content:w-7"

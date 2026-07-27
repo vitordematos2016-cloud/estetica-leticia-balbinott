@@ -59,7 +59,7 @@ export function SkinConcerns() {
                   {concern.description}
                 </span>
 
-                <span className="relative mt-auto flex items-center gap-2 pt-3 text-xs font-medium uppercase tracking-[0.2em] text-gold">
+                <span className="relative mt-auto flex items-center gap-2 pt-3 text-xs font-medium uppercase tracking-[0.2em] text-gold-deep">
                   Ver tratamentos
                   <svg
                     width="14"

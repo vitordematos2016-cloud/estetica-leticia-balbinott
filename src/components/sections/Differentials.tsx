@@ -85,7 +85,7 @@ export function Differentials() {
 
       <Container className="relative flex flex-col gap-10">
         <div ref={headingRef} className="mx-auto flex max-w-2xl flex-col items-center gap-4 text-center">
-          <Reveal as="span" active={isHeadingInView} delay={0} className="text-xs font-medium uppercase tracking-[0.28em] text-gold">
+          <Reveal as="span" active={isHeadingInView} delay={0} className="text-xs font-medium uppercase tracking-[0.28em] text-gold-deep">
             {differential.eyebrow}
           </Reveal>
           <Reveal as="h2" active={isHeadingInView} delay={0.1} className="text-3xl leading-[1.2] text-brown-dark sm:text-4xl">

@@ -48,7 +48,7 @@ export function HowItWorks() {
                 className="flex flex-col items-center gap-4 text-center"
               >
                 <Ornament size="sm">
-                  <span className="font-heading text-lg text-gold sm:text-xl">
+                  <span className="font-heading text-lg text-gold-deep sm:text-xl">
                     {String(index + 1).padStart(2, '0')}
                   </span>
                 </Ornament>

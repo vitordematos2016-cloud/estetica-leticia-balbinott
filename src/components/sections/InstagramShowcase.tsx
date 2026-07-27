@@ -74,7 +74,7 @@ export function InstagramShowcase() {
     <section ref={sectionRef} className="py-24 sm:py-28">
       <Container className="flex flex-col gap-10">
         <div className="mx-auto flex max-w-2xl flex-col items-center gap-4 text-center">
-          <span className="text-xs font-medium uppercase tracking-[0.28em] text-gold">Instagram</span>
+          <span className="text-xs font-medium uppercase tracking-[0.28em] text-gold-deep">Instagram</span>
           <h2 className="text-3xl leading-[1.2] text-brown-dark sm:text-4xl">{instagramShowcase.title}</h2>
           <p className="text-base leading-relaxed text-brown/75 sm:text-lg">{instagramShowcase.text}</p>
 

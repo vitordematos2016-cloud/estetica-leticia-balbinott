@@ -37,7 +37,7 @@ export function Location() {
         </Reveal>
 
         <div className="flex flex-col gap-3">
-          <span className="text-xs font-medium uppercase tracking-[0.28em] text-gold">
+          <span className="text-xs font-medium uppercase tracking-[0.28em] text-gold-deep">
             Localização
           </span>
           <div className="flex flex-col gap-1">

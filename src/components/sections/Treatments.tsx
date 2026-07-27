@@ -107,7 +107,7 @@ export function Treatments() {
         <div className="mx-auto flex max-w-xl flex-col items-center gap-4 text-center">
           <Reveal
             as="span"
-            className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-cream px-4 py-1.5 text-xs font-medium uppercase tracking-[0.28em] text-gold shadow-warm-sm"
+            className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-cream px-4 py-1.5 text-xs font-medium uppercase tracking-[0.28em] text-gold-deep shadow-warm-sm"
           >
             <SparkleIcon />
             Tratamentos

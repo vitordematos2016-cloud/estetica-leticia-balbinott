@@ -45,7 +45,7 @@ export function Faq() {
                     className="flex min-h-11 w-full items-center gap-4 px-5 py-4 text-left sm:px-7 sm:py-5"
                   >
                     <Ornament size="xs" className="shrink-0">
-                      <span className="font-heading text-xs text-gold sm:text-sm">
+                      <span className="font-heading text-xs text-gold-deep sm:text-sm">
                         {String(index + 1).padStart(2, '0')}
                       </span>
                     </Ornament>

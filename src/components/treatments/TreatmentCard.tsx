@@ -27,7 +27,7 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
       <div className="flex flex-1 flex-col gap-3 p-6">
         <div className="flex flex-wrap items-center gap-2">
           {categoryName && (
-            <span className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
+            <span className="text-xs font-medium uppercase tracking-[0.2em] text-gold-deep">
               {categoryName}
             </span>
           )}
@@ -47,7 +47,7 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
             {specialOffer.description && (
               <p className="text-sm leading-relaxed text-brown-dark">{specialOffer.description}</p>
             )}
-            <p className="mt-1 text-xs font-medium text-gold">
+            <p className="mt-1 text-xs font-medium text-gold-deep">
               {specialOffer.validUntil
                 ? `Válida até ${specialOffer.validUntil}`
                 : 'Condição disponível por tempo limitado'}

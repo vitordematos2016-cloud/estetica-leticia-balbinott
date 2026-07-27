@@ -40,7 +40,7 @@ export function CredentialsModal({ isOpen, onClose }: CredentialsModalProps) {
                   ratio="landscape"
                 />
                 <div className="flex flex-col gap-1">
-                  <span className="text-xs font-medium uppercase tracking-[0.18em] text-gold">
+                  <span className="text-xs font-medium uppercase tracking-[0.18em] text-gold-deep">
                     {typeLabels[item.type] ?? item.type}
                   </span>
                   <h4 className="text-base text-brown-dark">{item.title}</h4>

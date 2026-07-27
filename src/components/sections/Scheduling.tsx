@@ -28,11 +28,11 @@ function StepLabel({ number, label }: { number: string; label: string }) {
     <div className="flex items-center gap-3">
       <span
         aria-hidden="true"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-gold/40 font-heading text-xs text-gold"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-gold/40 font-heading text-xs text-gold-deep"
       >
         {number}
       </span>
-      <span className="text-xs font-medium uppercase tracking-[0.24em] text-gold">{label}</span>
+      <span className="text-xs font-medium uppercase tracking-[0.24em] text-gold-deep">{label}</span>
     </div>
   );
 }

@@ -16,11 +16,12 @@ export function SectionHeading({
   const alignClasses = align === 'center' ? 'text-center items-center mx-auto' : 'text-left items-start';
   const titleColor = tone === 'dark' ? 'text-brown-dark' : 'text-cream';
   const textColor = tone === 'dark' ? 'text-brown/80' : 'text-cream-light/85';
+  const eyebrowColor = tone === 'dark' ? 'text-gold-deep' : 'text-gold';
 
   return (
     <div className={`flex max-w-2xl flex-col gap-4 ${alignClasses}`}>
       {eyebrow && (
-        <span className="text-xs font-medium uppercase tracking-[0.28em] text-gold">
+        <span className={`text-xs font-medium uppercase tracking-[0.28em] ${eyebrowColor}`}>
           {eyebrow}
         </span>
       )}

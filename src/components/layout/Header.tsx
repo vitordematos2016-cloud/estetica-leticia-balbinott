@@ -51,7 +51,7 @@ export function Header() {
                 href={link.href}
                 aria-current={isActive ? 'page' : undefined}
                 className={`text-sm font-medium tracking-wide transition-colors ${
-                  isActive ? 'text-gold' : 'text-brown-dark hover:text-gold'
+                  isActive ? 'text-gold-deep' : 'text-brown-dark hover:text-gold'
                 }`}
               >
                 {link.label}
@@ -108,7 +108,7 @@ export function Header() {
                   href={link.href}
                   aria-current={isActive ? 'page' : undefined}
                   className={`rounded-xl px-4 py-3 text-base font-medium transition-colors ${
-                    isActive ? 'bg-gold/10 text-gold' : 'text-brown-dark hover:bg-gold/5'
+                    isActive ? 'bg-gold/10 text-gold-deep' : 'text-brown-dark hover:bg-gold/5'
                   }`}
                 >
                   {link.label}
