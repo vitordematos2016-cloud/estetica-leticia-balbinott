@@ -1,10 +1,11 @@
 import { useRef, useState } from 'react';
 import type { TouchEvent } from 'react';
+import { motion } from 'motion/react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
-import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { Reveal } from '../motion/reveal';
+import { EASE_OUT } from '../motion/variants';
 
 function StarRow({ rating }: { rating: number }) {
   return (
@@ -57,19 +58,18 @@ function LeafArrow({ direction }: { direction: 'prev' | 'next' }) {
 
 export function Reviews() {
   const { reviews, reviewsNotice, address } = siteContent;
-  const prefersReducedMotion = useReducedMotion();
   const [index, setIndex] = useState(0);
-  const [animClass, setAnimClass] = useState('');
+  const [direction, setDirection] = useState(0);
   const touchStartX = useRef<number | null>(null);
 
   function goToNext() {
+    setDirection(1);
     setIndex((prev) => (prev === reviews.length - 1 ? 0 : prev + 1));
-    setAnimClass(prefersReducedMotion ? 'review-fade-only' : 'review-slide-next');
   }
 
   function goToPrevious() {
+    setDirection(-1);
     setIndex((prev) => (prev === 0 ? 0 : prev - 1));
-    setAnimClass(prefersReducedMotion ? 'review-fade-only' : 'review-slide-prev');
   }
 
   function handleKeyDown(event: React.KeyboardEvent) {
@@ -110,7 +110,7 @@ export function Reviews() {
           </div>
         ) : (
           <>
-            <div
+            <motion.div
               role="region"
               aria-roledescription="carrossel"
               aria-label="Avaliações de clientes"
@@ -118,11 +118,26 @@ export function Reviews() {
               onKeyDown={handleKeyDown}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
-              className="w-full max-w-xl rounded-none outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+              whileHover={{ y: -3.5, scale: 1.01, rotate: 0.4 }}
+              whileTap={{ scale: 0.985, transition: { duration: 0.15, ease: EASE_OUT } }}
+              transition={{ duration: 0.3, ease: EASE_OUT }}
+              className="group relative w-full max-w-xl rounded-[2.5rem_2.5rem_2.5rem_1rem] outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
             >
-              <figure
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 -rotate-2 rounded-[2.5rem_2.5rem_2.5rem_1rem] bg-beige/30"
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -inset-4 rounded-[3rem] bg-gold/10 opacity-70 blur-2xl transition-opacity duration-300 group-hover:opacity-100"
+              />
+
+              <motion.figure
                 key={current.id}
-                className={`relative flex flex-col items-center gap-5 rounded-[2.5rem_2.5rem_2.5rem_1rem] border border-gold/25 bg-beige/25 px-7 py-9 text-center shadow-warm-sm sm:px-10 sm:py-11 ${animClass}`}
+                initial={{ opacity: 0, x: direction * 14 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, ease: EASE_OUT }}
+                className="relative flex flex-col items-center gap-6 rounded-[2.5rem_2.5rem_2.5rem_1rem] border border-gold/25 bg-gradient-to-br from-cream via-cream-light to-beige/40 px-6 py-9 text-center shadow-warm-sm ring-1 ring-gold/10 transition-shadow duration-300 group-hover:shadow-warm group-hover:ring-gold/25 sm:px-10 sm:py-12"
               >
                 <span
                   aria-hidden="true"
@@ -137,12 +152,26 @@ export function Reviews() {
                   “{current.text}”
                 </blockquote>
 
-                <figcaption className="flex flex-col items-center gap-1">
-                  <span className="text-sm font-medium text-brown-dark">{current.author}</span>
-                  <span className="text-xs text-brown/50">Avaliação publicada no Google</span>
+                <span
+                  aria-hidden="true"
+                  className="h-px w-10 bg-gradient-to-r from-transparent via-gold/50 to-transparent"
+                />
+
+                <figcaption className="flex flex-col items-center gap-2">
+                  <span className="font-heading text-lg text-brown-dark sm:text-xl">{current.author}</span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/30 bg-cream/70 px-3 py-1 text-[0.65rem] font-medium uppercase tracking-[0.12em] text-brown/60">
+                    <svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path
+                        d="M8 1l2.1 4.3 4.7.7-3.4 3.3.8 4.7L8 11.8l-4.2 2.2.8-4.7L1.2 6l4.7-.7L8 1Z"
+                        fill="currentColor"
+                        className="text-gold"
+                      />
+                    </svg>
+                    Avaliação publicada no Google
+                  </span>
                 </figcaption>
-              </figure>
-            </div>
+              </motion.figure>
+            </motion.div>
 
             <div className="flex flex-col items-center gap-3">
               <div className="group flex items-center gap-4">
@@ -151,12 +180,17 @@ export function Reviews() {
                     type="button"
                     onClick={goToPrevious}
                     aria-label="Ver avaliação anterior"
-                    className="group"
+                    className="group rounded-full p-1.5"
                   >
                     <LeafArrow direction="prev" />
                   </button>
                 )}
-                <button type="button" onClick={goToNext} aria-label="Ver próxima avaliação" className="group">
+                <button
+                  type="button"
+                  onClick={goToNext}
+                  aria-label="Ver próxima avaliação"
+                  className="group rounded-full p-1.5"
+                >
                   <LeafArrow direction="next" />
                 </button>
               </div>
