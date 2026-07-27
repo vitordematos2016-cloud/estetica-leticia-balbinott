@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import type { CredentialItem } from '../../types/siteContent';
 import { PlaceholderMedia } from '../ui/PlaceholderMedia';
 import { useScrollLock } from '../../hooks/useScrollLock';
+import { useHeldValue } from '../../hooks/useHeldValue';
+import { overlayBackdropVariants } from '../motion/variants';
 
 interface CertificateLightboxProps {
   items: CredentialItem[];
@@ -13,6 +16,9 @@ interface CertificateLightboxProps {
 export function CertificateLightbox({ items, activeIndex, onClose, onNavigate }: CertificateLightboxProps) {
   const [isZoomed, setIsZoomed] = useState(false);
   const isOpen = activeIndex !== null;
+  // Mantém o índice do último certificado aberto durante a animação de saída
+  // — `activeIndex` já volta a `null` no instante do fechamento.
+  const displayIndex = useHeldValue(activeIndex);
 
   useScrollLock(isOpen);
 
@@ -37,20 +43,26 @@ export function CertificateLightbox({ items, activeIndex, onClose, onNavigate }:
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, activeIndex, items.length, onClose, onNavigate]);
 
-  if (!isOpen || activeIndex === null) return null;
-  const item = items[activeIndex];
+  if (displayIndex === null) return null;
+  const item = items[displayIndex];
   if (!item) return null;
 
-  const hasPrev = activeIndex > 0;
-  const hasNext = activeIndex < items.length - 1;
+  const hasPrev = displayIndex > 0;
+  const hasNext = displayIndex < items.length - 1;
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label={`Certificado: ${item.title}`}
-      className="fixed inset-0 z-[110] flex flex-col items-center justify-center gap-4 bg-brown-dark/90 px-4 py-8"
-    >
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Certificado: ${item.title}`}
+          className="fixed inset-0 z-[110] flex flex-col items-center justify-center gap-4 bg-brown-dark/90 px-4 py-8"
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          variants={overlayBackdropVariants}
+        >
       <button
         type="button"
         onClick={onClose}
@@ -66,7 +78,7 @@ export function CertificateLightbox({ items, activeIndex, onClose, onNavigate }:
         {hasPrev && (
           <button
             type="button"
-            onClick={() => onNavigate(activeIndex - 1)}
+            onClick={() => onNavigate(displayIndex - 1)}
             aria-label="Certificado anterior"
             className="absolute left-0 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-cream-light/40 text-cream-light transition-colors hover:bg-cream-light/10 sm:-left-4"
           >
@@ -93,7 +105,7 @@ export function CertificateLightbox({ items, activeIndex, onClose, onNavigate }:
         {hasNext && (
           <button
             type="button"
-            onClick={() => onNavigate(activeIndex + 1)}
+            onClick={() => onNavigate(displayIndex + 1)}
             aria-label="Próximo certificado"
             className="absolute right-0 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-cream-light/40 text-cream-light transition-colors hover:bg-cream-light/10 sm:-right-4"
           >
@@ -109,10 +121,12 @@ export function CertificateLightbox({ items, activeIndex, onClose, onNavigate }:
         {item.institution && <p className="text-xs text-cream-light/70">{item.institution}</p>}
         {items.length > 1 && (
           <p className="mt-1 text-xs text-cream-light/50">
-            {activeIndex + 1} de {items.length}
+            {displayIndex + 1} de {items.length}
           </p>
         )}
       </div>
-    </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

@@ -4,6 +4,7 @@ import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
 import { PhotoFrame } from '../ui/PhotoFrame';
 import { copyToClipboard } from '../../utils/clipboard';
+import { Reveal } from '../motion/reveal';
 import fachadaImage from '../../assets/leh-estetic/fachada-leh-estetic.webp';
 
 export function Location() {
@@ -11,7 +12,7 @@ export function Location() {
   const [copied, setCopied] = useState(false);
 
   async function handleCopyAddress() {
-    const fullAddress = `${address.street} — ${address.reference}`;
+    const fullAddress = `${address.street} — ${siteContent.brand.name}`;
     const success = await copyToClipboard(fullAddress);
     if (success) {
       setCopied(true);
@@ -27,9 +28,13 @@ export function Location() {
           endereço -> referência -> botões. Bloco independente do desktop
           para não reaproveitar estilos fora do breakpoint. */}
       <Container className="flex flex-col gap-6 md:hidden">
-        <h2 className="text-3xl leading-[1.15] text-brown-dark">Venha nos visitar</h2>
+        <Reveal as="h2" className="text-3xl leading-[1.15] text-brown-dark">
+          Venha nos visitar
+        </Reveal>
 
-        <PhotoFrame src={fachadaImage} alt={facadeAlt} className="w-full" />
+        <Reveal delay={0.1}>
+          <PhotoFrame src={fachadaImage} alt={facadeAlt} className="w-full" />
+        </Reveal>
 
         <div className="flex flex-col gap-3">
           <span className="text-xs font-medium uppercase tracking-[0.28em] text-gold">
@@ -71,11 +76,13 @@ export function Location() {
       {/* Tablet/notebook/desktop (>=768px): composição já aprovada, intacta. */}
       <Container className="hidden md:grid md:gap-14 lg:grid-cols-2 lg:items-center lg:gap-16">
         <div className="flex flex-col gap-6">
-          <SectionHeading
-            align="left"
-            eyebrow="Localização"
-            title="Venha nos visitar"
-          />
+          <Reveal direction="left">
+            <SectionHeading
+              align="left"
+              eyebrow="Localização"
+              title="Venha nos visitar"
+            />
+          </Reveal>
           <div className="flex flex-col gap-1">
             <p className="text-lg text-brown-dark">{address.street}</p>
             <p className="text-sm text-brown/60">{address.reference}</p>
@@ -108,7 +115,7 @@ export function Location() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
+        <Reveal direction="right" delay={0.1} className="flex flex-col gap-3">
           <PhotoFrame
             src={fachadaImage}
             alt={facadeAlt}
@@ -120,7 +127,7 @@ export function Location() {
           <p className="text-center text-sm text-brown/60">
             Mapa interativo disponível pelo link do Google Maps acima
           </p>
-        </div>
+        </Reveal>
       </Container>
     </section>
   );

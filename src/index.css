@@ -80,6 +80,11 @@
     animation-play-state: paused;
   }
 
+  .marquee-pause-zone:hover .marquee-track,
+  .marquee-pause-zone:focus-within .marquee-track {
+    animation-play-state: paused;
+  }
+
   @keyframes marquee {
     from {
       transform: translateX(0);
@@ -102,17 +107,6 @@
       opacity: 1;
       transform: translateY(0);
     }
-  }
-
-  .reveal {
-    transition:
-      opacity 0.8s ease-out,
-      transform 0.8s ease-out;
-  }
-
-  .reveal-line-v {
-    transform-origin: top;
-    transition: transform 1s ease-out;
   }
 
   .splash-image-in {

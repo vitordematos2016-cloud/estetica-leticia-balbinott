@@ -6,6 +6,7 @@ import { useSelection } from '../../context/SelectionContext';
 import { buildWhatsAppUrl } from '../../utils/whatsapp';
 import { getTreatmentCategoryName } from '../../utils/treatments';
 import { siteContent } from '../../data/siteContent';
+import { useHeldValue } from '../../hooks/useHeldValue';
 
 interface TreatmentModalProps {
   treatment: Treatment | null;
@@ -14,19 +15,23 @@ interface TreatmentModalProps {
 
 export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
   const { addItem, removeItem, isSelected } = useSelection();
+  // Mantém os dados do último tratamento durante a animação de saída do
+  // Modal — `treatment` já volta a `null` no instante do fechamento.
+  const displayTreatment = useHeldValue(treatment);
 
-  if (!treatment) return null;
+  if (!displayTreatment) return null;
 
-  const alreadySelected = isSelected(treatment.id);
-  const categoryName = getTreatmentCategoryName(treatment.categoryId);
-  const specialOffer = treatment.specialOffer?.active ? treatment.specialOffer : undefined;
+  const treatmentData = displayTreatment;
+  const alreadySelected = isSelected(treatmentData.id);
+  const categoryName = getTreatmentCategoryName(treatmentData.categoryId);
+  const specialOffer = treatmentData.specialOffer?.active ? treatmentData.specialOffer : undefined;
   const whatsappUrl = buildWhatsAppUrl(
     siteContent.contact.whatsappNumber,
-    treatment.whatsappMessage || siteContent.whatsappDefaultMessage,
+    treatmentData.whatsappMessage || siteContent.whatsappDefaultMessage,
   );
 
   return (
-    <Modal isOpen={!!treatment} onClose={onClose} title={treatment.name}>
+    <Modal isOpen={!!treatment} onClose={onClose} title={treatmentData.name}>
       <div className="flex flex-col gap-5">
         <div className="flex flex-wrap items-center gap-2">
           {categoryName && (
@@ -41,22 +46,22 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
           )}
         </div>
 
-        {treatment.image ? (
+        {treatmentData.image ? (
           <div className="aspect-[4/3] w-full overflow-hidden rounded-2xl border border-gold/30">
             <img
-              src={treatment.image}
-              alt={treatment.name}
+              src={treatmentData.image}
+              alt={treatmentData.name}
               loading="lazy"
               decoding="async"
               className="h-full w-full object-contain"
             />
           </div>
         ) : (
-          <PlaceholderMedia label={treatment.name} description="Imagem em preparação" ratio="landscape" />
+          <PlaceholderMedia label={treatmentData.name} description="Imagem em preparação" ratio="landscape" />
         )}
 
         <p className="text-sm leading-relaxed text-brown/80">
-          {treatment.description ?? 'Descrição completa em atualização.'}
+          {treatmentData.description ?? 'Descrição completa em atualização.'}
         </p>
 
         {specialOffer && (
@@ -85,13 +90,13 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
           </div>
         )}
 
-        {treatment.benefits && treatment.benefits.length > 0 && (
+        {treatmentData.benefits && treatmentData.benefits.length > 0 && (
           <div>
             <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-brown/50">
               Benefícios
             </p>
             <ul className="flex flex-col gap-1.5">
-              {treatment.benefits.map((benefit) => (
+              {treatmentData.benefits.map((benefit) => (
                 <li key={benefit} className="text-sm text-brown/75">
                   • {benefit}
                 </li>
@@ -100,54 +105,54 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
           </div>
         )}
 
-        {treatment.indication && (
+        {treatmentData.indication && (
           <div>
             <p className="mb-1 text-xs font-medium uppercase tracking-[0.2em] text-brown/50">
               Para quem é indicado
             </p>
-            <p className="text-sm leading-relaxed text-brown/75">{treatment.indication}</p>
+            <p className="text-sm leading-relaxed text-brown/75">{treatmentData.indication}</p>
           </div>
         )}
 
-        {treatment.howItWorks && (
+        {treatmentData.howItWorks && (
           <div>
             <p className="mb-1 text-xs font-medium uppercase tracking-[0.2em] text-brown/50">
               Como funciona
             </p>
-            <p className="text-sm leading-relaxed text-brown/75">{treatment.howItWorks}</p>
+            <p className="text-sm leading-relaxed text-brown/75">{treatmentData.howItWorks}</p>
           </div>
         )}
 
-        {(treatment.duration || treatment.sessions || treatment.price || treatment.professional) && (
+        {(treatmentData.duration || treatmentData.sessions || treatmentData.price || treatmentData.professional) && (
           <dl className="grid grid-cols-2 gap-4 rounded-2xl bg-cream-light/50 p-4 text-sm">
             <div>
               <dt className="text-xs uppercase tracking-wide text-brown/50">Duração</dt>
-              <dd className="text-brown-dark">{treatment.duration || '—'}</dd>
+              <dd className="text-brown-dark">{treatmentData.duration || '—'}</dd>
             </div>
             <div>
               <dt className="text-xs uppercase tracking-wide text-brown/50">Sessões</dt>
-              <dd className="text-brown-dark">{treatment.sessions || '—'}</dd>
+              <dd className="text-brown-dark">{treatmentData.sessions || '—'}</dd>
             </div>
             <div>
               <dt className="text-xs uppercase tracking-wide text-brown/50">Investimento</dt>
-              <dd className="text-brown-dark">{treatment.price || 'Sob consulta'}</dd>
+              <dd className="text-brown-dark">{treatmentData.price || 'Sob consulta'}</dd>
             </div>
             <div>
               <dt className="text-xs uppercase tracking-wide text-brown/50">Profissional</dt>
-              <dd className="text-brown-dark">{treatment.professional || '—'}</dd>
+              <dd className="text-brown-dark">{treatmentData.professional || '—'}</dd>
             </div>
           </dl>
         )}
 
-        {((treatment.careBefore?.length ?? 0) > 0 || (treatment.careAfter?.length ?? 0) > 0) && (
+        {((treatmentData.careBefore?.length ?? 0) > 0 || (treatmentData.careAfter?.length ?? 0) > 0) && (
           <div className="grid gap-4 sm:grid-cols-2">
-            {treatment.careBefore && treatment.careBefore.length > 0 && (
+            {treatmentData.careBefore && treatmentData.careBefore.length > 0 && (
               <div>
                 <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-brown/50">
                   Cuidados antes
                 </p>
                 <ul className="flex flex-col gap-1.5">
-                  {treatment.careBefore.map((item) => (
+                  {treatmentData.careBefore.map((item) => (
                     <li key={item} className="text-sm text-brown/75">
                       • {item}
                     </li>
@@ -155,13 +160,13 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
                 </ul>
               </div>
             )}
-            {treatment.careAfter && treatment.careAfter.length > 0 && (
+            {treatmentData.careAfter && treatmentData.careAfter.length > 0 && (
               <div>
                 <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-brown/50">
                   Cuidados depois
                 </p>
                 <ul className="flex flex-col gap-1.5">
-                  {treatment.careAfter.map((item) => (
+                  {treatmentData.careAfter.map((item) => (
                     <li key={item} className="text-sm text-brown/75">
                       • {item}
                     </li>
@@ -172,13 +177,13 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
           </div>
         )}
 
-        {treatment.contraindications && treatment.contraindications.length > 0 && (
+        {treatmentData.contraindications && treatmentData.contraindications.length > 0 && (
           <div>
             <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-brown/50">
               Contraindicações gerais
             </p>
             <ul className="flex flex-col gap-1.5">
-              {treatment.contraindications.map((item) => (
+              {treatmentData.contraindications.map((item) => (
                 <li key={item} className="text-sm text-brown/75">
                   • {item}
                 </li>
@@ -187,7 +192,7 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
           </div>
         )}
 
-        {treatment.beforeAfter && <BeforeAfterGallery beforeAfter={treatment.beforeAfter} />}
+        {treatmentData.beforeAfter && <BeforeAfterGallery beforeAfter={treatmentData.beforeAfter} />}
 
         <p className="text-xs text-brown/50">Cada atendimento é avaliado individualmente.</p>
 
@@ -196,9 +201,9 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
             type="button"
             onClick={() =>
               addItem({
-                id: treatment.id,
+                id: treatmentData.id,
                 type: 'treatment',
-                name: treatment.name,
+                name: treatmentData.name,
                 category: categoryName,
               })
             }
@@ -222,7 +227,7 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
         {alreadySelected && (
           <button
             type="button"
-            onClick={() => removeItem(treatment.id)}
+            onClick={() => removeItem(treatmentData.id)}
             className="self-center text-xs font-medium text-brown/50 underline decoration-gold/40 underline-offset-2 hover:text-gold"
           >
             Remover da seleção

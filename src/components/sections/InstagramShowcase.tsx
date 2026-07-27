@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { PlaceholderMedia } from '../ui/PlaceholderMedia';
+import { RevealGroup, RevealItem } from '../motion/reveal';
 
 function InstagramIcon() {
   return (
@@ -58,14 +58,6 @@ export function InstagramShowcase() {
     return () => observer.disconnect();
   }, [isOpen]);
 
-  // Anima conforme isOpen. Ao abrir, cada publicação surge em sequência; ao
-  // fechar, todas recolhem juntas (delay 0), sem nada "sobrando" visível.
-  function cardOpenStyle(index: number): CSSProperties {
-    return isOpen
-      ? { opacity: 1, transitionDelay: `${150 + index * 60}ms` }
-      : { opacity: 0, transform: 'translateY(16px)', transitionDelay: '0ms' };
-  }
-
   // Nunca ambos ao mesmo tempo: o superior cobre "fechado" e "aberto, ainda no
   // início"; o inferior só existe quando aberto E o marcador final já entrou
   // na tela. O botão oculto é removido da renderização (nunca só opacity:0),
@@ -109,17 +101,18 @@ export function InstagramShowcase() {
           }`}
         >
           <div className="flex flex-col gap-10 pt-4">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {slots.map((slot, index) => (
-                <div
-                  key={slot}
-                  className="transition-[opacity,transform] duration-500 ease-out"
-                  style={cardOpenStyle(index)}
-                >
+            <RevealGroup
+              active={isOpen}
+              stagger={0.06}
+              delayChildren={0.15}
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              {slots.map((slot) => (
+                <RevealItem key={slot}>
                   <PlaceholderMedia label={`Publicação ${slot}`} description="Em preparação" ratio="square" />
-                </div>
+                </RevealItem>
               ))}
-            </div>
+            </RevealGroup>
 
             <div ref={bottomMarkerRef} className="flex flex-col items-center gap-4 pb-2 text-center">
               <p className="text-sm text-brown/60">{instagramShowcase.notice}</p>

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
+import { motion, useInView } from 'motion/react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
-import { useScrollReveal } from '../../hooks/useScrollReveal';
+import { Reveal, RevealGroup, RevealItem } from '../motion/reveal';
+import { EASE_OUT } from '../motion/variants';
 
 const icons = [
   <path key="ethics" d="M14 3v22M6 9l8-4 8 4M6 9l-4 10h8L6 9Zm16 0l-4 10h8l-4-10Z" />,
@@ -33,7 +34,8 @@ const toggleButtonClassName =
 
 export function Differentials() {
   const { differential, values } = siteContent;
-  const { ref, isVisible } = useScrollReveal<HTMLDivElement>(0.2);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const isHeadingInView = useInView(headingRef, { once: true, amount: 0.2 });
   const [isOpen, setIsOpen] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -57,21 +59,6 @@ export function Differentials() {
     observer.observe(node);
     return () => observer.disconnect();
   }, [isOpen]);
-
-  function revealStyle(delayMs: number): CSSProperties {
-    return isVisible
-      ? { opacity: 1, transitionDelay: `${delayMs}ms` }
-      : { opacity: 0, transform: 'translateY(20px)', transitionDelay: `${delayMs}ms` };
-  }
-
-  // Anima de acordo com isOpen (não com o scroll). Ao abrir, cada card tem um
-  // pequeno atraso em sequência; ao fechar, todos recolhem juntos (delay 0),
-  // sem elementos "sobrando" visíveis durante o fechamento.
-  function cardOpenStyle(index: number): CSSProperties {
-    return isOpen
-      ? { opacity: 1, transitionDelay: `${150 + index * 80}ms` }
-      : { opacity: 0, transform: 'translateY(16px)', transitionDelay: '0ms' };
-  }
 
   // Nunca ambos ao mesmo tempo: o botão superior cobre "fechado" e "aberto,
   // ainda no topo"; o inferior só existe quando aberto E a frase final já
@@ -97,22 +84,16 @@ export function Differentials() {
       />
 
       <Container className="relative flex flex-col gap-10">
-        <div ref={ref} className="mx-auto flex max-w-2xl flex-col items-center gap-4 text-center">
-          <span
-            className="reveal text-xs font-medium uppercase tracking-[0.28em] text-gold"
-            style={revealStyle(0)}
-          >
+        <div ref={headingRef} className="mx-auto flex max-w-2xl flex-col items-center gap-4 text-center">
+          <Reveal as="span" active={isHeadingInView} delay={0} className="text-xs font-medium uppercase tracking-[0.28em] text-gold">
             {differential.eyebrow}
-          </span>
-          <h2
-            className="reveal text-3xl leading-[1.2] text-brown-dark sm:text-4xl"
-            style={revealStyle(100)}
-          >
+          </Reveal>
+          <Reveal as="h2" active={isHeadingInView} delay={0.1} className="text-3xl leading-[1.2] text-brown-dark sm:text-4xl">
             {differential.title}
-          </h2>
-          <p className="reveal text-base leading-relaxed text-brown/75 sm:text-lg" style={revealStyle(200)}>
+          </Reveal>
+          <Reveal as="p" active={isHeadingInView} delay={0.2} className="text-base leading-relaxed text-brown/75 sm:text-lg">
             {differential.text}
-          </p>
+          </Reveal>
 
           {topButtonVisible && (
             <button
@@ -136,12 +117,11 @@ export function Differentials() {
           }`}
         >
           <div className="flex flex-col gap-14 pt-4">
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <RevealGroup active={isOpen} stagger={0.08} delayChildren={0.15} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {values.map((value, index) => (
-                <div
+                <RevealItem
                   key={value.title}
-                  className="group relative flex flex-col gap-4 rounded-[1.75rem] border border-gold/20 bg-cream p-7 shadow-warm-sm transition-[opacity,transform,box-shadow,border-color] duration-500 ease-out hover:-translate-y-1 hover:border-gold/50 hover:shadow-warm"
-                  style={cardOpenStyle(index)}
+                  className="group relative flex flex-col gap-4 rounded-[1.75rem] border border-gold/20 bg-cream p-7 shadow-warm-sm transition-[box-shadow,border-color] duration-500 ease-out hover:-translate-y-1 hover:border-gold/50 hover:shadow-warm"
                 >
                   <div className="flex items-center gap-3">
                     <span className="font-heading text-2xl text-gold/70">
@@ -164,21 +144,24 @@ export function Differentials() {
                     className="mt-1 h-px w-10 bg-gold/60 transition-[width,opacity] duration-500 ease-out group-hover:w-16"
                     style={{ opacity: isOpen ? 1 : 0, transitionDelay: isOpen ? `${450 + index * 80}ms` : '0ms' }}
                   />
-                </div>
+                </RevealItem>
               ))}
-            </div>
+            </RevealGroup>
 
             <div className="flex flex-col items-center gap-6 pb-2">
-              <p
+              <motion.p
                 ref={bottomMarkerRef}
-                className="mx-auto max-w-xl text-center text-base italic leading-relaxed text-brown/70 transition-opacity duration-500 ease-out"
-                style={{
-                  opacity: isOpen ? 1 : 0,
-                  transitionDelay: isOpen ? `${150 + values.length * 80 + 100}ms` : '0ms',
+                className="mx-auto max-w-xl text-center text-base italic leading-relaxed text-brown/70"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isOpen ? 1 : 0 }}
+                transition={{
+                  duration: 0.5,
+                  ease: EASE_OUT,
+                  delay: isOpen ? 0.15 + values.length * 0.08 + 0.1 : 0,
                 }}
               >
                 {differential.closing}
-              </p>
+              </motion.p>
 
               {bottomButtonVisible && (
                 <button

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import type { Treatment } from '../../types/siteContent';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
@@ -6,6 +7,7 @@ import { SectionHeading } from '../ui/SectionHeading';
 import { TreatmentCard } from '../treatments/TreatmentCard';
 import { TreatmentModal } from '../treatments/TreatmentModal';
 import { useTreatmentsFilter } from '../../context/TreatmentsFilterContext';
+import { EASE_OUT } from '../motion/variants';
 
 const SPECIAL_OFFERS_FILTER_ID = 'condicoes-especiais';
 
@@ -148,17 +150,26 @@ export function Treatments() {
         )}
 
         {filteredTreatments.length > 0 && (
-          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredTreatments.map((treatment) => (
-              <div key={`${activeCategoryId ?? 'all'}-${treatment.id}`} className="fade-up">
-                <TreatmentCard
-                  treatment={treatment}
-                  onViewDetails={setSelectedTreatment}
-                  isHighlighted={treatment.id === highlightTreatmentId}
-                />
-              </div>
-            ))}
-          </div>
+          <motion.div layout className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+            <AnimatePresence mode="popLayout">
+              {filteredTreatments.map((treatment) => (
+                <motion.div
+                  key={treatment.id}
+                  layout
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.35, ease: EASE_OUT }}
+                >
+                  <TreatmentCard
+                    treatment={treatment}
+                    onViewDetails={setSelectedTreatment}
+                    isHighlighted={treatment.id === highlightTreatmentId}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         )}
 
         {activeCategoryId !== null && (

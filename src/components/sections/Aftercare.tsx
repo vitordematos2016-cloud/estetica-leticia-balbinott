@@ -1,6 +1,7 @@
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { Button } from '../ui/Button';
+import { Reveal } from '../motion/reveal';
 
 export function Aftercare() {
   const { aftercare } = siteContent;
@@ -8,7 +9,7 @@ export function Aftercare() {
   return (
     <section className="py-16 sm:py-20">
       <Container className="flex flex-col items-center gap-10">
-        <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 rounded-[2rem] border border-gold/25 bg-cream-light/40 px-8 py-12 text-center">
+        <Reveal className="mx-auto flex max-w-3xl flex-col items-center gap-4 rounded-[2rem] border border-gold/25 bg-cream-light/40 px-8 py-12 text-center">
           <span
             aria-hidden="true"
             className="flex h-12 w-12 items-center justify-center rounded-full border border-gold/50 text-gold"
@@ -24,11 +25,13 @@ export function Aftercare() {
           </span>
           <h2 className="text-2xl text-brown-dark sm:text-3xl">{aftercare.title}</h2>
           <p className="text-base leading-relaxed text-brown/75">{aftercare.text}</p>
-        </div>
+        </Reveal>
 
-        <Button href={aftercare.cta.href} variant="primary" className="whitespace-nowrap">
-          {aftercare.cta.label}
-        </Button>
+        <Reveal delay={0.1}>
+          <Button href={aftercare.cta.href} variant="primary" className="whitespace-nowrap">
+            {aftercare.cta.label}
+          </Button>
+        </Reveal>
       </Container>
     </section>
   );

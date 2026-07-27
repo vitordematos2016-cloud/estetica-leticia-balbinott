@@ -4,6 +4,7 @@ import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { Reveal } from '../motion/reveal';
 
 function StarRow({ rating }: { rating: number }) {
   return (
@@ -99,7 +100,9 @@ export function Reviews() {
   return (
     <section id="avaliacoes" className="bg-cream-light/40 py-24 sm:py-28">
       <Container className="flex flex-col items-center gap-12">
-        <SectionHeading eyebrow="Avaliações" title="O que dizem sobre a Estética Letícia Balbinott" />
+        <Reveal>
+          <SectionHeading eyebrow="Avaliações" title="O que dizem sobre a Estética Letícia Balbinott" />
+        </Reveal>
 
         {reviews.length === 0 ? (
           <div className="mx-auto max-w-xl rounded-[2rem] border border-dashed border-gold/40 bg-cream px-8 py-14 text-center">

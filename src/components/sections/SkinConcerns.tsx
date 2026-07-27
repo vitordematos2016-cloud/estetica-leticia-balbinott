@@ -2,6 +2,7 @@ import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
 import { useTreatmentsFilter } from '../../context/TreatmentsFilterContext';
+import { Reveal } from '../motion/reveal';
 
 export function SkinConcerns() {
   const { skinConcerns } = siteContent;
@@ -10,9 +11,11 @@ export function SkinConcerns() {
   return (
     <section className="bg-cream-light/40 py-24 sm:py-28">
       <Container className="flex flex-col gap-12">
-        <SectionHeading title={skinConcerns.title} text={skinConcerns.text} />
+        <Reveal>
+          <SectionHeading title={skinConcerns.title} text={skinConcerns.text} />
+        </Reveal>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <Reveal delay={0.1} className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {skinConcerns.items.map((concern) => (
             <a
               key={concern.id}
@@ -48,7 +51,7 @@ export function SkinConcerns() {
               </span>
             </a>
           ))}
-        </div>
+        </Reveal>
       </Container>
     </section>
   );

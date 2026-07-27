@@ -1,6 +1,7 @@
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
+import { Reveal, RevealGroup, RevealItem } from '../motion/reveal';
 
 export function HowItWorks() {
   const { howItWorks } = siteContent;
@@ -8,11 +9,17 @@ export function HowItWorks() {
   return (
     <section className="py-24 sm:py-28">
       <Container className="flex flex-col gap-16">
-        <SectionHeading eyebrow="Jornada" title={howItWorks.title} text={howItWorks.text} />
+        <Reveal>
+          <SectionHeading eyebrow="Jornada" title={howItWorks.title} text={howItWorks.text} />
+        </Reveal>
 
-        <ol className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-6">
+        <RevealGroup as="ol" stagger={0.08} className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-6">
           {howItWorks.steps.map((step, index) => (
-            <li key={step.title} className="relative flex flex-col items-center gap-4 text-center">
+            <RevealItem
+              as="li"
+              key={step.title}
+              className="relative flex flex-col items-center gap-4 text-center"
+            >
               <div className="flex flex-col items-center gap-3">
                 <span className="flex h-16 w-16 items-center justify-center rounded-full border border-gold/50 bg-cream-light/50 font-heading text-2xl text-gold">
                   {String(index + 1).padStart(2, '0')}
@@ -27,9 +34,9 @@ export function HowItWorks() {
                   className="absolute right-[-1.5rem] top-8 hidden h-px w-12 bg-gold/40 lg:block"
                 />
               )}
-            </li>
+            </RevealItem>
           ))}
-        </ol>
+        </RevealGroup>
       </Container>
     </section>
   );

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
+import { Reveal, RevealGroup, RevealItem } from '../motion/reveal';
 
 export function Faq() {
   const { faq } = siteContent;
@@ -10,16 +11,18 @@ export function Faq() {
   return (
     <section className="py-24 sm:py-28">
       <Container className="flex flex-col gap-12">
-        <SectionHeading eyebrow="Dúvidas" title="Perguntas frequentes" />
+        <Reveal>
+          <SectionHeading eyebrow="Dúvidas" title="Perguntas frequentes" />
+        </Reveal>
 
-        <div className="mx-auto flex w-full max-w-2xl flex-col gap-3">
+        <RevealGroup stagger={0.06} className="mx-auto flex w-full max-w-2xl flex-col gap-3">
           {faq.map((item, index) => {
             const isOpen = openIndex === index;
             const panelId = `faq-panel-${index}`;
             const buttonId = `faq-button-${index}`;
 
             return (
-              <div
+              <RevealItem
                 key={item.question}
                 className="overflow-hidden rounded-2xl border border-gold/25 bg-cream-light/30"
               >
@@ -60,10 +63,10 @@ export function Faq() {
                 >
                   {item.answer}
                 </div>
-              </div>
+              </RevealItem>
             );
           })}
-        </div>
+        </RevealGroup>
       </Container>
     </section>
   );

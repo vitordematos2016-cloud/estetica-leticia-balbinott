@@ -1,15 +1,9 @@
-import type { CSSProperties } from 'react';
+import { useRef } from 'react';
+import { motion, useInView } from 'motion/react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
-import { useScrollReveal } from '../../hooks/useScrollReveal';
-
-type Direction = 'up' | 'left' | 'right';
-
-const hiddenTransform: Record<Direction, string> = {
-  up: 'translateY(22px)',
-  left: 'translateX(-32px)',
-  right: 'translateX(32px)',
-};
+import { Reveal } from '../motion/reveal';
+import { EASE_OUT } from '../motion/variants';
 
 function Ornament({ mirror = false }: { mirror?: boolean }) {
   return (
@@ -26,61 +20,60 @@ function Ornament({ mirror = false }: { mirror?: boolean }) {
 
 export function Purpose() {
   const { purpose } = siteContent;
-  const { ref, isVisible } = useScrollReveal<HTMLDivElement>(0.2);
-
-  function revealStyle(direction: Direction, delayMs: number): CSSProperties {
-    return {
-      opacity: isVisible ? 1 : 0,
-      transform: isVisible ? 'translate(0px, 0px)' : hiddenTransform[direction],
-      transitionDelay: `${delayMs}ms`,
-    };
-  }
-
-  function lineStyle(delayMs: number): CSSProperties {
-    return {
-      transform: isVisible ? 'scaleY(1)' : 'scaleY(0)',
-      transitionDelay: `${delayMs}ms`,
-    };
-  }
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
     <section className="py-20 sm:py-24 lg:py-28">
       <Container>
         <div ref={ref} className="flex flex-col gap-14 lg:gap-16">
-          <div
-            className="reveal mx-auto flex max-w-2xl flex-col items-center gap-4 text-center"
-            style={revealStyle('up', 0)}
+          <Reveal
+            as="div"
+            active={isInView}
+            direction="up"
+            delay={0}
+            className="mx-auto flex max-w-2xl flex-col items-center gap-4 text-center"
           >
             <span className="text-xs font-medium uppercase tracking-[0.28em] text-gold">
               {purpose.eyebrow}
             </span>
             <h2 className="text-3xl leading-[1.2] text-brown-dark sm:text-4xl">{purpose.heading}</h2>
             <p className="text-base leading-relaxed text-brown/75 sm:text-lg">{purpose.subheading}</p>
-          </div>
+          </Reveal>
 
           <div className="relative grid gap-12 pl-10 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-14 lg:pl-0">
-            <div
+            <motion.div
               aria-hidden="true"
-              className="reveal-line-v absolute left-4 top-2 bottom-2 w-px bg-gold/40 lg:hidden"
-              style={lineStyle(350)}
+              className="absolute left-4 top-2 bottom-2 w-px origin-top bg-gold/40 lg:hidden"
+              initial={{ scaleY: 0 }}
+              animate={{ scaleY: isInView ? 1 : 0 }}
+              transition={{ duration: 0.8, delay: 0.35, ease: EASE_OUT }}
             />
-            <div
+            <motion.div
               aria-hidden="true"
-              className="reveal-line-v absolute left-1/2 top-0 bottom-0 hidden w-px -translate-x-1/2 bg-gold/40 lg:block"
-              style={lineStyle(400)}
+              className="absolute left-1/2 top-0 bottom-0 hidden w-px origin-top -translate-x-1/2 bg-gold/40 lg:block"
+              initial={{ scaleY: 0 }}
+              animate={{ scaleY: isInView ? 1 : 0 }}
+              transition={{ duration: 0.8, delay: 0.4, ease: EASE_OUT }}
             />
 
             <div className="relative lg:col-start-1 lg:row-start-1">
-              <span
-                aria-hidden="true"
-                className="reveal absolute -left-10 top-8 flex h-8 w-8 items-center justify-center rounded-full border border-gold/50 bg-cream text-xs font-medium text-gold lg:hidden"
-                style={revealStyle('left', 150)}
+              <Reveal
+                as="span"
+                active={isInView}
+                direction="left"
+                delay={0.15}
+                aria-hidden={true}
+                className="absolute -left-10 top-8 flex h-8 w-8 items-center justify-center rounded-full border border-gold/50 bg-cream text-xs font-medium text-gold lg:hidden"
               >
                 01
-              </span>
-              <div
-                className="reveal relative overflow-hidden rounded-[1.75rem] border border-gold/25 bg-cream-light/40 p-8 shadow-warm-sm sm:p-9"
-                style={revealStyle('left', 150)}
+              </Reveal>
+              <Reveal
+                as="div"
+                active={isInView}
+                direction="left"
+                delay={0.15}
+                className="relative overflow-hidden rounded-[1.75rem] border border-gold/25 bg-cream-light/40 p-8 shadow-warm-sm sm:p-9"
               >
                 <span
                   aria-hidden="true"
@@ -94,34 +87,46 @@ export function Purpose() {
                 </span>
                 <h3 className="text-xl text-brown-dark sm:text-2xl">{purpose.purposeTitle}</h3>
                 <p className="mt-3 text-base leading-relaxed text-brown/80">{purpose.purposeText}</p>
-              </div>
+              </Reveal>
             </div>
 
-            <div
-              className="reveal hidden items-center justify-center lg:col-start-2 lg:row-start-1 lg:flex"
-              style={revealStyle('right', 350)}
+            <Reveal
+              as="div"
+              active={isInView}
+              direction="right"
+              delay={0.35}
+              className="hidden items-center justify-center lg:col-start-2 lg:row-start-1 lg:flex"
             >
               <Ornament />
-            </div>
+            </Reveal>
 
-            <div
-              className="reveal hidden items-center justify-center lg:col-start-1 lg:row-start-2 lg:flex"
-              style={revealStyle('left', 450)}
+            <Reveal
+              as="div"
+              active={isInView}
+              direction="left"
+              delay={0.45}
+              className="hidden items-center justify-center lg:col-start-1 lg:row-start-2 lg:flex"
             >
               <Ornament mirror />
-            </div>
+            </Reveal>
 
             <div className="relative lg:col-start-2 lg:row-start-2">
-              <span
-                aria-hidden="true"
-                className="reveal absolute -left-10 top-8 flex h-8 w-8 items-center justify-center rounded-full border border-gold/50 bg-cream text-xs font-medium text-gold lg:hidden"
-                style={revealStyle('right', 550)}
+              <Reveal
+                as="span"
+                active={isInView}
+                direction="right"
+                delay={0.55}
+                aria-hidden={true}
+                className="absolute -left-10 top-8 flex h-8 w-8 items-center justify-center rounded-full border border-gold/50 bg-cream text-xs font-medium text-gold lg:hidden"
               >
                 02
-              </span>
-              <div
-                className="reveal relative overflow-hidden rounded-[1.75rem] border border-gold/25 bg-cream p-8 shadow-warm-sm sm:p-9"
-                style={revealStyle('right', 550)}
+              </Reveal>
+              <Reveal
+                as="div"
+                active={isInView}
+                direction="right"
+                delay={0.55}
+                className="relative overflow-hidden rounded-[1.75rem] border border-gold/25 bg-cream p-8 shadow-warm-sm sm:p-9"
               >
                 <span
                   aria-hidden="true"
@@ -135,7 +140,7 @@ export function Purpose() {
                 </span>
                 <h3 className="text-xl text-brown-dark sm:text-2xl">{purpose.objectiveTitle}</h3>
                 <p className="mt-3 text-base leading-relaxed text-brown/80">{purpose.objectiveText}</p>
-              </div>
+              </Reveal>
             </div>
           </div>
         </div>

@@ -1,8 +1,8 @@
-import type { CSSProperties } from 'react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
 import { useExpandableSection } from '../../hooks/useExpandableSection';
+import { RevealGroup, RevealItem } from '../motion/reveal';
 
 function ToggleIcon({ up }: { up: boolean }) {
   return (
@@ -34,12 +34,6 @@ export function Technologies() {
     closeFromBottom,
   } = useExpandableSection<HTMLElement, HTMLDivElement>();
 
-  function cardOpenStyle(index: number): CSSProperties {
-    return isOpen
-      ? { opacity: 1, transitionDelay: `${150 + index * 80}ms` }
-      : { opacity: 0, transform: 'translateY(16px)', transitionDelay: '0ms' };
-  }
-
   return (
     <section ref={sectionRef} className="bg-cream-light/40 py-24 sm:py-28">
       <Container className="flex flex-col gap-10">
@@ -69,19 +63,25 @@ export function Technologies() {
         >
           <div ref={bottomMarkerRef} className="flex flex-col items-center gap-8 pt-4">
             {technologies.items.length === 0 ? (
-              <div
-                className="w-full rounded-[2rem] border border-dashed border-gold/40 bg-cream px-8 py-14 text-center transition-opacity duration-500 ease-out"
-                style={{ opacity: isOpen ? 1 : 0, transitionDelay: isOpen ? '150ms' : '0ms' }}
-              >
-                <p className="text-base text-brown-dark">{technologies.notice}</p>
-              </div>
+              <RevealGroup active={isOpen} as="div" className="w-full">
+                <RevealItem
+                  direction="none"
+                  className="w-full rounded-[2rem] border border-dashed border-gold/40 bg-cream px-8 py-14 text-center"
+                >
+                  <p className="text-base text-brown-dark">{technologies.notice}</p>
+                </RevealItem>
+              </RevealGroup>
             ) : (
-              <div className="grid w-full gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {technologies.items.map((item, index) => (
-                  <div
+              <RevealGroup
+                active={isOpen}
+                stagger={0.08}
+                delayChildren={0.15}
+                className="grid w-full gap-6 sm:grid-cols-2 lg:grid-cols-3"
+              >
+                {technologies.items.map((item) => (
+                  <RevealItem
                     key={item.id}
-                    className="flex flex-col gap-2 rounded-[1.75rem] border border-gold/25 bg-cream p-6 shadow-warm-sm transition-[opacity,transform] duration-500 ease-out"
-                    style={cardOpenStyle(index)}
+                    className="flex flex-col gap-2 rounded-[1.75rem] border border-gold/25 bg-cream p-6 shadow-warm-sm"
                   >
                     <h3 className="text-lg text-brown-dark">{item.name}</h3>
                     <p className="text-sm leading-relaxed text-brown/70">{item.purpose}</p>
@@ -90,9 +90,9 @@ export function Technologies() {
                         {item.benefit}
                       </p>
                     )}
-                  </div>
+                  </RevealItem>
                 ))}
-              </div>
+              </RevealGroup>
             )}
 
             {bottomButtonVisible && (

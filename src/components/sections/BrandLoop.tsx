@@ -26,7 +26,8 @@ export function BrandLoop() {
   return (
     <section
       aria-label={brandLoop.ariaLabel}
-      className="overflow-hidden border-y border-gold/15 bg-beige/30 py-4"
+      tabIndex={prefersReducedMotion ? undefined : 0}
+      className="marquee-pause-zone overflow-hidden border-y border-gold/15 bg-beige/30 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/50 focus-visible:ring-inset"
     >
       {prefersReducedMotion ? (
         <p className="px-6 text-center text-xs uppercase tracking-[0.3em] text-brown/75">
