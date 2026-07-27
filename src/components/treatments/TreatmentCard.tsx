@@ -1,7 +1,9 @@
+import { motion } from 'motion/react';
 import type { Treatment } from '../../types/siteContent';
 import { PlaceholderMedia } from '../ui/PlaceholderMedia';
 import { useSelection } from '../../context/SelectionContext';
 import { getTreatmentCategoryName } from '../../utils/treatments';
+import { EASE_OUT } from '../motion/variants';
 
 interface TreatmentCardProps {
   treatment: Treatment;
@@ -9,6 +11,14 @@ interface TreatmentCardProps {
   isHighlighted?: boolean;
 }
 
+/**
+ * O card em si não é um link/botão — só os controles internos são
+ * interativos. `whileHover`/`whileTap` do Motion já ficam restritos a
+ * ponteiro fino real e são neutralizados sob `prefers-reduced-motion` pelo
+ * `MotionConfig reducedMotion="user"` global; `motion-reduce:duration-0`
+ * cobre a transição de cor/sombra do destaque temporário (`isHighlighted`),
+ * que não é controlada pelo Motion.
+ */
 export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false }: TreatmentCardProps) {
   const { addItem, removeItem, isSelected } = useSelection();
   const alreadySelected = isSelected(treatment.id);
@@ -16,13 +26,21 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
   const specialOffer = treatment.specialOffer?.active ? treatment.specialOffer : undefined;
 
   return (
-    <article
+    <motion.article
       id={`servico-${treatment.id}`}
-      className={`flex scroll-mt-28 flex-col overflow-hidden rounded-[1.75rem] border bg-cream shadow-warm-sm transition-[box-shadow,border-color] duration-700 ease-out hover:shadow-warm ${
+      whileHover={{ y: -2, scale: 1.01 }}
+      whileTap={{ scale: 0.988 }}
+      transition={{ duration: 0.3, ease: EASE_OUT }}
+      className={`group flex scroll-mt-28 flex-col overflow-hidden rounded-[1.75rem] border bg-cream shadow-warm-sm transition-[box-shadow,border-color] duration-700 ease-out motion-reduce:duration-0 hover:shadow-warm active:shadow-warm ${
         isHighlighted ? 'border-gold shadow-warm' : 'border-gold/25'
       }`}
     >
-      <PlaceholderMedia label={treatment.name} description="Imagem em preparação" ratio="landscape" className="rounded-none rounded-t-[1.75rem]" />
+      <PlaceholderMedia
+        label={treatment.name}
+        description="Imagem em preparação"
+        ratio="landscape"
+        className="rounded-none rounded-t-[1.75rem] transition-transform duration-500 ease-out motion-reduce:transition-none group-hover:scale-[1.02] group-active:scale-[1.015]"
+      />
 
       <div className="flex flex-1 flex-col gap-3 p-6">
         <div className="flex flex-wrap items-center gap-2">
@@ -38,6 +56,9 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
           )}
         </div>
         <h3 className="text-xl text-brown-dark">{treatment.name}</h3>
+        {treatment.subtitle && (
+          <p className="-mt-1.5 text-sm font-medium text-brown/70">{treatment.subtitle}</p>
+        )}
         <p className="flex-1 text-sm leading-relaxed text-brown/70">
           {treatment.summary ?? 'Descrição completa em atualização.'}
         </p>
@@ -73,7 +94,7 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
             Ver mais detalhes
           </button>
           <div className="ml-auto flex items-center gap-2">
-            <button
+            <motion.button
               type="button"
               onClick={() =>
                 addItem({
@@ -83,6 +104,9 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
                   category: categoryName,
                 })
               }
+              whileHover={{ y: -1 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ duration: 0.2, ease: EASE_OUT }}
               className={`rounded-full px-4 py-2 text-xs font-medium uppercase tracking-wide transition-colors ${
                 alreadySelected
                   ? 'bg-gold/20 text-brown-dark'
@@ -90,7 +114,7 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
               }`}
             >
               {alreadySelected ? 'Adicionado ✓' : 'Adicionar à seleção'}
-            </button>
+            </motion.button>
             {alreadySelected && (
               <button
                 type="button"
@@ -103,6 +127,6 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
           </div>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }

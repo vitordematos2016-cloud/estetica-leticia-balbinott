@@ -10,6 +10,11 @@ interface TreatmentsFilterContextValue {
    * para ser localizado e destacado. Retorna o id encontrado (ou null caso
    * nenhum tratamento dessa categoria exista ainda no catálogo). */
   requestCategoryHighlight: (categoryId: string) => string | null;
+  /** Mesma finalidade de `requestCategoryHighlight`, mas para tratamentos sem
+   * categoria confirmada (ex.: Skin Class) — destaca pelo id do tratamento
+   * diretamente, só limpando o filtro de categoria ativo (nunca a busca).
+   * Retorna o id quando o tratamento existe no catálogo, senão null. */
+  requestTreatmentHighlight: (treatmentId: string) => string | null;
   clearHighlight: () => void;
 }
 
@@ -32,13 +37,35 @@ export function TreatmentsFilterProvider({ children }: { children: ReactNode }) 
     return match ? match.id : null;
   }, []);
 
+  const requestTreatmentHighlight = useCallback((treatmentId: string) => {
+    const match = siteContent.treatments.find((treatment) => treatment.id === treatmentId);
+    if (!match) return null;
+    setActiveCategoryId(null);
+    setHighlightTreatmentId(match.id);
+    return match.id;
+  }, []);
+
   const clearHighlight = useCallback(() => {
     setHighlightTreatmentId(null);
   }, []);
 
   const value = useMemo(
-    () => ({ activeCategoryId, selectCategory, highlightTreatmentId, requestCategoryHighlight, clearHighlight }),
-    [activeCategoryId, selectCategory, highlightTreatmentId, requestCategoryHighlight, clearHighlight],
+    () => ({
+      activeCategoryId,
+      selectCategory,
+      highlightTreatmentId,
+      requestCategoryHighlight,
+      requestTreatmentHighlight,
+      clearHighlight,
+    }),
+    [
+      activeCategoryId,
+      selectCategory,
+      highlightTreatmentId,
+      requestCategoryHighlight,
+      requestTreatmentHighlight,
+      clearHighlight,
+    ],
   );
 
   return (

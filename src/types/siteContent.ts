@@ -101,12 +101,18 @@ export interface TreatmentCategory {
   description: string;
 }
 
-export interface SkinConcern {
+interface SkinConcernBase {
   id: string;
   label: string;
   description: string;
-  categoryId: string;
 }
+
+/** Cada cuidado direciona por categoria (caminho padrão) ou por um
+ * tratamento específico (ex.: Skin Class, que não tem categoria confirmada)
+ * — nunca os dois, nunca nenhum. */
+export type SkinConcern =
+  | (SkinConcernBase & { categoryId: string; treatmentId?: never })
+  | (SkinConcernBase & { treatmentId: string; categoryId?: never });
 
 export interface SkinConcernsContent {
   title: string;
@@ -133,6 +139,9 @@ export interface TreatmentSpecialOffer {
 export interface Treatment {
   id: string;
   name: string;
+  /** Nome técnico/comercial real, exibido logo abaixo do nome principal
+   * quando existir (ex.: "Peeling de Vidro" para o Skin Glass). */
+  subtitle?: string;
   categoryId?: string;
   summary?: string;
   description?: string;

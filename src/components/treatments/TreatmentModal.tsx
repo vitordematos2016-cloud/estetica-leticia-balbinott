@@ -46,6 +46,9 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
   return (
     <Modal isOpen={!!treatment} onClose={onClose} title={treatmentData.name}>
       <div className="flex flex-col gap-5">
+        {treatmentData.subtitle && (
+          <p className="-mt-3 text-sm font-medium text-brown/70">{treatmentData.subtitle}</p>
+        )}
         <div className="flex flex-wrap items-center gap-2">
           {categoryName && (
             <span className="w-fit text-xs font-medium uppercase tracking-[0.2em] text-gold-deep">

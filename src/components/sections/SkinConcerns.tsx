@@ -17,7 +17,7 @@ import { EASE_OUT } from '../motion/variants';
  */
 export function SkinConcerns() {
   const { skinConcerns } = siteContent;
-  const { requestCategoryHighlight } = useTreatmentsFilter();
+  const { requestCategoryHighlight, requestTreatmentHighlight } = useTreatmentsFilter();
 
   return (
     <section className="bg-cream-light/40 py-24 sm:py-28">
@@ -32,9 +32,16 @@ export function SkinConcerns() {
               <motion.a
                 href="#tratamentos"
                 onClick={(event) => {
-                  // Se já existir um tratamento cadastrado nessa categoria, rolamos e
-                  // destacamos esse card específico em vez do salto genérico do link.
-                  const matchedId = requestCategoryHighlight(concern.categoryId);
+                  // Se já existir um tratamento cadastrado nessa categoria (ou, para
+                  // cuidados sem categoria confirmada, pelo id do tratamento), rolamos
+                  // e destacamos esse card específico em vez do salto genérico do link.
+                  const treatmentId = 'treatmentId' in concern ? concern.treatmentId : undefined;
+                  const categoryId = 'categoryId' in concern ? concern.categoryId : undefined;
+                  const matchedId = treatmentId
+                    ? requestTreatmentHighlight(treatmentId)
+                    : categoryId
+                      ? requestCategoryHighlight(categoryId)
+                      : null;
                   if (matchedId) event.preventDefault();
                 }}
                 whileHover={{ y: -2.5 }}

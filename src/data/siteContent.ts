@@ -217,7 +217,7 @@ export const siteContent: SiteContent = {
         id: 'textura-vico',
         label: 'Melhorar textura e viço',
         description: 'Renovar a superfície da pele e devolver luminosidade.',
-        categoryId: 'limpeza-renovacao',
+        treatmentId: 'skin-class',
       },
       {
         id: 'saude-pele',
@@ -290,17 +290,16 @@ export const siteContent: SiteContent = {
   //   cuidado de pele do rosto -> nova categoria depilacao-tecnologias;
   // - Jato de Plasma: tecnologia usada no mercado quase exclusivamente para
   //   firmeza/sinais do tempo -> rejuvenescimento.
-  // "Skin Class" ficou de fora de propósito: o nome não deixa claro se é um
-  // tratamento para cliente ou um curso/aula da profissional -- categorizar
-  // sem essa confirmação seria adivinhar. Continua aparecendo em "Todos os
-  // tratamentos" normalmente, só não em nenhum filtro de categoria.
+  // "Skin Glass" (nome comercial real; "Peeling de Vidro" é o subtitle
+  // técnico, confirmado pela cliente) é um peeling -> limpeza-renovacao. O id
+  // interno permanece "skin-class" para não quebrar referências já em uso.
   treatments: [
     { id: 'limp-ghk-cu', name: 'Limp GHK-CU', categoryId: 'limpeza-renovacao' },
     { id: 'herbal-peel', name: 'Herbal Peel', categoryId: 'limpeza-renovacao' },
     { id: 'dep-laser-h', name: 'Dep. Laser H', categoryId: 'depilacao-tecnologias' },
     { id: 'jato-de-plasma', name: 'Jato de Plasma', categoryId: 'rejuvenescimento' },
     { id: 'rem-tatuagem', name: 'Remoção de Tatuagem', categoryId: 'depilacao-tecnologias' },
-    { id: 'skin-class', name: 'Skin Class' },
+    { id: 'skin-class', name: 'Skin Glass', subtitle: 'Peeling de Vidro', categoryId: 'limpeza-renovacao' },
   ],
 
   aftercare: {

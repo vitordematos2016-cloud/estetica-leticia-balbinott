@@ -53,14 +53,29 @@ export function Treatments() {
     if (activeCategoryId) setSearch('');
   }, [activeCategoryId]);
 
+  // Cards que direcionam por treatmentId (ex.: Skin Class) zeram a categoria
+  // mas não têm categoria para acionar o efeito acima -- limpamos a busca
+  // aqui para que uma busca antiga incompatível não continue escondendo o
+  // tratamento indicado. Não interfere no caminho por categoryId, que
+  // sempre chega aqui com activeCategoryId preenchido.
+  useEffect(() => {
+    if (!activeCategoryId && highlightTreatmentId && search.trim().length > 0) {
+      setSearch('');
+    }
+  }, [activeCategoryId, highlightTreatmentId, search]);
+
   // Rola até o tratamento pedido pelos cards de "Qual cuidado sua pele
   // precisa?" e o destaca por ~2s. Se o id não existir mais no DOM (ex.:
-  // catálogo mudou), apenas limpa o estado sem quebrar nada.
+  // catálogo mudou), apenas limpa o estado sem quebrar nada. Quando o
+  // destaque veio por treatmentId, a busca antiga pode ainda não ter sido
+  // limpa nesta mesma renderização -- aguardamos o efeito acima antes de
+  // desistir, em vez de cancelar o destaque prematuramente.
   useEffect(() => {
     if (!highlightTreatmentId) return;
 
     const node = document.getElementById(`servico-${highlightTreatmentId}`);
     if (!node) {
+      if (!activeCategoryId && search.trim().length > 0) return;
       clearHighlight();
       return;
     }
@@ -68,7 +83,7 @@ export function Treatments() {
     node.scrollIntoView({ behavior: 'smooth', block: 'start' });
     const timeout = window.setTimeout(clearHighlight, 2000);
     return () => window.clearTimeout(timeout);
-  }, [highlightTreatmentId, clearHighlight]);
+  }, [highlightTreatmentId, activeCategoryId, search, clearHighlight]);
 
   const filteredTreatments = useMemo(() => {
     return treatments.filter((treatment) => {
