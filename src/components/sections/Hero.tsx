@@ -71,7 +71,7 @@ export function Hero({ splashFinished }: HeroProps) {
       id="inicio"
       onPointerMove={handleSectionPointerMove}
       onPointerLeave={handleSectionPointerLeave}
-      className="relative overflow-hidden pb-20 pt-32 sm:pb-28 sm:pt-40"
+      className="relative overflow-hidden pb-20 pt-24 sm:pb-28 sm:pt-28 lg:pt-40"
     >
       <div
         aria-hidden="true"
@@ -91,12 +91,16 @@ export function Hero({ splashFinished }: HeroProps) {
         className="pointer-events-none absolute -right-24 top-40 h-64 w-64 rounded-full bg-gold/15 blur-3xl"
       />
 
-      <Container className="relative grid items-center gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
-        <RevealGroup active={splashFinished} stagger={0.12} className="flex flex-col items-start gap-6">
+      <Container className="relative grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
+        <RevealGroup
+          active={splashFinished}
+          stagger={0.12}
+          className="order-2 flex flex-col items-center gap-6 text-center lg:order-1 lg:items-start lg:text-left"
+        >
           <RevealItem>
             <Badge>{hero.eyebrow}</Badge>
           </RevealItem>
-          <RevealItem className="flex flex-col gap-6">
+          <RevealItem className="flex flex-col items-center gap-6 text-center lg:items-start lg:text-left">
             <h1 className="text-4xl leading-[1.15] text-brown-dark sm:text-5xl lg:text-[3.4rem]">
               {hero.title}
             </h1>
@@ -135,7 +139,7 @@ export function Hero({ splashFinished }: HeroProps) {
         <Reveal
           active={splashFinished}
           delay={0.15}
-          className="relative mx-auto aspect-[4/5] w-full max-w-md lg:max-w-lg [perspective:1200px]"
+          className="relative order-1 mx-auto aspect-[4/5] w-full max-w-md lg:order-2 lg:max-w-lg [perspective:1200px]"
         >
           <motion.div
             onPointerMove={handleFramePointerMove}
