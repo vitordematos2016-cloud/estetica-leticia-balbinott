@@ -3,17 +3,17 @@ import { AnimatePresence, motion } from 'motion/react';
 import type { Treatment } from '../../types/siteContent';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
-import { SectionHeading } from '../ui/SectionHeading';
 import { TreatmentCard } from '../treatments/TreatmentCard';
 import { TreatmentModal } from '../treatments/TreatmentModal';
 import { useTreatmentsFilter } from '../../context/TreatmentsFilterContext';
+import { Reveal } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
 
 const SPECIAL_OFFERS_FILTER_ID = 'condicoes-especiais';
 
-function SparkleIcon() {
+function SparkleIcon({ className }: { className?: string }) {
   return (
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" className={className}>
       <path
         d="M6.5 0.5c.3 2.1 1.1 2.9 3.2 3.2-2.1.3-2.9 1.1-3.2 3.2-.3-2.1-1.1-2.9-3.2-3.2 2.1-.3 2.9-1.1 3.2-3.2Z"
         fill="currentColor"
@@ -24,6 +24,18 @@ function SparkleIcon() {
       />
     </svg>
   );
+}
+
+/** Estilo compartilhado dos chips de categoria: selecionado usa o mesmo
+ * tratamento sólido (fundo brown-dark) já aprovado no chip "Condições
+ * especiais", para que o filtro ativo se destaque com uma única cor de
+ * ênfase em vez de tons de dourado empilhados. */
+function chipClass(active: boolean) {
+  return `shrink-0 rounded-full border px-4 py-2 text-xs font-medium uppercase tracking-wide transition-all duration-300 ${
+    active
+      ? 'border-gold bg-brown-dark text-cream-light shadow-warm-sm'
+      : 'border-gold/25 bg-cream text-brown/60 hover:border-gold/60 hover:text-brown-dark'
+  }`;
 }
 
 export function Treatments() {
@@ -74,72 +86,107 @@ export function Treatments() {
   }, [treatments, activeCategoryId, search]);
 
   return (
-    <section id="tratamentos" className="py-24 sm:py-28">
-      <Container className="flex flex-col gap-12">
-        <SectionHeading
-          eyebrow="Tratamentos"
-          title="Cuidados pensados para a individualidade da sua pele"
-          text="Cada tratamento é indicado a partir de uma avaliação personalizada, com transparência sobre benefícios e cuidados."
-        />
+    <section
+      id="tratamentos"
+      className="relative overflow-hidden bg-gradient-to-b from-cream-light/60 via-cream to-cream py-24 sm:py-28"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(177,138,85,0.14),transparent_55%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-beige/35 blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-20 bottom-10 h-80 w-80 rounded-full bg-gold/10 blur-3xl"
+      />
 
-        <div className="-mx-5 flex gap-2.5 overflow-x-auto px-5 pb-1 lg:mx-0 lg:flex-wrap lg:justify-center lg:overflow-visible lg:px-0 lg:pb-0">
-          <button
-            type="button"
-            onClick={() => selectCategory(null)}
-            aria-pressed={activeCategoryId === null}
-            className={`shrink-0 rounded-full border px-4 py-2 text-xs font-medium uppercase tracking-wide transition-colors ${
-              activeCategoryId === null
-                ? 'border-gold bg-gold/15 text-brown-dark'
-                : 'border-gold/30 text-brown/60 hover:border-gold'
-            }`}
+      <Container className="relative flex flex-col gap-10 sm:gap-14">
+        <div className="mx-auto flex max-w-xl flex-col items-center gap-4 text-center">
+          <Reveal
+            as="span"
+            className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-cream px-4 py-1.5 text-xs font-medium uppercase tracking-[0.28em] text-gold shadow-warm-sm"
           >
-            Todos os tratamentos
-          </button>
-          {availableCategories.map((category) => (
-            <button
-              key={category.id}
-              type="button"
-              onClick={() => selectCategory(category.id)}
-              aria-pressed={activeCategoryId === category.id}
-              title={category.description}
-              className={`shrink-0 rounded-full border px-4 py-2 text-xs font-medium uppercase tracking-wide transition-colors ${
-                activeCategoryId === category.id
-                  ? 'border-gold bg-gold/15 text-brown-dark'
-                  : 'border-gold/30 text-brown/60 hover:border-gold'
-              }`}
-            >
-              {category.name}
-            </button>
-          ))}
-          {hasActiveSpecialOffers && (
-            <button
-              type="button"
-              onClick={() => selectCategory(SPECIAL_OFFERS_FILTER_ID)}
-              aria-pressed={activeCategoryId === SPECIAL_OFFERS_FILTER_ID}
-              className={`flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 font-heading text-xs tracking-wide transition-colors ${
-                activeCategoryId === SPECIAL_OFFERS_FILTER_ID
-                  ? 'border-gold bg-brown-dark text-cream-light'
-                  : 'border-gold/60 bg-beige/40 text-brown-dark hover:border-gold'
-              }`}
-            >
-              <SparkleIcon />
-              Condições especiais
-            </button>
-          )}
+            <SparkleIcon />
+            Tratamentos
+          </Reveal>
+          <Reveal
+            as="h2"
+            delay={0.08}
+            className="text-3xl leading-[1.12] text-brown-dark sm:text-4xl md:text-[3.1rem]"
+          >
+            Cuidados pensados para a individualidade da sua pele
+          </Reveal>
+          <Reveal
+            aria-hidden
+            delay={0.16}
+            className="h-px w-16 bg-gradient-to-r from-transparent via-gold to-transparent"
+          />
+          <Reveal as="p" delay={0.2} className="text-base leading-relaxed text-brown/75 sm:text-lg">
+            Cada tratamento é indicado a partir de uma avaliação personalizada, com transparência sobre benefícios e cuidados.
+          </Reveal>
         </div>
 
-        {treatments.length > 0 && (
-          <label className="relative mx-auto w-full sm:w-72">
-            <span className="sr-only">Buscar tratamento</span>
-            <input
-              type="search"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Buscar tratamento..."
-              className="w-full rounded-full border border-gold/30 bg-cream px-5 py-2.5 text-sm text-brown-dark placeholder:text-brown/40 focus:border-gold"
+        <div className="flex flex-col gap-5 rounded-[2rem] border border-gold/15 bg-cream p-4 shadow-warm-sm sm:p-6">
+          <div className="relative">
+            <div className="flex gap-2.5 overflow-x-auto pb-1 lg:flex-wrap lg:justify-center lg:overflow-visible lg:pb-0">
+              <button
+                type="button"
+                onClick={() => selectCategory(null)}
+                aria-pressed={activeCategoryId === null}
+                className={chipClass(activeCategoryId === null)}
+              >
+                Todos os tratamentos
+              </button>
+              {availableCategories.map((category) => (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => selectCategory(category.id)}
+                  aria-pressed={activeCategoryId === category.id}
+                  title={category.description}
+                  className={chipClass(activeCategoryId === category.id)}
+                >
+                  {category.name}
+                </button>
+              ))}
+              {hasActiveSpecialOffers && (
+                <button
+                  type="button"
+                  onClick={() => selectCategory(SPECIAL_OFFERS_FILTER_ID)}
+                  aria-pressed={activeCategoryId === SPECIAL_OFFERS_FILTER_ID}
+                  className={`flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 font-heading text-xs tracking-wide transition-all duration-300 ${
+                    activeCategoryId === SPECIAL_OFFERS_FILTER_ID
+                      ? 'border-gold bg-brown-dark text-cream-light shadow-warm-sm'
+                      : 'border-gold/60 bg-beige/40 text-brown-dark hover:border-gold'
+                  }`}
+                >
+                  <SparkleIcon />
+                  Condições especiais
+                </button>
+              )}
+            </div>
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-cream to-transparent lg:hidden"
             />
-          </label>
-        )}
+          </div>
+
+          {treatments.length > 0 && (
+            <label className="relative mx-auto w-full sm:w-72">
+              <span className="sr-only">Buscar tratamento</span>
+              <input
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Buscar tratamento..."
+                className="w-full rounded-full border border-gold/30 bg-cream-light/40 px-5 py-2.5 text-sm text-brown-dark placeholder:text-brown/40 focus:border-gold focus:bg-cream"
+              />
+            </label>
+          )}
+        </div>
 
         {treatments.length > 0 && filteredTreatments.length === 0 && (
           <p className="text-center text-sm text-brown/60">

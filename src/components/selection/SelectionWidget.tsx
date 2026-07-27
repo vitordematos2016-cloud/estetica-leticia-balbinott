@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelection } from '../../context/SelectionContext';
 import { useScrollLock } from '../../hooks/useScrollLock';
-import { siteContent } from '../../data/siteContent';
-import { buildSelectionWhatsAppMessage, buildWhatsAppUrl } from '../../utils/whatsapp';
 
 export function SelectionWidget() {
   const { items, removeItem, clearItems, isPanelOpen, openPanel, closePanel, toastMessage, notify } =
@@ -35,10 +33,10 @@ export function SelectionWidget() {
     notify('Sua seleção foi limpa.');
   }
 
-  const whatsappUrl = buildWhatsAppUrl(
-    siteContent.contact.whatsappNumber,
-    buildSelectionWhatsAppMessage(items.map((item) => item.name)),
-  );
+  function handleGoToScheduling() {
+    closePanel();
+    document.getElementById('agendamento')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   return (
     <>
@@ -171,15 +169,14 @@ export function SelectionWidget() {
                     >
                       Continuar navegando
                     </button>
-                    <a
-                      href={whatsappUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-disabled={items.length === 0}
-                      className="flex-1 rounded-full bg-brown-dark px-6 py-3.5 text-center text-sm font-medium text-cream transition-colors hover:bg-brown"
+                    <button
+                      type="button"
+                      onClick={handleGoToScheduling}
+                      disabled={items.length === 0}
+                      className="flex-1 rounded-full bg-brown-dark px-6 py-3.5 text-center text-sm font-medium text-cream transition-colors hover:bg-brown disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-brown-dark"
                     >
-                      Agendar pelo WhatsApp
-                    </a>
+                      Ir para agendamento
+                    </button>
                   </div>
                 </>
               )}

@@ -62,6 +62,10 @@ ${notesBlock}
 A data e o periodo informados representam apenas uma preferencia. Ficarei no aguardo do retorno da equipe para confirmar a disponibilidade e o agendamento.`;
 }
 
+export function buildTreatmentInquiryMessage(treatmentName: string): string {
+  return `Olá! Tudo bem?\n\nEstou vendo o tratamento “${treatmentName}” no site da Estética Letícia Balbinott e gostaria de tirar algumas dúvidas antes de agendar.`;
+}
+
 export function buildSelectionWhatsAppMessage(itemNames: string[]): string {
   const lines = ['Olá, gostaria de agendar um horário na Estética Letícia Balbinott.', '', 'Serviços selecionados:'];
   itemNames.forEach((name) => lines.push(`- ${name}`));

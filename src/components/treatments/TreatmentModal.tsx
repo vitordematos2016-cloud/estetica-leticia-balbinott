@@ -3,7 +3,7 @@ import { Modal } from '../ui/Modal';
 import { PlaceholderMedia } from '../ui/PlaceholderMedia';
 import { BeforeAfterGallery } from './BeforeAfterGallery';
 import { useSelection } from '../../context/SelectionContext';
-import { buildWhatsAppUrl } from '../../utils/whatsapp';
+import { buildTreatmentInquiryMessage, buildWhatsAppUrl } from '../../utils/whatsapp';
 import { getTreatmentCategoryName } from '../../utils/treatments';
 import { siteContent } from '../../data/siteContent';
 import { useHeldValue } from '../../hooks/useHeldValue';
@@ -27,8 +27,21 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
   const specialOffer = treatmentData.specialOffer?.active ? treatmentData.specialOffer : undefined;
   const whatsappUrl = buildWhatsAppUrl(
     siteContent.contact.whatsappNumber,
-    treatmentData.whatsappMessage || siteContent.whatsappDefaultMessage,
+    buildTreatmentInquiryMessage(treatmentData.name),
   );
+
+  function handleGoToScheduling() {
+    if (!isSelected(treatmentData.id)) {
+      addItem({
+        id: treatmentData.id,
+        type: 'treatment',
+        name: treatmentData.name,
+        category: categoryName,
+      });
+    }
+    onClose();
+    document.getElementById('agendamento')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   return (
     <Modal isOpen={!!treatment} onClose={onClose} title={treatmentData.name}>
@@ -215,14 +228,13 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
           >
             {alreadySelected ? 'Adicionado ✓' : 'Adicionar à seleção'}
           </button>
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noreferrer"
+          <button
+            type="button"
+            onClick={handleGoToScheduling}
             className="flex-1 rounded-full bg-brown-dark px-6 py-3 text-center text-sm font-medium text-cream transition-colors hover:bg-brown"
           >
-            Perguntar no WhatsApp
-          </a>
+            Ir para agendamento
+          </button>
         </div>
         {alreadySelected && (
           <button
@@ -233,6 +245,14 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
             Remover da seleção
           </button>
         )}
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="self-center text-xs font-medium text-brown/50 underline decoration-gold/40 underline-offset-2 hover:text-gold"
+        >
+          Ainda tem alguma dúvida? Falar no WhatsApp
+        </a>
       </div>
     </Modal>
   );

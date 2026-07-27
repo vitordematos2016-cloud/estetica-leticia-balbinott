@@ -23,32 +23,24 @@ interface SelectionContextValue {
 
 const SelectionContext = createContext<SelectionContextValue | undefined>(undefined);
 
-const STORAGE_KEY = 'leh-estetic:minha-selecao';
-
-function loadFromStorage(): SelectionItem[] {
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) return parsed as SelectionItem[];
-    return [];
-  } catch {
-    return [];
-  }
-}
+/** Chave usada quando a seleção ainda era persistida em localStorage. A
+ * seleção agora vive só em memória (dado de cliente não pode sobreviver a um
+ * F5 ou a uma nova visita); isto só limpa resíduo deixado por sessões
+ * anteriores ao carregar o app. */
+const LEGACY_STORAGE_KEY = 'leh-estetic:minha-selecao';
 
 export function SelectionProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<SelectionItem[]>(() => loadFromStorage());
+  const [items, setItems] = useState<SelectionItem[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   useEffect(() => {
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      window.localStorage.removeItem(LEGACY_STORAGE_KEY);
     } catch {
-      // storage unavailable — selection just won't persist across reloads
+      // storage indisponível — nada para limpar
     }
-  }, [items]);
+  }, []);
 
   const notify = useCallback((message: string) => {
     setToastMessage(message);

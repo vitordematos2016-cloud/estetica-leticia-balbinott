@@ -165,6 +165,7 @@ export function Scheduling() {
 
         <form
           noValidate
+          autoComplete="off"
           onSubmit={handleSubmit}
           className="flex flex-col gap-5 rounded-[2rem] border border-gold/25 bg-cream-light/30 p-7 sm:p-9"
         >
@@ -176,6 +177,7 @@ export function Scheduling() {
               id="scheduling-name"
               ref={nameRef}
               type="text"
+              autoComplete="off"
               value={form.name}
               onChange={(event) => updateField('name', event.target.value)}
               aria-invalid={!!errors.name}
@@ -197,6 +199,7 @@ export function Scheduling() {
               id="scheduling-phone"
               ref={phoneRef}
               type="tel"
+              autoComplete="off"
               value={form.phone}
               onChange={(event) => updateField('phone', event.target.value)}
               placeholder="(45) 90000-0000"
@@ -235,6 +238,7 @@ export function Scheduling() {
               id="scheduling-date"
               ref={dateRef}
               type="date"
+              autoComplete="off"
               min={getClinicTodayISO()}
               value={form.date}
               onChange={(event) => updateField('date', event.target.value)}
@@ -324,6 +328,7 @@ export function Scheduling() {
             </label>
             <textarea
               id="scheduling-notes"
+              autoComplete="off"
               value={form.notes}
               onChange={(event) => updateField('notes', event.target.value)}
               rows={3}
