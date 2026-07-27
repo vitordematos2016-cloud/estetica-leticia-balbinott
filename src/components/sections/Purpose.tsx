@@ -2,21 +2,9 @@ import { useRef } from 'react';
 import { motion, useInView } from 'motion/react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
+import { Ornament } from '../ui/Ornament';
 import { Reveal } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
-
-function Ornament({ mirror = false }: { mirror?: boolean }) {
-  return (
-    <div
-      aria-hidden="true"
-      className={`relative h-20 w-20 sm:h-24 sm:w-24 ${mirror ? 'scale-x-[-1]' : ''}`}
-    >
-      <div className="absolute inset-0 rounded-full border border-gold/25" />
-      <div className="absolute inset-3 rounded-full border border-dashed border-gold/30" />
-      <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/50" />
-    </div>
-  );
-}
 
 export function Purpose() {
   const { purpose } = siteContent;
