@@ -1,6 +1,14 @@
 import { useRef, useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
-import { motion, useInView, useMotionValue, useSpring, useTransform } from 'motion/react';
+import {
+  motion,
+  useInView,
+  useMotionTemplate,
+  useMotionValue,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'motion/react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
@@ -34,6 +42,51 @@ export function Location() {
   const beamFrameDesktopRef = useRef<HTMLDivElement>(null);
   const beamInViewMobile = useInView(beamFrameMobileRef, { once: true, amount: 0.4 });
   const beamInViewDesktop = useInView(beamFrameDesktopRef, { once: true, amount: 0.4 });
+
+  // Efeito exclusivo do bloco mobile: cada elemento reage continuamente ao
+  // PROGRESSO da própria rolagem (useScroll + useTransform), não a um
+  // booleano de "entrou na tela" -- um useInView anterior só disparava uma
+  // transição curta ao cruzar um limiar e ficava estático o resto do tempo,
+  // o que não é perceptível durante uma rolagem lenta. Refs próprias, sem
+  // afetar beamFrameMobileRef/beamInViewMobile (raio, inalterado).
+  const photoScrollRef = useRef<HTMLDivElement>(null);
+  const addressScrollRef = useRef<HTMLDivElement>(null);
+  const actionsScrollRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress: photoProgress } = useScroll({
+    target: photoScrollRef,
+    offset: ['start end', 'end start'],
+  });
+  const { scrollYProgress: addressProgress } = useScroll({
+    target: addressScrollRef,
+    offset: ['start end', 'end start'],
+  });
+  const { scrollYProgress: actionsProgress } = useScroll({
+    target: actionsScrollRef,
+    offset: ['start end', 'end start'],
+  });
+
+  const photoY = useTransform(photoProgress, [0, 0.45, 1], [18, 0, -8]);
+  const photoScale = useTransform(photoProgress, [0, 0.45, 1], [0.97, 1, 0.99]);
+  const photoOpacity = useTransform(photoProgress, [0, 0.45, 1], [0.82, 1, 0.92]);
+  const photoShadowAlpha = useTransform(photoProgress, [0, 0.45, 1], [0.15, 0.4, 0.28]);
+  const photoRingAlpha = useTransform(photoProgress, [0, 0.45, 1], [0.2, 0.5, 0.35]);
+  const photoBoxShadow = useMotionTemplate`0 0 0 2px rgba(177,138,85,${photoRingAlpha}), 0 22px 42px -18px rgba(91,64,51,${photoShadowAlpha})`;
+
+  const addressY = useTransform(addressProgress, [0, 0.4, 1], [20, 0, -6]);
+  const addressScale = useTransform(addressProgress, [0, 0.4, 1], [0.97, 1, 0.99]);
+  const addressOpacity = useTransform(addressProgress, [0, 0.4, 1], [0.85, 1, 0.94]);
+  const addressShadowAlpha = useTransform(addressProgress, [0, 0.4, 1], [0.12, 0.32, 0.22]);
+  const addressRingAlpha = useTransform(addressProgress, [0, 0.4, 1], [0.15, 0.45, 0.3]);
+  const addressBoxShadow = useMotionTemplate`0 0 0 1.5px rgba(177,138,85,${addressRingAlpha}), 0 16px 32px -16px rgba(91,64,51,${addressShadowAlpha})`;
+
+  const mapsY = useTransform(actionsProgress, [0.05, 0.35], [14, 0]);
+  const mapsScale = useTransform(actionsProgress, [0.05, 0.35], [0.98, 1]);
+  const mapsOpacity = useTransform(actionsProgress, [0.05, 0.35], [0.85, 1]);
+  const wazeY = useTransform(actionsProgress, [0.15, 0.45], [14, 0]);
+  const wazeOpacity = useTransform(actionsProgress, [0.15, 0.45], [0.85, 1]);
+  const copyY = useTransform(actionsProgress, [0.25, 0.55], [14, 0]);
+  const copyOpacity = useTransform(actionsProgress, [0.25, 0.55], [0.85, 1]);
 
   const rawTiltX = useMotionValue(0);
   const rawTiltY = useMotionValue(0);
@@ -72,98 +125,132 @@ export function Location() {
       {/* Mobile (<768px): "Venha nos visitar" -> imagem -> "Localização" ->
           endereço -> referência -> botões. Bloco independente do desktop
           para não reaproveitar estilos fora do breakpoint. */}
-      <Container className="flex flex-col gap-6 md:hidden">
-        <Reveal as="h2" className="text-3xl leading-[1.15] text-brown-dark">
-          Venha nos visitar
-        </Reveal>
-
-        <Reveal delay={0.1}>
-          <div className="relative [perspective:1000px]">
-            <motion.div
-              aria-hidden="true"
-              style={{ x: glowShiftX, y: glowShiftY }}
-              className="pointer-events-none absolute -inset-4 -z-10 rounded-[2.5rem] bg-gold/10 blur-2xl"
-            />
-            <motion.div
-              onPointerMove={handleFramePointerMove}
-              onPointerLeave={handleFramePointerLeave}
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.985 }}
-              transition={{ duration: 0.35, ease: EASE_OUT }}
-              style={{ rotateX: tiltX, rotateY: tiltY }}
-              className="group"
-            >
-              <div
-                ref={beamFrameMobileRef}
-                className="relative w-full overflow-hidden rounded-[2rem]"
-              >
-                <PhotoFrame
-                  src={fachadaImage}
-                  alt={facadeAlt}
-                  className="w-full transition-[border-color,box-shadow] duration-300 motion-reduce:transition-none group-hover:border-gold group-hover:shadow-warm group-active:border-gold group-active:shadow-warm"
-                />
-                {!prefersReducedMotion && (
-                  <motion.div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-y-0 left-0 z-20 w-1/3 -skew-x-12 bg-[linear-gradient(90deg,transparent,rgba(201,160,109,0.45)_30%,rgba(255,238,204,0.75)_50%,rgba(201,160,109,0.45)_70%,transparent)] blur-sm"
-                    initial={{ x: '-200%', opacity: 0 }}
-                    animate={beamInViewMobile ? { x: '500%', opacity: [0, 1, 1, 0] } : {}}
-                    transition={{ duration: 1.4, ease: EASE_OUT, delay: 0.7 }}
-                  />
-                )}
-              </div>
-            </motion.div>
-          </div>
-        </Reveal>
-
-        <Reveal
-          delay={0.18}
-          className="flex flex-col gap-3 rounded-[1.5rem] border border-gold/20 bg-cream/40 p-5 transition-colors duration-300 hover:border-gold/40"
-        >
-          <span aria-hidden="true" className="h-px w-10 bg-gold/50" />
+      <Container className="flex flex-col gap-5 md:hidden">
+        <Reveal className="flex flex-col items-center gap-1.5 text-center">
           <span className="text-xs font-medium uppercase tracking-[0.28em] text-gold-deep">
             Localização
           </span>
-          <div className="flex flex-col gap-1">
-            <p className="text-lg text-brown-dark">{address.street}</p>
-            <p className="text-sm text-brown/60">{address.reference}</p>
-          </div>
+          <h2 className="text-3xl leading-[1.15] text-brown-dark">Venha nos visitar</h2>
+          <span aria-hidden="true" className="mt-1 h-px w-10 bg-gold/50" />
         </Reveal>
 
-        <Reveal delay={0.26} className="flex flex-col gap-3">
-          <motion.a
-            href={address.googleMapsUrl}
-            target="_blank"
-            rel="noreferrer"
-            whileHover={{ y: -2, scale: 1.01 }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ duration: 0.25, ease: EASE_OUT }}
-            className="w-full rounded-full bg-brown-dark px-6 py-3 text-center text-sm font-medium text-cream shadow-warm-sm transition-shadow duration-300 hover:shadow-warm active:shadow-warm"
+        <motion.div
+          ref={photoScrollRef}
+          style={
+            prefersReducedMotion
+              ? { opacity: 1, y: 0, scale: 1 }
+              : { y: photoY, scale: photoScale, opacity: photoOpacity }
+          }
+          className="relative [perspective:1000px]"
+        >
+          <motion.div
+            aria-hidden="true"
+            style={{ x: glowShiftX, y: glowShiftY }}
+            className="pointer-events-none absolute -inset-x-3 -inset-y-5 translate-x-1 translate-y-1.5 -z-10 rounded-[2.5rem] bg-gold/10 blur-2xl"
+          />
+          <motion.div
+            onPointerMove={handleFramePointerMove}
+            onPointerLeave={handleFramePointerLeave}
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.985 }}
+            transition={{ duration: 0.35, ease: EASE_OUT }}
+            style={{ rotateX: tiltX, rotateY: tiltY }}
+            className="group"
           >
-            Abrir no Google Maps
-          </motion.a>
-          <motion.a
-            href={address.wazeUrl}
-            target="_blank"
-            rel="noreferrer"
-            whileHover={{ y: -1 }}
-            whileTap={{ scale: 0.975 }}
-            transition={{ duration: 0.25, ease: EASE_OUT }}
-            className="w-full rounded-full border border-gold/50 px-6 py-3 text-center text-sm font-medium text-brown-dark transition-colors hover:bg-gold/10"
+            <motion.div
+              ref={beamFrameMobileRef}
+              style={prefersReducedMotion ? undefined : { boxShadow: photoBoxShadow }}
+              className="relative isolate w-full overflow-hidden rounded-[2rem] shadow-warm-sm"
+            >
+              <PhotoFrame
+                src={fachadaImage}
+                alt={facadeAlt}
+                className="w-full transition-[border-color,box-shadow] duration-300 motion-reduce:transition-none group-hover:border-gold group-hover:shadow-warm group-active:border-gold group-active:shadow-warm"
+              />
+              {!prefersReducedMotion && (
+                <motion.div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 left-0 z-20 w-1/3 -skew-x-12 bg-[linear-gradient(90deg,transparent,rgba(201,160,109,0.45)_30%,rgba(255,238,204,0.75)_50%,rgba(201,160,109,0.45)_70%,transparent)] blur-sm"
+                  initial={{ x: '-200%', opacity: 0 }}
+                  animate={beamInViewMobile ? { x: '500%', opacity: [0, 1, 1, 0] } : {}}
+                  transition={{ duration: 1.4, ease: EASE_OUT, delay: 0.7 }}
+                />
+              )}
+            </motion.div>
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          ref={addressScrollRef}
+          style={
+            prefersReducedMotion
+              ? { opacity: 1, y: 0, scale: 1 }
+              : {
+                  y: addressY,
+                  scale: addressScale,
+                  opacity: addressOpacity,
+                  boxShadow: addressBoxShadow,
+                }
+          }
+          className="relative z-10 -mt-12 mx-auto flex w-[90%] flex-col items-center gap-1.5 rounded-[1.5rem] bg-cream/95 p-5 text-center shadow-warm-sm"
+        >
+          <span aria-hidden="true" className="h-px w-8 bg-gold/50" />
+          <p className="text-lg text-brown-dark">{address.street}</p>
+          <p className="text-sm text-brown/60">{address.reference}</p>
+        </motion.div>
+
+        <div ref={actionsScrollRef} className="flex flex-col gap-3">
+          <motion.div
+            style={
+              prefersReducedMotion
+                ? { opacity: 1, y: 0, scale: 1 }
+                : { y: mapsY, scale: mapsScale, opacity: mapsOpacity }
+            }
           >
-            Abrir no Waze
-          </motion.a>
-          <motion.button
-            type="button"
-            onClick={handleCopyAddress}
-            whileHover={{ y: -1 }}
-            whileTap={{ scale: 0.975 }}
-            transition={{ duration: 0.25, ease: EASE_OUT }}
-            className="w-full rounded-full border border-gold/50 px-6 py-3 text-center text-sm font-medium text-brown-dark transition-colors hover:bg-gold/10"
-          >
-            {copied ? 'Endereço copiado!' : 'Copiar endereço'}
-          </motion.button>
-        </Reveal>
+            <motion.a
+              href={address.googleMapsUrl}
+              target="_blank"
+              rel="noreferrer"
+              whileHover={{ y: -2, scale: 1.01 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ duration: 0.25, ease: EASE_OUT }}
+              className="flex min-h-12 w-full items-center justify-center rounded-full bg-brown-dark px-6 text-center text-sm font-medium text-cream shadow-warm-sm transition-shadow duration-300 hover:shadow-warm active:shadow-warm"
+            >
+              Abrir no Google Maps
+            </motion.a>
+          </motion.div>
+          <div className="grid grid-cols-1 gap-3 min-[390px]:grid-cols-2">
+            <motion.div
+              style={prefersReducedMotion ? { opacity: 1, y: 0 } : { y: wazeY, opacity: wazeOpacity }}
+            >
+              <motion.a
+                href={address.wazeUrl}
+                target="_blank"
+                rel="noreferrer"
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.975 }}
+                transition={{ duration: 0.25, ease: EASE_OUT }}
+                className="flex min-h-11 items-center justify-center rounded-full border border-gold/50 px-4 text-center text-sm font-medium text-brown-dark transition-colors hover:bg-gold/10"
+              >
+                Abrir no Waze
+              </motion.a>
+            </motion.div>
+            <motion.div
+              style={prefersReducedMotion ? { opacity: 1, y: 0 } : { y: copyY, opacity: copyOpacity }}
+            >
+              <motion.button
+                type="button"
+                onClick={handleCopyAddress}
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.975 }}
+                transition={{ duration: 0.25, ease: EASE_OUT }}
+                className="flex min-h-11 items-center justify-center rounded-full border border-gold/50 px-4 text-center text-sm font-medium text-brown-dark transition-colors hover:bg-gold/10"
+              >
+                {copied ? 'Endereço copiado!' : 'Copiar endereço'}
+              </motion.button>
+            </motion.div>
+          </div>
+        </div>
       </Container>
 
       {/* Tablet/notebook/desktop (>=768px): composição já aprovada, intacta. */}
@@ -247,7 +334,7 @@ export function Location() {
             >
               <div
                 ref={beamFrameDesktopRef}
-                className="relative mx-auto w-full max-w-sm overflow-hidden rounded-[2rem] lg:max-w-none"
+                className="relative isolate mx-auto w-full max-w-sm overflow-hidden rounded-[2rem] lg:max-w-none"
               >
                 <PhotoFrame
                   src={fachadaImage}
