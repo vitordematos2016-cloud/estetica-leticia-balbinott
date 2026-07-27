@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 const sizeClasses = {
   md: 'h-20 w-20 sm:h-24 sm:w-24',
   sm: 'h-14 w-14 sm:h-16 sm:w-16',
+  xs: 'h-10 w-10',
 } as const;
 
 interface OrnamentProps {
