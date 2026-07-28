@@ -1,3 +1,4 @@
+import { motion } from 'motion/react';
 import type { Treatment } from '../../types/siteContent';
 import { Modal } from '../ui/Modal';
 import { PlaceholderMedia } from '../ui/PlaceholderMedia';
@@ -7,6 +8,7 @@ import { buildTreatmentInquiryMessage, buildWhatsAppUrl } from '../../utils/what
 import { getTreatmentCategoryName } from '../../utils/treatments';
 import { siteContent } from '../../data/siteContent';
 import { useHeldValue } from '../../hooks/useHeldValue';
+import { EASE_OUT } from '../motion/variants';
 
 interface TreatmentModalProps {
   treatment: Treatment | null;
@@ -213,7 +215,7 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
         <p className="text-xs text-brown/50">Cada atendimento é avaliado individualmente.</p>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <button
+          <motion.button
             type="button"
             onClick={() =>
               addItem({
@@ -223,27 +225,33 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
                 category: categoryName,
               })
             }
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.975 }}
+            transition={{ duration: 0.2, ease: EASE_OUT }}
             className={`flex-1 rounded-full px-6 py-3 text-sm font-medium transition-colors ${
               alreadySelected
                 ? 'bg-gold/20 text-brown-dark'
-                : 'border border-gold/50 text-brown-dark hover:bg-gold/10'
+                : 'border border-gold/50 text-brown-dark hover:bg-gold/10 active:bg-gold/15'
             }`}
           >
             {alreadySelected ? 'Adicionado ✓' : 'Adicionar à seleção'}
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             type="button"
             onClick={handleGoToScheduling}
-            className="flex-1 rounded-full bg-brown-dark px-6 py-3 text-center text-sm font-medium text-cream transition-colors hover:bg-brown"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.975 }}
+            transition={{ duration: 0.2, ease: EASE_OUT }}
+            className="flex-1 rounded-full bg-brown-dark px-6 py-3 text-center text-sm font-medium text-cream shadow-warm-sm transition-all hover:bg-brown hover:shadow-warm"
           >
             Ir para agendamento
-          </button>
+          </motion.button>
         </div>
         {alreadySelected && (
           <button
             type="button"
             onClick={() => removeItem(treatmentData.id)}
-            className="self-center text-xs font-medium text-brown/50 underline decoration-gold/40 underline-offset-2 hover:text-gold"
+            className="self-center text-xs font-medium text-brown/50 underline decoration-gold/40 underline-offset-2 transition-colors hover:text-gold active:text-gold"
           >
             Remover da seleção
           </button>
@@ -252,7 +260,7 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
           href={whatsappUrl}
           target="_blank"
           rel="noreferrer"
-          className="self-center text-xs font-medium text-brown/50 underline decoration-gold/40 underline-offset-2 hover:text-gold"
+          className="self-center text-xs font-medium text-brown/50 underline decoration-gold/40 underline-offset-2 transition-colors hover:text-gold active:text-gold"
         >
           Ainda tem alguma dúvida? Falar no WhatsApp
         </a>

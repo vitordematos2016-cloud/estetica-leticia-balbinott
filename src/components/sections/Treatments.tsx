@@ -34,9 +34,12 @@ function chipClass(active: boolean) {
   return `shrink-0 rounded-full border px-4 py-2 text-xs font-medium uppercase tracking-wide transition-all duration-300 ${
     active
       ? 'border-gold bg-brown-dark text-cream-light shadow-warm-sm'
-      : 'border-gold/25 bg-cream text-brown/60 hover:border-gold/60 hover:text-brown-dark'
+      : 'border-gold/25 bg-cream text-brown/60 hover:border-gold/60 hover:text-brown-dark active:border-gold/60 active:text-brown-dark'
   }`;
 }
+
+const CHIP_TAP = { scale: 0.96 };
+const CHIP_TRANSITION = { duration: 0.2, ease: EASE_OUT };
 
 export function Treatments() {
   const { treatments, treatmentCategories } = siteContent;
@@ -147,40 +150,46 @@ export function Treatments() {
         <div className="flex flex-col gap-5 rounded-[2rem] border border-gold/15 bg-cream p-4 shadow-warm-sm sm:p-6">
           <div className="relative">
             <div className="flex gap-2.5 overflow-x-auto pb-1 lg:flex-wrap lg:justify-center lg:overflow-visible lg:pb-0">
-              <button
+              <motion.button
                 type="button"
                 onClick={() => selectCategory(null)}
                 aria-pressed={activeCategoryId === null}
+                whileTap={CHIP_TAP}
+                transition={CHIP_TRANSITION}
                 className={chipClass(activeCategoryId === null)}
               >
                 Todos os tratamentos
-              </button>
+              </motion.button>
               {availableCategories.map((category) => (
-                <button
+                <motion.button
                   key={category.id}
                   type="button"
                   onClick={() => selectCategory(category.id)}
                   aria-pressed={activeCategoryId === category.id}
                   title={category.description}
+                  whileTap={CHIP_TAP}
+                  transition={CHIP_TRANSITION}
                   className={chipClass(activeCategoryId === category.id)}
                 >
                   {category.name}
-                </button>
+                </motion.button>
               ))}
               {hasActiveSpecialOffers && (
-                <button
+                <motion.button
                   type="button"
                   onClick={() => selectCategory(SPECIAL_OFFERS_FILTER_ID)}
                   aria-pressed={activeCategoryId === SPECIAL_OFFERS_FILTER_ID}
+                  whileTap={CHIP_TAP}
+                  transition={CHIP_TRANSITION}
                   className={`flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 font-heading text-xs tracking-wide transition-all duration-300 ${
                     activeCategoryId === SPECIAL_OFFERS_FILTER_ID
                       ? 'border-gold bg-brown-dark text-cream-light shadow-warm-sm'
-                      : 'border-gold/60 bg-beige/40 text-brown-dark hover:border-gold'
+                      : 'border-gold/60 bg-beige/40 text-brown-dark hover:border-gold active:border-gold'
                   }`}
                 >
                   <SparkleIcon />
                   Condições especiais
-                </button>
+                </motion.button>
               )}
             </div>
             <div
@@ -236,13 +245,16 @@ export function Treatments() {
 
         {activeCategoryId !== null && (
           <div className="flex justify-center">
-            <button
+            <motion.button
               type="button"
               onClick={() => selectCategory(null)}
-              className="rounded-full border border-gold/40 bg-cream-light/60 px-6 py-3 text-sm font-medium text-brown-dark shadow-warm-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/70 hover:shadow-warm"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.975 }}
+              transition={CHIP_TRANSITION}
+              className="rounded-full border border-gold/40 bg-cream-light/60 px-6 py-3 text-sm font-medium text-brown-dark shadow-warm-sm transition-all duration-300 hover:border-gold/70 hover:shadow-warm active:border-gold/70 active:shadow-warm"
             >
               Ver todos os tratamentos
-            </button>
+            </motion.button>
           </div>
         )}
       </Container>

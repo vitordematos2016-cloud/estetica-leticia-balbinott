@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useScrollLock } from '../../hooks/useScrollLock';
-import { overlayBackdropVariants, overlayPanelVariants } from '../motion/variants';
+import { EASE_OUT, overlayBackdropVariants, overlayPanelVariants } from '../motion/variants';
 
 interface ModalProps {
   isOpen: boolean;
@@ -76,11 +76,15 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
               <h3 id="modal-title" className="text-2xl text-brown-dark">
                 {title}
               </h3>
-              <button
+              <motion.button
                 ref={closeButtonRef}
+                type="button"
                 onClick={onClose}
                 aria-label="Fechar detalhes"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/40 text-brown-dark transition-colors hover:bg-gold/10"
+                whileHover={{ scale: 1.06 }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ duration: 0.15, ease: EASE_OUT }}
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-gold/40 text-brown-dark transition-colors hover:bg-gold/10 active:bg-gold/15"
               >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path
@@ -90,7 +94,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
                     strokeLinecap="round"
                   />
                 </svg>
-              </button>
+              </motion.button>
             </div>
             {children}
           </motion.div>

@@ -1,10 +1,13 @@
 import { motion } from 'motion/react';
 import { siteContent } from '../../data/siteContent';
+import type { TechnologyItem } from '../../types/siteContent';
 import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
 import { useExpandableSection } from '../../hooks/useExpandableSection';
 import { RevealGroup, RevealItem } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
+import { useMobileViewportActive } from '../../hooks/useMobileViewportActive';
+import { mobileCardTransition, mobileCardVariants } from '../motion/mobileActive';
 
 function ToggleIcon({ up }: { up: boolean }) {
   return (
@@ -29,7 +32,54 @@ function ToggleIcon({ up }: { up: boolean }) {
 }
 
 const toggleButtonClassName =
-  'flex items-center gap-2.5 rounded-full border border-gold/40 bg-gradient-to-r from-cream via-cream to-beige/40 px-6 py-3 text-sm font-medium text-brown-dark shadow-warm-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/70 hover:shadow-warm';
+  'flex items-center gap-2.5 rounded-full border border-gold/40 bg-gradient-to-r from-cream via-cream to-beige/40 px-6 py-3 text-sm font-medium text-brown-dark shadow-warm-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/70 hover:shadow-warm active:border-gold/70 active:shadow-warm';
+
+/**
+ * Abaixo de 768px, `data-mobile-active` espelha o mesmo destaque que
+ * `group-hover`/`group-active` já davam no desktop, só que acionado por
+ * `useMobileViewportActive` (card cruzando a região central da tela) em vez
+ * de um ponteiro real -- reaproveita as mesmas classes-alvo do hover via
+ * `group-data-[mobile-active=true]:`, então o visual final é idêntico.
+ */
+function TechCard({ item }: { item: TechnologyItem }) {
+  const { ref, active, isMobileViewport } = useMobileViewportActive<HTMLDivElement>();
+
+  return (
+    <RevealItem key={item.id}>
+      <motion.div
+        variants={mobileCardVariants}
+        initial={false}
+        animate={isMobileViewport ? (active ? 'active' : 'rest') : undefined}
+        transition={mobileCardTransition}
+      >
+        <motion.div
+          ref={ref}
+          data-mobile-active={isMobileViewport ? active : undefined}
+          className="group relative flex h-full flex-col gap-2 overflow-hidden rounded-[1.75rem_1.75rem_1.75rem_0.75rem] border border-gold/25 bg-gradient-to-br from-cream via-cream to-beige/30 p-6 shadow-warm-sm transition-all duration-300 hover:border-gold hover:shadow-warm active:border-gold active:shadow-warm data-[mobile-active=true]:border-gold data-[mobile-active=true]:shadow-warm"
+          whileHover={{ y: -2.5 }}
+          whileTap={{ scale: 0.99 }}
+          transition={{ duration: 0.25, ease: EASE_OUT }}
+        >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full bg-gold/10 opacity-70 blur-2xl transition-opacity duration-300 group-hover:opacity-100 group-active:opacity-100 group-data-[mobile-active=true]:opacity-100"
+          />
+          <span
+            aria-hidden="true"
+            className="relative h-1.5 w-1.5 rounded-full bg-gold/60 transition-transform duration-300 group-hover:scale-150 group-active:scale-150 group-data-[mobile-active=true]:scale-150"
+          />
+          <h3 className="relative text-lg text-brown-dark transition-colors duration-300 group-hover:text-gold group-active:text-gold group-data-[mobile-active=true]:text-gold">
+            {item.name}
+          </h3>
+          <p className="relative text-sm leading-relaxed text-brown/70">{item.purpose}</p>
+          {item.benefit && (
+            <p className="relative text-xs font-medium uppercase tracking-wide text-gold-deep">{item.benefit}</p>
+          )}
+        </motion.div>
+      </motion.div>
+    </RevealItem>
+  );
+}
 
 /**
  * Cards puramente informativos (sem onClick/href/role) — a microinteração é
@@ -109,32 +159,7 @@ export function Technologies() {
                 className="grid w-full gap-6 sm:grid-cols-2 lg:grid-cols-3"
               >
                 {technologies.items.map((item) => (
-                  <RevealItem key={item.id}>
-                    <motion.div
-                      className="group relative flex h-full flex-col gap-2 overflow-hidden rounded-[1.75rem_1.75rem_1.75rem_0.75rem] border border-gold/25 bg-gradient-to-br from-cream via-cream to-beige/30 p-6 shadow-warm-sm transition-all duration-300 hover:border-gold hover:shadow-warm active:border-gold active:shadow-warm"
-                      whileHover={{ y: -2.5 }}
-                      whileTap={{ scale: 0.99 }}
-                      transition={{ duration: 0.25, ease: EASE_OUT }}
-                    >
-                      <div
-                        aria-hidden="true"
-                        className="pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full bg-gold/10 opacity-70 blur-2xl transition-opacity duration-300 group-hover:opacity-100 group-active:opacity-100"
-                      />
-                      <span
-                        aria-hidden="true"
-                        className="relative h-1.5 w-1.5 rounded-full bg-gold/60 transition-transform duration-300 group-hover:scale-150 group-active:scale-150"
-                      />
-                      <h3 className="relative text-lg text-brown-dark transition-colors duration-300 group-hover:text-gold group-active:text-gold">
-                        {item.name}
-                      </h3>
-                      <p className="relative text-sm leading-relaxed text-brown/70">{item.purpose}</p>
-                      {item.benefit && (
-                        <p className="relative text-xs font-medium uppercase tracking-wide text-gold-deep">
-                          {item.benefit}
-                        </p>
-                      )}
-                    </motion.div>
-                  </RevealItem>
+                  <TechCard key={item.id} item={item} />
                 ))}
               </RevealGroup>
             )}

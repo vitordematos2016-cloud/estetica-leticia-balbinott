@@ -29,10 +29,10 @@ export function Faq() {
             return (
               <RevealItem
                 key={item.question}
-                className={`overflow-hidden rounded-[1.75rem_1.75rem_1.75rem_0.75rem] border transition-all duration-300 hover:-translate-y-0.5 ${
+                className={`overflow-hidden rounded-[1.75rem_1.75rem_1.75rem_0.75rem] border transition-all duration-300 hover:-translate-y-0.5 active:-translate-y-0.5 ${
                   isOpen
                     ? 'border-gold/45 bg-cream shadow-warm'
-                    : 'border-gold/20 bg-cream-light/40 shadow-warm-sm hover:border-gold/40 hover:shadow-warm'
+                    : 'border-gold/20 bg-cream-light/40 shadow-warm-sm hover:border-gold/40 hover:shadow-warm active:border-gold/40 active:shadow-warm'
                 }`}
               >
                 <h3>

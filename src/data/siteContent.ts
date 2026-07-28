@@ -321,10 +321,9 @@ export const siteContent: SiteContent = {
   },
 
   instagramShowcase: {
-    title: 'Acompanhe cuidados, resultados e bastidores da Estética Letícia Balbinott',
-    text: 'Uma seleção de publicações do Instagram da Estética Letícia Balbinott.',
-    notice: 'Publicações em seleção — em breve, destaques direto do Instagram.',
-    postsPlaceholderCount: 6,
+    title: 'Instagram',
+    text: 'Acompanhe nossos cuidados, resultados e bastidores.',
+    ctaLabel: 'Visitar Instagram',
   },
 
   // Avaliações reais do perfil oficial da Estética Letícia Balbinott no

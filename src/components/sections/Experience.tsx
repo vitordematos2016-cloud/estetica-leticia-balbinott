@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { motion } from 'motion/react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
@@ -5,6 +6,8 @@ import { SectionHeading } from '../ui/SectionHeading';
 import { PhotoFrame } from '../ui/PhotoFrame';
 import { Reveal, RevealGroup, RevealItem } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
+import { useMobileViewportActive } from '../../hooks/useMobileViewportActive';
+import { mobileCardTransition, mobileCardVariants } from '../motion/mobileActive';
 import corredorImage from '../../assets/leh-estetic/corredor-leh-estetic.webp';
 import salaImage from '../../assets/leh-estetic/sala-principal-leh-estetic.webp';
 import salaSecundariaImage from '../../assets/leh-estetic/sala-secundaria-leh-estetic.webp';
@@ -23,56 +26,82 @@ import salaSecundariaImage from '../../assets/leh-estetic/sala-secundaria-leh-es
  *    `motion-safe:` em paralelo — cor, sombra e borda continuam podendo
  *    mudar, só que instantâneas, via a regra global de reduced-motion já
  *    existente em index.css).
+ *
+ * Abaixo de 768px, um wrapper externo com `useMobileViewportActive` recua o
+ * conjunto fora da região central da tela e devolve presença total ao
+ * cruzá-la; `data-mobile-active` no `.group` reaproveita as mesmas classes
+ * `group-hover:`/`group-active:` já existentes (via a variante
+ * `group-data-[mobile-active=true]:`), então o efeito mobile é visualmente
+ * idêntico ao hover, só acionado pela rolagem em vez do ponteiro.
  */
 function ExperienceSet({
   image,
   alt,
   title,
+  titleLabel,
   text,
 }: {
   image: string;
   alt: string;
-  title?: string;
+  title?: ReactNode;
+  /** Nome acessível do título quando `title` não é um texto simples (ex.:
+   * quebrado em duas linhas com spans) -- garante que leitores de tela
+   * continuem anunciando a frase completa, independente da marcação visual. */
+  titleLabel?: string;
   text: string;
 }) {
+  const { ref, active, isMobileViewport } = useMobileViewportActive<HTMLDivElement>();
+
   return (
     <motion.div
-      className="group relative flex flex-col items-center gap-6 text-center"
-      whileTap={{ scale: 0.99 }}
-      transition={{ duration: 0.15, ease: EASE_OUT }}
+      ref={ref}
+      variants={mobileCardVariants}
+      initial={false}
+      animate={isMobileViewport ? (active ? 'active' : 'rest') : undefined}
+      transition={mobileCardTransition}
     >
-      <div className="relative mx-auto w-full max-w-xs sm:max-w-sm lg:max-w-none">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -translate-x-2 translate-y-2 rounded-[2rem] bg-beige/40"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -inset-3 rounded-[2.5rem] bg-gold/10 opacity-60 blur-2xl transition-opacity duration-300 group-hover:opacity-100 group-active:opacity-100"
-        />
-        <PhotoFrame
-          src={image}
-          alt={alt}
-          className="relative w-full transition-shadow duration-300 group-hover:border-gold/70 group-hover:shadow-warm group-active:border-gold/70 group-active:shadow-warm"
-        />
-      </div>
+      <motion.div
+        data-mobile-active={isMobileViewport ? active : undefined}
+        className="group relative flex flex-col items-center gap-6 text-center"
+        whileTap={{ scale: 0.99 }}
+        transition={{ duration: 0.15, ease: EASE_OUT }}
+      >
+        <div className="relative mx-auto w-full max-w-xs sm:max-w-sm lg:max-w-none">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -translate-x-2 translate-y-2 rounded-[2rem] bg-beige/40"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -inset-3 rounded-[2.5rem] bg-gold/10 opacity-60 blur-2xl transition-opacity duration-300 group-hover:opacity-100 group-active:opacity-100 group-data-[mobile-active=true]:opacity-100"
+          />
+          <PhotoFrame
+            src={image}
+            alt={alt}
+            className="relative w-full transition-shadow duration-300 group-hover:border-gold/70 group-hover:shadow-warm group-active:border-gold/70 group-active:shadow-warm group-data-[mobile-active=true]:border-gold/70 group-data-[mobile-active=true]:shadow-warm"
+          />
+        </div>
 
-      <div className="flex flex-col items-center gap-3">
-        {title && (
-          <div className="flex flex-col items-center gap-1.5 transition-transform duration-300 motion-safe:group-hover:-translate-y-0.5">
-            <h3 className="text-2xl text-brown-dark transition-colors duration-300 group-hover:text-gold group-active:text-gold sm:text-3xl">
-              {title}
-            </h3>
-            <span
-              aria-hidden="true"
-              className="h-px w-10 bg-gold/50 transition-all duration-300 group-hover:w-16 group-active:w-16"
-            />
-          </div>
-        )}
-        <p className="max-w-sm text-base leading-relaxed text-brown/75 transition-colors duration-300 group-hover:text-brown-dark group-active:text-brown-dark sm:text-lg">
-          {text}
-        </p>
-      </div>
+        <div className="flex flex-col items-center gap-3">
+          {title && (
+            <div className="flex flex-col items-center gap-1.5 transition-transform duration-300 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-data-[mobile-active=true]:-translate-y-0.5">
+              <h3
+                aria-label={titleLabel}
+                className="flex min-h-[3.75rem] flex-col items-center justify-center text-2xl leading-tight text-brown-dark transition-colors duration-300 group-hover:text-gold group-active:text-gold group-data-[mobile-active=true]:text-gold sm:min-h-[4.5rem] sm:text-3xl"
+              >
+                {title}
+              </h3>
+              <span
+                aria-hidden="true"
+                className="h-px w-10 bg-gold/50 transition-all duration-300 group-hover:w-16 group-active:w-16 group-data-[mobile-active=true]:w-16"
+              />
+            </div>
+          )}
+          <p className="max-w-sm text-base leading-relaxed text-brown/75 transition-colors duration-300 group-hover:text-brown-dark group-active:text-brown-dark group-data-[mobile-active=true]:text-brown-dark sm:text-lg">
+            {text}
+          </p>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }
@@ -114,7 +143,13 @@ export function Experience() {
             <ExperienceSet
               image={corredorImage}
               alt={`Corredor de espera da ${brand.name}, com poltronas, iluminação acolhedora e a frase "Cuide-se" na parede.`}
-              title="Ambiente acolhedor"
+              title={
+                <>
+                  <span className="block">Ambiente</span>
+                  <span className="block">acolhedor</span>
+                </>
+              }
+              titleLabel="Ambiente acolhedor"
               text={experience.text}
             />
           </RevealItem>

@@ -1,15 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { motion } from 'motion/react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { Button } from '../ui/Button';
 import { useActiveSection } from '../../hooks/useActiveSection';
 import { useScrollLock } from '../../hooks/useScrollLock';
+import { EASE_OUT } from '../motion/variants';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const sectionIds = siteContent.nav.map((link) => link.href.replace('#', ''));
   const activeId = useActiveSection(sectionIds);
+  const headerRef = useRef<HTMLElement>(null);
 
   useScrollLock(isMenuOpen);
 
@@ -26,8 +29,31 @@ export function Header() {
     setIsMenuOpen(false);
   }, [activeId]);
 
+  // Fecha o menu mobile ao tocar/clicar fora dele (cabeçalho + dropdown, via
+  // `headerRef`) -- mesmo padrão já usado em TreatmentPicker.tsx (listener no
+  // document, só ligado enquanto aberto). `pointerdown` cobre mouse e toque
+  // num único evento; o efeito só é registrado depois que `isMenuOpen` já
+  // virou true (num render seguinte), então o mesmo toque que abre o menu
+  // nunca é capturado por este listener e não fecha o menu no mesmo instante.
+  // Cliques dentro do cabeçalho/menu (inclusive o botão de abrir/fechar e os
+  // links) ficam dentro de `headerRef`, então nunca disparam o fechamento
+  // por aqui -- só o próprio onClick de cada um continua atuando.
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    function handlePointerDown(event: PointerEvent) {
+      if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [isMenuOpen]);
+
   return (
     <header
+      ref={headerRef}
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
         isScrolled
           ? 'bg-cream/90 shadow-warm-sm backdrop-blur-md'
@@ -66,13 +92,16 @@ export function Header() {
           </Button>
         </div>
 
-        <button
+        <motion.button
           type="button"
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/40 text-brown-dark lg:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/40 text-brown-dark transition-colors hover:bg-gold/10 active:bg-gold/15 lg:hidden"
           aria-label={isMenuOpen ? 'Fechar menu' : 'Abrir menu'}
           aria-expanded={isMenuOpen}
           aria-controls="mobile-menu"
           onClick={() => setIsMenuOpen((open) => !open)}
+          whileHover={{ scale: 1.06 }}
+          whileTap={{ scale: 0.92 }}
+          transition={{ duration: 0.15, ease: EASE_OUT }}
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
             {isMenuOpen ? (
@@ -91,7 +120,7 @@ export function Header() {
               />
             )}
           </svg>
-        </button>
+        </motion.button>
       </Container>
 
       {isMenuOpen && (

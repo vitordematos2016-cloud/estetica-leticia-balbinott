@@ -4,7 +4,7 @@ import type { CredentialItem } from '../../types/siteContent';
 import { PlaceholderMedia } from '../ui/PlaceholderMedia';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { useHeldValue } from '../../hooks/useHeldValue';
-import { overlayBackdropVariants } from '../motion/variants';
+import { EASE_OUT, overlayBackdropVariants } from '../motion/variants';
 
 interface CertificateLightboxProps {
   items: CredentialItem[];
@@ -63,35 +63,43 @@ export function CertificateLightbox({ items, activeIndex, onClose, onNavigate }:
           exit="exit"
           variants={overlayBackdropVariants}
         >
-      <button
+      <motion.button
         type="button"
         onClick={onClose}
         aria-label="Fechar"
-        className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-cream-light/40 text-cream-light transition-colors hover:bg-cream-light/10"
+        whileHover={{ scale: 1.06 }}
+        whileTap={{ scale: 0.92 }}
+        transition={{ duration: 0.15, ease: EASE_OUT }}
+        className="absolute right-5 top-5 flex h-11 w-11 items-center justify-center rounded-full border border-cream-light/40 text-cream-light transition-colors hover:bg-cream-light/10 active:bg-cream-light/15"
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path d="M1 1l14 14M15 1L1 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
-      </button>
+      </motion.button>
 
       <div className="relative flex w-full max-w-2xl flex-1 items-center justify-center">
         {hasPrev && (
-          <button
+          <motion.button
             type="button"
             onClick={() => onNavigate(displayIndex - 1)}
             aria-label="Certificado anterior"
-            className="absolute left-0 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-cream-light/40 text-cream-light transition-colors hover:bg-cream-light/10 sm:-left-4"
+            whileHover={{ scale: 1.06, x: -2 }}
+            whileTap={{ scale: 0.92 }}
+            transition={{ duration: 0.15, ease: EASE_OUT }}
+            className="absolute left-0 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-cream-light/40 text-cream-light transition-colors hover:bg-cream-light/10 active:bg-cream-light/15 sm:-left-4"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
               <path d="M11 3l-6 6 6 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </button>
+          </motion.button>
         )}
 
-        <button
+        <motion.button
           type="button"
           onClick={() => setIsZoomed((current) => !current)}
           aria-label={isZoomed ? 'Reduzir zoom' : 'Ampliar zoom'}
+          whileTap={{ scale: 0.985 }}
+          transition={{ duration: 0.15, ease: EASE_OUT }}
           className="max-h-[70vh] w-full max-w-md overflow-hidden rounded-2xl border border-gold/40 bg-cream shadow-warm"
         >
           <PlaceholderMedia
@@ -100,19 +108,22 @@ export function CertificateLightbox({ items, activeIndex, onClose, onNavigate }:
             ratio="portrait"
             className={`rounded-none transition-transform duration-300 ${isZoomed ? 'scale-125' : 'scale-100'}`}
           />
-        </button>
+        </motion.button>
 
         {hasNext && (
-          <button
+          <motion.button
             type="button"
             onClick={() => onNavigate(displayIndex + 1)}
             aria-label="Próximo certificado"
-            className="absolute right-0 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-cream-light/40 text-cream-light transition-colors hover:bg-cream-light/10 sm:-right-4"
+            whileHover={{ scale: 1.06, x: 2 }}
+            whileTap={{ scale: 0.92 }}
+            transition={{ duration: 0.15, ease: EASE_OUT }}
+            className="absolute right-0 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-cream-light/40 text-cream-light transition-colors hover:bg-cream-light/10 active:bg-cream-light/15 sm:-right-4"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
               <path d="M7 3l6 6-6 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </button>
+          </motion.button>
         )}
       </div>
 

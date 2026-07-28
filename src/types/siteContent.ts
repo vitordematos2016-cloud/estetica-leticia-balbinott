@@ -225,8 +225,7 @@ export interface TechnologiesContent {
 export interface InstagramContent {
   title: string;
   text: string;
-  notice: string;
-  postsPlaceholderCount: number;
+  ctaLabel: string;
 }
 
 export interface LegalPolicySection {

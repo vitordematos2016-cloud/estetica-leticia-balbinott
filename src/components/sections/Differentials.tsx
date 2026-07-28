@@ -1,9 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useInView } from 'motion/react';
+import { motion } from 'motion/react';
+import type { CSSProperties } from 'react';
 import { siteContent } from '../../data/siteContent';
+import type { ValueItem } from '../../types/siteContent';
 import { Container } from '../ui/Container';
 import { Reveal, RevealGroup, RevealItem } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
+import { useMobileViewportActive } from '../../hooks/useMobileViewportActive';
+import { getMobileSurfaceStyle, mobileCardTransition, mobileCardVariants } from '../motion/mobileActive';
+import { useRepeatableInView } from '../../hooks/useRepeatableInView';
 
 const icons = [
   <path key="ethics" d="M14 3v22M6 9l8-4 8 4M6 9l-4 10h8L6 9Zm16 0l-4 10h8l-4-10Z" />,
@@ -30,12 +35,68 @@ function ToggleIcon({ up }: { up: boolean }) {
 }
 
 const toggleButtonClassName =
-  'flex items-center gap-2.5 rounded-full border border-gold/40 bg-cream-light/60 px-6 py-3 text-sm font-medium text-brown-dark shadow-warm-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/70 hover:shadow-warm';
+  'flex items-center gap-2.5 rounded-full border border-gold/40 bg-cream-light/60 px-6 py-3 text-sm font-medium text-brown-dark shadow-warm-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/70 hover:shadow-warm active:border-gold/70 active:shadow-warm';
+
+/**
+ * Um nível extra entre o `RevealItem` (entrada escalonada do acordeão, já
+ * controlada por `isOpen`) e o card visual: abaixo de 768px, o wrapper com
+ * `useMobileViewportActive` recua o card fora da região central da tela e
+ * devolve a presença de hover quando ele cruza essa região. No desktop
+ * `animate` fica `undefined` -- nenhum estilo inline é aplicado, então o
+ * `hover:` do Tailwind no card continua a única fonte de destaque, como
+ * antes.
+ */
+function ValueCard({ value, index, isOpen }: { value: ValueItem; index: number; isOpen: boolean }) {
+  const { ref, active, isMobileViewport } = useMobileViewportActive<HTMLDivElement>();
+  const surfaceStyle = getMobileSurfaceStyle(isMobileViewport, active);
+  const underlineStyle: CSSProperties = {
+    opacity: isOpen ? 1 : 0,
+    transitionDelay: isOpen ? `${450 + index * 80}ms` : '0ms',
+    ...(isMobileViewport ? { width: active ? '4rem' : '2.5rem' } : {}),
+  };
+
+  return (
+    <RevealItem key={value.title}>
+      <motion.div
+        ref={ref}
+        variants={mobileCardVariants}
+        initial={false}
+        animate={isMobileViewport ? (active ? 'active' : 'rest') : undefined}
+        transition={mobileCardTransition}
+      >
+        <div
+          style={surfaceStyle}
+          className="group relative flex flex-col gap-4 rounded-[1.75rem] border border-gold/20 bg-cream p-7 shadow-warm-sm transition-[box-shadow,border-color] duration-500 ease-out hover:-translate-y-1 hover:border-gold/50 hover:shadow-warm"
+        >
+          <div className="flex items-center gap-3">
+            <span className="font-heading text-2xl text-gold/70">{String(index + 1).padStart(2, '0')}</span>
+            <span className="flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 text-brown-dark">
+              <svg width="18" height="18" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                <g stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                  {icons[index]}
+                </g>
+              </svg>
+            </span>
+          </div>
+
+          <h3 className="text-lg text-brown-dark">{value.title}</h3>
+          <p className="text-sm leading-relaxed text-brown/70">{value.text}</p>
+
+          <span
+            aria-hidden="true"
+            className="mt-1 h-px w-10 bg-gold/60 transition-[width,opacity] duration-500 ease-out group-hover:w-16"
+            style={underlineStyle}
+          />
+        </div>
+      </motion.div>
+    </RevealItem>
+  );
+}
 
 export function Differentials() {
   const { differential, values } = siteContent;
   const headingRef = useRef<HTMLDivElement>(null);
-  const isHeadingInView = useInView(headingRef, { once: true, amount: 0.2 });
+  const isHeadingInView = useRepeatableInView(headingRef, { amount: 0.2 });
   const [isOpen, setIsOpen] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -119,32 +180,7 @@ export function Differentials() {
           <div className="flex flex-col gap-14 pt-4">
             <RevealGroup active={isOpen} stagger={0.08} delayChildren={0.15} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {values.map((value, index) => (
-                <RevealItem
-                  key={value.title}
-                  className="group relative flex flex-col gap-4 rounded-[1.75rem] border border-gold/20 bg-cream p-7 shadow-warm-sm transition-[box-shadow,border-color] duration-500 ease-out hover:-translate-y-1 hover:border-gold/50 hover:shadow-warm"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="font-heading text-2xl text-gold/70">
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 text-brown-dark">
-                      <svg width="18" height="18" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <g stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                          {icons[index]}
-                        </g>
-                      </svg>
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg text-brown-dark">{value.title}</h3>
-                  <p className="text-sm leading-relaxed text-brown/70">{value.text}</p>
-
-                  <span
-                    aria-hidden="true"
-                    className="mt-1 h-px w-10 bg-gold/60 transition-[width,opacity] duration-500 ease-out group-hover:w-16"
-                    style={{ opacity: isOpen ? 1 : 0, transitionDelay: isOpen ? `${450 + index * 80}ms` : '0ms' }}
-                  />
-                </RevealItem>
+                <ValueCard key={value.title} value={value} index={index} isOpen={isOpen} />
               ))}
             </RevealGroup>
 

@@ -11,7 +11,6 @@ import { Hero } from './components/sections/Hero';
 import { BrandLoop } from './components/sections/BrandLoop';
 import { Manifesto } from './components/sections/Manifesto';
 import { About } from './components/sections/About';
-import { Credentials } from './components/sections/Credentials';
 import { Purpose } from './components/sections/Purpose';
 import { Differentials } from './components/sections/Differentials';
 import { SkinConcerns } from './components/sections/SkinConcerns';
@@ -20,7 +19,6 @@ import { HowItWorks } from './components/sections/HowItWorks';
 import { Aftercare } from './components/sections/Aftercare';
 import { Experience } from './components/sections/Experience';
 import { ThoughtfulDetails } from './components/sections/ThoughtfulDetails';
-import { Technologies } from './components/sections/Technologies';
 import { FacadeYears } from './components/sections/FacadeYears';
 import { Reviews } from './components/sections/Reviews';
 import { Faq } from './components/sections/Faq';
@@ -92,7 +90,6 @@ function App() {
           <BrandLoop />
           <Manifesto />
           <About />
-          <Credentials />
           <Purpose />
           <Differentials />
           <SkinConcerns />
@@ -101,7 +98,6 @@ function App() {
           <Aftercare />
           <Experience />
           <ThoughtfulDetails />
-          <Technologies />
           <FacadeYears />
           <Reviews />
           <Faq />

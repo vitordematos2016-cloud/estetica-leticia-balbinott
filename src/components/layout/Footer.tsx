@@ -144,7 +144,7 @@ export function Footer() {
                   <a
                     key={link.href}
                     href={link.href}
-                    className="text-sm text-cream-light/80 transition-colors hover:text-gold"
+                    className="text-sm text-cream-light/80 transition-colors hover:text-gold active:text-gold"
                   >
                     {link.label}
                   </a>
@@ -158,14 +158,14 @@ export function Footer() {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-2 text-sm text-cream-light/80 transition-colors hover:text-gold"
+                className="flex items-center gap-2 text-sm text-cream-light/80 transition-colors hover:text-gold active:text-gold"
               >
                 <PhoneIcon />
                 {contact.whatsappDisplay}
               </a>
               <a
                 href={`mailto:${contact.email}`}
-                className="flex items-center gap-2 text-sm text-cream-light/80 transition-colors hover:text-gold"
+                className="flex items-center gap-2 text-sm text-cream-light/80 transition-colors hover:text-gold active:text-gold"
               >
                 <MailIcon />
                 {contact.email}
@@ -174,7 +174,7 @@ export function Footer() {
                 href={contact.instagramUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-2 text-sm text-cream-light/80 transition-colors hover:text-gold"
+                className="flex items-center gap-2 text-sm text-cream-light/80 transition-colors hover:text-gold active:text-gold"
               >
                 <InstagramIcon />
                 {contact.instagramHandle}
@@ -188,7 +188,7 @@ export function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Abrir localização da Estética Letícia Balbinott no mapa"
-                className="text-sm text-cream-light/80 transition-colors hover:text-gold"
+                className="text-sm text-cream-light/80 transition-colors hover:text-gold active:text-gold"
               >
                 {address.street}
               </a>
@@ -204,14 +204,14 @@ export function Footer() {
             <button
               type="button"
               onClick={() => setOpenPolicy(legal.privacyPolicy)}
-              className="text-[0.7rem] text-cream-light/50 underline decoration-cream-light/20 underline-offset-2 transition-colors hover:text-gold"
+              className="text-[0.7rem] text-cream-light/50 underline decoration-cream-light/20 underline-offset-2 transition-colors hover:text-gold active:text-gold"
             >
               {legal.privacyPolicy.title}
             </button>
             <button
               type="button"
               onClick={() => setOpenPolicy(legal.cancellationPolicy)}
-              className="text-[0.7rem] text-cream-light/50 underline decoration-cream-light/20 underline-offset-2 transition-colors hover:text-gold"
+              className="text-[0.7rem] text-cream-light/50 underline decoration-cream-light/20 underline-offset-2 transition-colors hover:text-gold active:text-gold"
             >
               {legal.cancellationPolicy.title}
             </button>
@@ -224,7 +224,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Conversar com a Matos Soluções pelo WhatsApp"
-              className="text-gold/90 underline decoration-gold/40 underline-offset-2 transition-colors hover:text-gold hover:decoration-gold"
+              className="text-gold/90 underline decoration-gold/40 underline-offset-2 transition-colors hover:text-gold hover:decoration-gold active:text-gold active:decoration-gold"
             >
               {footer.developerName}
             </a>

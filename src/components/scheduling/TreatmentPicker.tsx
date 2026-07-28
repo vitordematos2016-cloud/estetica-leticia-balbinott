@@ -1,163 +1,82 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import type { RefObject } from 'react';
+import { motion } from 'motion/react';
 import { siteContent } from '../../data/siteContent';
 import { useSelection } from '../../context/SelectionContext';
 import { getTreatmentCategoryName } from '../../utils/treatments';
+import { EASE_OUT } from '../motion/variants';
+import { TreatmentCatalogModal } from './TreatmentCatalogModal';
 
 interface TreatmentPickerProps {
   triggerRef: RefObject<HTMLButtonElement | null>;
   error?: string;
 }
 
-function ChevronIcon({ open }: { open: boolean }) {
+function CatalogIcon() {
   return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      fill="none"
-      aria-hidden="true"
-      className={`shrink-0 text-brown/60 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-    >
-      <path d="M2 5l5 5 5-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="shrink-0 text-brown/60">
+      <rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.3" />
+      <rect x="8" y="1" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.3" />
+      <rect x="1" y="8" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.3" />
+      <rect x="8" y="8" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.3" />
     </svg>
   );
 }
 
-function CheckIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="shrink-0 text-gold">
-      <path d="M2.5 7.2l3 3 6-6.4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
+/**
+ * Gatilho de "Escolher/Alterar tratamento" do agendamento -- abre o
+ * catálogo visual (`TreatmentCatalogModal`) em vez do antigo dropdown de
+ * lista simples. Seleção continua vivendo em `useSelection` (a mesma
+ * "Minha Seleção"); este componente só lê `items`/`removeItem` para
+ * desenhar o resumo elegante de tratamentos já escolhidos.
+ */
 export function TreatmentPicker({ triggerRef, error }: TreatmentPickerProps) {
   const { treatments } = siteContent;
-  const { items, addItem, removeItem, isSelected } = useSelection();
-  const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const containerRef = useRef<HTMLDivElement>(null);
+  const { items, removeItem } = useSelection();
+  const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   const labelId = 'scheduling-treatments-label';
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    }
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        setIsOpen(false);
-        triggerRef.current?.focus();
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen, triggerRef]);
-
-  useEffect(() => {
-    if (!isOpen) setSearch('');
-  }, [isOpen]);
-
-  const filteredTreatments = treatments.filter((treatment) =>
-    treatment.name.toLowerCase().includes(search.trim().toLowerCase()),
-  );
-
-  function toggleTreatment(treatment: (typeof treatments)[number]) {
-    if (isSelected(treatment.id)) {
-      removeItem(treatment.id);
-    } else {
-      addItem({
-        id: treatment.id,
-        type: 'treatment',
-        name: treatment.name,
-        category: getTreatmentCategoryName(treatment.categoryId),
-      });
-    }
+  function openCatalog() {
+    setIsCatalogOpen(true);
   }
 
+  function closeCatalog() {
+    setIsCatalogOpen(false);
+    triggerRef.current?.focus();
+  }
+
+  // `SelectionItem` só guarda id/nome/categoria (ver SelectionContext.tsx) --
+  // subtítulo e miniatura vêm do catálogo oficial para o resumo abaixo.
+  const selectedTreatments = items
+    .map((item) => treatments.find((treatment) => treatment.id === item.id))
+    .filter((treatment): treatment is (typeof treatments)[number] => !!treatment);
+
   return (
-    <div className="flex flex-col gap-1.5">
-      <span id={labelId} className="text-sm font-medium text-brown-dark">
+    <div className="flex flex-col gap-3">
+      <span id={labelId} className="block text-center text-sm font-medium text-brown-dark">
         Selecione o tratamento desejado *
       </span>
 
-      <div ref={containerRef} className="relative">
-        <button
-          ref={triggerRef}
-          type="button"
-          onClick={() => setIsOpen((open) => !open)}
-          aria-haspopup="listbox"
-          aria-expanded={isOpen}
-          aria-labelledby={labelId}
-          aria-invalid={!!error}
-          className="flex min-h-11 w-full items-center justify-between rounded-xl border border-gold/30 bg-cream px-4 py-3 text-left text-sm text-brown-dark shadow-[inset_0_1px_2px_rgba(91,64,51,0.05)] transition-all duration-200 hover:border-gold/60 focus:border-gold focus:ring-2 focus:ring-gold/15 active:scale-[0.99]"
-        >
-          <span className={items.length === 0 ? 'text-brown/50' : ''}>
-            {items.length === 0
-              ? 'Escolher tratamento'
-              : `${items.length} tratamento${items.length > 1 ? 's' : ''} selecionado${items.length > 1 ? 's' : ''}`}
-          </span>
-          <ChevronIcon open={isOpen} />
-        </button>
-
-        {isOpen && (
-          <div className="absolute z-20 mt-2 w-full rounded-xl border border-gold/30 bg-cream shadow-warm">
-            <div className="border-b border-gold/20 p-2">
-              <label>
-                <span className="sr-only">Buscar tratamento</span>
-                <input
-                  type="search"
-                  autoFocus
-                  value={search}
-                  onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Buscar tratamento..."
-                  className="w-full rounded-lg border border-gold/20 bg-cream-light/40 px-3 py-2 text-sm text-brown-dark focus:border-gold"
-                />
-              </label>
-            </div>
-            <ul role="listbox" aria-multiselectable="true" aria-labelledby={labelId} className="max-h-56 overflow-y-auto p-1.5">
-              {filteredTreatments.length === 0 ? (
-                <li className="px-3 py-2.5 text-sm text-brown/50">Nenhum tratamento encontrado.</li>
-              ) : (
-                filteredTreatments.map((treatment) => {
-                  const selected = isSelected(treatment.id);
-                  const categoryName = getTreatmentCategoryName(treatment.categoryId);
-                  return (
-                    <li key={treatment.id}>
-                      <button
-                        type="button"
-                        role="option"
-                        aria-selected={selected}
-                        onClick={() => toggleTreatment(treatment)}
-                        className={`flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
-                          selected ? 'bg-gold/15 text-brown-dark' : 'text-brown-dark hover:bg-gold/10'
-                        }`}
-                      >
-                        <span className="flex flex-col">
-                          <span>{treatment.name}</span>
-                          {categoryName && (
-                            <span className="text-xs text-brown/50">{categoryName}</span>
-                          )}
-                        </span>
-                        {selected && <CheckIcon />}
-                      </button>
-                    </li>
-                  );
-                })
-              )}
-            </ul>
-          </div>
-        )}
-      </div>
+      <motion.button
+        ref={triggerRef}
+        type="button"
+        onClick={openCatalog}
+        aria-haspopup="dialog"
+        aria-expanded={isCatalogOpen}
+        aria-labelledby={labelId}
+        aria-invalid={!!error}
+        whileHover={{ y: -1.5 }}
+        whileTap={{ scale: 0.975 }}
+        transition={{ duration: 0.2, ease: EASE_OUT }}
+        className="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border border-gold/30 bg-cream px-4 py-3 text-left text-sm text-brown-dark shadow-[inset_0_1px_2px_rgba(91,64,51,0.05)] transition-all duration-200 hover:border-gold/60 focus:border-gold focus:ring-2 focus:ring-gold/15"
+      >
+        <span className={items.length === 0 ? 'text-brown/50' : ''}>
+          {items.length === 0
+            ? 'Escolher tratamento'
+            : `Alterar tratamento (${items.length} selecionado${items.length > 1 ? 's' : ''})`}
+        </span>
+        <CatalogIcon />
+      </motion.button>
 
       {error && (
         <p id="scheduling-treatments-error" className="text-xs text-red-700">
@@ -165,38 +84,52 @@ export function TreatmentPicker({ triggerRef, error }: TreatmentPickerProps) {
         </p>
       )}
 
-      {items.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-gold/30 bg-cream-light/30 px-4 py-4 text-sm text-brown/70">
+      {selectedTreatments.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-gold/30 bg-cream-light/30 px-4 py-4 text-center text-sm text-brown/70">
           <p>Nenhum tratamento selecionado.</p>
-          <p className="mt-1">Escolha acima um ou mais tratamentos para solicitar seu agendamento.</p>
+          <p className="mt-1">Toque acima para abrir o catálogo e escolher um ou mais tratamentos.</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-2">
-          <span className="text-xs font-medium uppercase tracking-wide text-brown/50">
-            Tratamentos selecionados
-          </span>
-          <ul className="flex flex-col gap-2">
-            {items.map((item) => (
+        <ul className="flex flex-col gap-2">
+          {selectedTreatments.map((treatment) => {
+            const categoryName = getTreatmentCategoryName(treatment.categoryId);
+            return (
               <li
-                key={item.id}
-                className="flex items-center justify-between gap-2 rounded-xl border border-gold/25 bg-cream py-1.5 pl-4 pr-1.5"
+                key={treatment.id}
+                className="flex items-center gap-3 rounded-xl border border-gold/25 bg-cream p-3"
               >
-                <span className="min-w-0 flex-1 break-words text-sm text-brown-dark">{item.name}</span>
-                <button
+                {treatment.image && (
+                  <img src={treatment.image} alt="" className="h-12 w-12 shrink-0 rounded-lg object-cover" />
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-brown-dark">{treatment.name}</p>
+                  {treatment.subtitle && (
+                    <p className="truncate text-xs text-brown/60">{treatment.subtitle}</p>
+                  )}
+                  {categoryName && (
+                    <p className="text-xs font-medium uppercase tracking-wide text-gold-deep">{categoryName}</p>
+                  )}
+                </div>
+                <motion.button
                   type="button"
-                  onClick={() => removeItem(item.id)}
-                  aria-label={`Remover ${item.name} da seleção`}
+                  onClick={() => removeItem(treatment.id)}
+                  aria-label={`Remover ${treatment.name} da seleção`}
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.9 }}
+                  transition={{ duration: 0.15, ease: EASE_OUT }}
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-brown/45 transition-colors hover:bg-gold/10 hover:text-brown-dark active:bg-gold/15"
                 >
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
                     <path d="M1 1l10 10M11 1L1 11" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
                   </svg>
-                </button>
+                </motion.button>
               </li>
-            ))}
-          </ul>
-        </div>
+            );
+          })}
+        </ul>
       )}
+
+      <TreatmentCatalogModal isOpen={isCatalogOpen} onClose={closeCatalog} />
     </div>
   );
 }

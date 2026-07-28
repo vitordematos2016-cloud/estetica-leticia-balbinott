@@ -6,6 +6,8 @@ import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
 import { Reveal } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
+import { useMobileViewportActive } from '../../hooks/useMobileViewportActive';
+import { mobileCardTransition, mobileCardVariants } from '../motion/mobileActive';
 
 function StarRow({ rating }: { rating: number }) {
   return (
@@ -37,7 +39,7 @@ function LeafArrow({ direction }: { direction: 'prev' | 'next' }) {
   return (
     <span
       aria-hidden="true"
-      className={`flex h-10 w-10 items-center justify-center border border-gold/50 bg-cream shadow-warm-sm transition-all duration-300 ${corners} ${tilt} group-hover:border-gold group-hover:-translate-y-0.5 group-hover:shadow-warm`}
+      className={`flex h-10 w-10 items-center justify-center border border-gold/50 bg-cream shadow-warm-sm transition-all duration-300 ${corners} ${tilt} group-hover:border-gold group-hover:-translate-y-0.5 group-hover:shadow-warm group-active:border-gold group-active:shadow-warm`}
     >
       <svg
         width="13"
@@ -61,6 +63,7 @@ export function Reviews() {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const touchStartX = useRef<number | null>(null);
+  const { ref: mobileRef, active: mobileActive, isMobileViewport } = useMobileViewportActive<HTMLDivElement>();
 
   function goToNext() {
     setDirection(1);
@@ -111,6 +114,14 @@ export function Reviews() {
         ) : (
           <>
             <motion.div
+              ref={mobileRef}
+              variants={mobileCardVariants}
+              initial={false}
+              animate={isMobileViewport ? (mobileActive ? 'active' : 'rest') : undefined}
+              transition={mobileCardTransition}
+              className="w-full max-w-xl"
+            >
+            <motion.div
               role="region"
               aria-roledescription="carrossel"
               aria-label="Avaliações de clientes"
@@ -118,6 +129,7 @@ export function Reviews() {
               onKeyDown={handleKeyDown}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
+              data-mobile-active={isMobileViewport ? mobileActive : undefined}
               whileHover={{ y: -3.5, scale: 1.01, rotate: 0.4 }}
               whileTap={{ scale: 0.985, transition: { duration: 0.15, ease: EASE_OUT } }}
               transition={{ duration: 0.3, ease: EASE_OUT }}
@@ -129,7 +141,7 @@ export function Reviews() {
               />
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute -inset-4 rounded-[3rem] bg-gold/10 opacity-70 blur-2xl transition-opacity duration-300 group-hover:opacity-100"
+                className="pointer-events-none absolute -inset-4 rounded-[3rem] bg-gold/10 opacity-70 blur-2xl transition-opacity duration-300 group-hover:opacity-100 group-data-[mobile-active=true]:opacity-100"
               />
 
               <motion.figure
@@ -137,7 +149,7 @@ export function Reviews() {
                 initial={{ opacity: 0, x: direction * 14 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, ease: EASE_OUT }}
-                className="relative flex flex-col items-center gap-6 rounded-[2.5rem_2.5rem_2.5rem_1rem] border border-gold/25 bg-gradient-to-br from-cream via-cream-light to-beige/40 px-6 py-9 text-center shadow-warm-sm ring-1 ring-gold/10 transition-shadow duration-300 group-hover:shadow-warm group-hover:ring-gold/25 sm:px-10 sm:py-12"
+                className="relative flex flex-col items-center gap-6 rounded-[2.5rem_2.5rem_2.5rem_1rem] border border-gold/25 bg-gradient-to-br from-cream via-cream-light to-beige/40 px-6 py-9 text-center shadow-warm-sm ring-1 ring-gold/10 transition-shadow duration-300 group-hover:shadow-warm group-hover:ring-gold/25 group-data-[mobile-active=true]:shadow-warm group-data-[mobile-active=true]:ring-gold/25 sm:px-10 sm:py-12"
               >
                 <span
                   aria-hidden="true"
@@ -172,27 +184,32 @@ export function Reviews() {
                 </figcaption>
               </motion.figure>
             </motion.div>
+            </motion.div>
 
             <div className="flex flex-col items-center gap-3">
               <div className="group flex items-center gap-4">
                 {index > 0 && (
-                  <button
+                  <motion.button
                     type="button"
                     onClick={goToPrevious}
                     aria-label="Ver avaliação anterior"
+                    whileTap={{ scale: 0.9 }}
+                    transition={{ duration: 0.15, ease: EASE_OUT }}
                     className="group rounded-full p-1.5"
                   >
                     <LeafArrow direction="prev" />
-                  </button>
+                  </motion.button>
                 )}
-                <button
+                <motion.button
                   type="button"
                   onClick={goToNext}
                   aria-label="Ver próxima avaliação"
+                  whileTap={{ scale: 0.9 }}
+                  transition={{ duration: 0.15, ease: EASE_OUT }}
                   className="group rounded-full p-1.5"
                 >
                   <LeafArrow direction="next" />
-                </button>
+                </motion.button>
               </div>
 
               <p className="text-xs font-medium tracking-[0.15em] text-brown/50">
@@ -207,7 +224,7 @@ export function Reviews() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Ver todas as avaliações da Estética Letícia Balbinott no Google"
-          className="flex items-center gap-2 rounded-full border border-gold/40 bg-transparent px-5 py-2.5 text-xs font-medium uppercase tracking-wide text-brown-dark transition-colors hover:border-gold hover:bg-beige/30"
+          className="flex items-center gap-2 rounded-full border border-gold/40 bg-transparent px-5 py-2.5 text-xs font-medium uppercase tracking-wide text-brown-dark transition-colors hover:border-gold hover:bg-beige/30 active:border-gold active:bg-beige/30"
         >
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M8 1l2.1 4.3 4.7.7-3.4 3.3.8 4.7L8 11.8l-4.2 2.2.8-4.7L1.2 6l4.7-.7L8 1Z" fill="currentColor" className="text-gold" />

@@ -4,6 +4,8 @@ import { PlaceholderMedia } from '../ui/PlaceholderMedia';
 import { useSelection } from '../../context/SelectionContext';
 import { getTreatmentCategoryName } from '../../utils/treatments';
 import { EASE_OUT } from '../motion/variants';
+import { useMobileViewportActive } from '../../hooks/useMobileViewportActive';
+import { getMobileSurfaceStyle, mobileCardTransition, mobileCardVariants } from '../motion/mobileActive';
 
 interface TreatmentCardProps {
   treatment: Treatment;
@@ -18,29 +20,53 @@ interface TreatmentCardProps {
  * `MotionConfig reducedMotion="user"` global; `motion-reduce:duration-0`
  * cobre a transição de cor/sombra do destaque temporário (`isHighlighted`),
  * que não é controlada pelo Motion.
+ *
+ * O wrapper externo (`mobileActiveRef`) só entra em ação abaixo de 768px:
+ * ele recua o card (`rest`) quando fora da região central da tela e devolve
+ * a presença total (`active`, equivalente ao hover) quando o card cruza essa
+ * região -- ver `useMobileViewportActive`. No desktop `animate` fica
+ * `undefined`, então nenhum estilo inline é aplicado e o hover/tilt do
+ * `motion.article` interno continua isolado, exatamente como antes.
  */
 export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false }: TreatmentCardProps) {
   const { addItem, removeItem, isSelected } = useSelection();
   const alreadySelected = isSelected(treatment.id);
   const categoryName = getTreatmentCategoryName(treatment.categoryId);
   const specialOffer = treatment.specialOffer?.active ? treatment.specialOffer : undefined;
+  const { ref: mobileActiveRef, active: mobileActive, isMobileViewport } = useMobileViewportActive<HTMLDivElement>();
+  // O destaque temporário de busca (isHighlighted) tem prioridade sobre a
+  // presença mobile por rolagem -- nunca os dois competindo pelo mesmo estilo.
+  const surfaceStyle = isHighlighted ? undefined : getMobileSurfaceStyle(isMobileViewport, mobileActive);
 
   return (
-    <motion.article
-      id={`servico-${treatment.id}`}
-      whileHover={{ y: -2, scale: 1.01 }}
-      whileTap={{ scale: 0.988 }}
-      transition={{ duration: 0.3, ease: EASE_OUT }}
-      className={`group flex scroll-mt-28 flex-col overflow-hidden rounded-[1.75rem] border bg-cream shadow-warm-sm transition-[box-shadow,border-color] duration-700 ease-out motion-reduce:duration-0 hover:shadow-warm active:shadow-warm ${
-        isHighlighted ? 'border-gold shadow-warm' : 'border-gold/25'
-      }`}
+    <motion.div
+      ref={mobileActiveRef}
+      variants={mobileCardVariants}
+      initial={false}
+      animate={isMobileViewport ? (mobileActive ? 'active' : 'rest') : undefined}
+      transition={mobileCardTransition}
     >
-      <PlaceholderMedia
-        label={treatment.name}
-        description="Imagem em preparação"
-        ratio="landscape"
-        className="rounded-none rounded-t-[1.75rem] transition-transform duration-500 ease-out motion-reduce:transition-none group-hover:scale-[1.02] group-active:scale-[1.015]"
-      />
+      <motion.article
+        id={`servico-${treatment.id}`}
+        whileHover={{ y: -2, scale: 1.01 }}
+        whileTap={{ scale: 0.988 }}
+        transition={{ duration: 0.3, ease: EASE_OUT }}
+        style={surfaceStyle}
+        className={`group flex scroll-mt-28 flex-col overflow-hidden rounded-[1.75rem] border bg-cream shadow-warm-sm transition-[box-shadow,border-color] duration-700 ease-out motion-reduce:duration-0 hover:shadow-warm active:shadow-warm ${
+          isHighlighted ? 'border-gold shadow-warm' : 'border-gold/25'
+        }`}
+      >
+        <div
+          style={isMobileViewport ? { transform: `scale(${mobileActive ? 1.02 : 1})` } : undefined}
+          className="transition-transform duration-500 ease-out motion-reduce:transition-none"
+        >
+          <PlaceholderMedia
+            label={treatment.name}
+            description="Imagem em preparação"
+            ratio="landscape"
+            className="rounded-none rounded-t-[1.75rem] transition-transform duration-500 ease-out motion-reduce:transition-none group-hover:scale-[1.02] group-active:scale-[1.015]"
+          />
+        </div>
 
       <div className="flex flex-1 flex-col gap-3 p-6">
         <div className="flex flex-wrap items-center gap-2">
@@ -89,7 +115,7 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
             type="button"
             onClick={() => onViewDetails(treatment)}
             aria-label={`Ver mais detalhes do tratamento ${treatment.name}`}
-            className="text-sm font-medium text-brown-dark underline decoration-gold/50 underline-offset-4 hover:text-gold"
+            className="text-sm font-medium text-brown-dark underline decoration-gold/50 underline-offset-4 transition-colors hover:text-gold active:text-gold"
           >
             Ver mais detalhes
           </button>
@@ -110,7 +136,7 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
               className={`rounded-full px-4 py-2 text-xs font-medium uppercase tracking-wide transition-colors ${
                 alreadySelected
                   ? 'bg-gold/20 text-brown-dark'
-                  : 'border border-gold/50 text-brown-dark hover:bg-gold/10'
+                  : 'border border-gold/50 text-brown-dark hover:bg-gold/10 active:bg-gold/15'
               }`}
             >
               {alreadySelected ? 'Adicionado ✓' : 'Adicionar à seleção'}
@@ -119,7 +145,7 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
               <button
                 type="button"
                 onClick={() => removeItem(treatment.id)}
-                className="text-xs font-medium text-brown/50 underline decoration-gold/40 underline-offset-2 hover:text-gold"
+                className="text-xs font-medium text-brown/50 underline decoration-gold/40 underline-offset-2 transition-colors hover:text-gold active:text-gold"
               >
                 Remover
               </button>
@@ -127,6 +153,7 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
           </div>
         </div>
       </div>
-    </motion.article>
+      </motion.article>
+    </motion.div>
   );
 }

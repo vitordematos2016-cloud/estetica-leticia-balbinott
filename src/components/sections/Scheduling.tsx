@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent, RefObject } from 'react';
-import { motion, useInView } from 'motion/react';
+import { motion } from 'motion/react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { SectionHeading } from '../ui/SectionHeading';
 import { LegalPolicyModal } from '../ui/LegalPolicyModal';
+import { Button } from '../ui/Button';
 import { TreatmentPicker } from '../scheduling/TreatmentPicker';
 import { useSelection } from '../../context/SelectionContext';
 import { buildSchedulingMessage, buildWhatsAppUrl } from '../../utils/whatsapp';
@@ -14,6 +15,7 @@ import { isDaySchedulable, isPeriodAvailable, getPeriodUnavailableReason } from 
 import type { Period } from '../../utils/period';
 import { Reveal } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
+import { useRepeatableInView } from '../../hooks/useRepeatableInView';
 
 const PERIOD_OPTIONS: { value: Period; label: string }[] = [
   { value: 'manha', label: 'Manhã' },
@@ -25,7 +27,7 @@ const PERIOD_OPTIONS: { value: Period; label: string }[] = [
  * alternativa ao Ornament (evitar repetir o medalhão nesta seção). */
 function StepLabel({ number, label }: { number: string; label: string }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center justify-center gap-3">
       <span
         aria-hidden="true"
         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-gold/40 font-heading text-xs text-gold-deep"
@@ -92,7 +94,7 @@ export function Scheduling() {
   const periodRef = useRef<HTMLButtonElement>(null);
   const consentRef = useRef<HTMLInputElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+  const isInView = useRepeatableInView(sectionRef, { amount: 0.2 });
 
   const fieldRefs: Record<string, RefObject<HTMLElement | null>> = {
     name: nameRef,
@@ -201,7 +203,6 @@ export function Scheduling() {
       <Container className="relative flex flex-col gap-10 lg:items-center lg:gap-12">
         <Reveal active={isInView} direction="up" delay={0} className="w-full lg:max-w-3xl">
           <SectionHeading
-            align="left"
             eyebrow="Agendamento"
             title="Vamos agendar sua avaliação"
             text="Preencha seus dados abaixo. Ao confirmar, você será direcionada ao WhatsApp com sua solicitação já organizada."
@@ -317,14 +318,16 @@ export function Scheduling() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium text-brown-dark">Período de preferência *</span>
+              <span className="block text-center text-sm font-medium text-brown-dark">
+                Período de preferência *
+              </span>
               <div className="grid grid-cols-3 gap-2.5" role="group" aria-label="Período de preferência">
                 {PERIOD_OPTIONS.map((option, index) => {
                   const available = form.date ? isPeriodAvailable(option.value, form.date, clinicNow) : true;
                   const reason = form.date ? getPeriodUnavailableReason(option.value, form.date, clinicNow) : undefined;
 
                   return (
-                    <button
+                    <motion.button
                       key={option.value}
                       ref={index === 0 ? periodRef : undefined}
                       type="button"
@@ -332,9 +335,12 @@ export function Scheduling() {
                       aria-disabled={!available}
                       onClick={() => updateField('period', option.value)}
                       aria-pressed={form.period === option.value}
-                      className={`flex min-h-11 flex-col items-center justify-center gap-0.5 rounded-full border px-3 py-2.5 text-xs font-medium uppercase tracking-wide transition-all duration-200 ${
+                      whileHover={available ? { y: -1.5, scale: 1.012 } : undefined}
+                      whileTap={available ? { scale: 0.975 } : undefined}
+                      transition={{ duration: 0.2, ease: EASE_OUT }}
+                      className={`flex min-h-11 flex-col items-center justify-center gap-0.5 rounded-full border px-3 py-2.5 text-xs font-medium uppercase tracking-wide transition-all duration-200 disabled:cursor-not-allowed ${
                         !available
-                          ? 'cursor-not-allowed border-gold/15 bg-cream-light/40 text-brown/30 opacity-60'
+                          ? 'border-gold/15 bg-cream-light/40 text-brown/30 opacity-60'
                           : form.period === option.value
                             ? 'border-brown-dark bg-brown-dark text-cream shadow-warm-sm'
                             : 'border-gold/30 bg-cream text-brown-dark hover:border-gold hover:bg-gold/5'
@@ -346,17 +352,17 @@ export function Scheduling() {
                           {reason}
                         </span>
                       )}
-                    </button>
+                    </motion.button>
                   );
                 })}
               </div>
-              {errors.period && <p className="text-xs text-red-700">{errors.period}</p>}
+              {errors.period && <p className="text-center text-xs text-red-700">{errors.period}</p>}
               {autoAdjustedNotice && !errors.period && (
-                <p className="text-xs text-amber-700">{autoAdjustedNotice}</p>
+                <p className="text-center text-xs text-amber-700">{autoAdjustedNotice}</p>
               )}
 
               {showDayClosedNotice && (
-                <p className="rounded-xl bg-cream-light/60 px-3.5 py-3 text-xs font-medium text-brown-dark">
+                <p className="rounded-xl bg-cream-light/60 px-3.5 py-3 text-center text-xs font-medium text-brown-dark">
                   O horário de atendimento de hoje já foi encerrado. Selecione outra data para solicitar seu
                   agendamento.
                 </p>
@@ -422,7 +428,7 @@ export function Scheduling() {
                   <button
                     type="button"
                     onClick={() => setShowPrivacyPolicy(true)}
-                    className="underline decoration-gold/50 underline-offset-2 hover:text-gold"
+                    className="underline decoration-gold/50 underline-offset-2 transition-colors hover:text-gold active:text-gold"
                   >
                     Ver Política de Privacidade
                   </button>
@@ -436,19 +442,18 @@ export function Scheduling() {
             </div>
           </Reveal>
 
-          <Reveal active={isInView} direction="up" delay={0.32} className="flex flex-col gap-3 lg:items-start">
-            <motion.button
+          <Reveal active={isInView} direction="up" delay={0.32} className="flex flex-col items-center gap-3">
+            <Button
               type="submit"
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.99 }}
-              transition={{ duration: 0.2, ease: EASE_OUT }}
-              className="w-full rounded-full bg-brown-dark px-7 py-3.5 text-sm font-medium text-cream shadow-warm-sm transition-shadow duration-300 hover:bg-brown hover:shadow-warm lg:w-auto lg:min-w-[16rem]"
+              variant="primary"
+              shine
+              className="w-full lg:w-auto lg:min-w-[16rem]"
             >
               Confirmar e enviar pelo WhatsApp
-            </motion.button>
+            </Button>
 
             {submitted && (
-              <p role="status" className="text-sm text-brown/70">
+              <p role="status" className="text-center text-sm text-brown/70">
                 Sua solicitação foi aberta no WhatsApp. Se a janela não abriu, verifique o bloqueador
                 de pop-ups do navegador.
               </p>

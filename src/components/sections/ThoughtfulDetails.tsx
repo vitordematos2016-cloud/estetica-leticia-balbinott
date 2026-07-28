@@ -1,11 +1,15 @@
 import { useRef } from 'react';
-import { motion, useInView } from 'motion/react';
+import { motion } from 'motion/react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { PhotoFrame } from '../ui/PhotoFrame';
 import { Reveal } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useMobileViewportActive } from '../../hooks/useMobileViewportActive';
+import { mobileCardTransition, mobileCardVariants } from '../motion/mobileActive';
+import { useRepeatableInView } from '../../hooks/useRepeatableInView';
+import { useReplayKey } from '../../hooks/useReplayKey';
 import mimoImage from '../../assets/leh-estetic/cuidado-detalhes-leh-estetic.webp';
 
 /**
@@ -18,18 +22,34 @@ import mimoImage from '../../assets/leh-estetic/cuidado-detalhes-leh-estetic.web
  * `prefers-reduced-motion` pelo `MotionConfig reducedMotion="user"` global.
  * O brilho de entrada é removido por completo (não só neutralizado) quando
  * o SO pede menos movimento.
+ *
+ * Abaixo de 768px, um wrapper externo com `useMobileViewportActive` (ref
+ * próprio, distinto do `ref`/`isInView` de entrada acima) recua o conjunto
+ * fora da região central da tela e devolve presença total ao cruzá-la;
+ * `data-mobile-active` reaproveita as mesmas classes `group-hover:`/
+ * `group-active:` via `group-data-[mobile-active=true]:`.
  */
 export function ThoughtfulDetails() {
   const { thoughtfulDetails, brand } = siteContent;
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.4 });
+  const isInView = useRepeatableInView(ref, { amount: 0.4 });
   const prefersReducedMotion = useReducedMotion();
+  const shimmerReplayKey = useReplayKey(isInView);
+  const { ref: mobileRef, active: mobileActive, isMobileViewport } = useMobileViewportActive<HTMLDivElement>();
 
   return (
     <section className="py-16 sm:py-20">
       <Container className="flex justify-center">
         <motion.div
+          ref={mobileRef}
+          variants={mobileCardVariants}
+          initial={false}
+          animate={isMobileViewport ? (mobileActive ? 'active' : 'rest') : undefined}
+          transition={mobileCardTransition}
+        >
+        <motion.div
           ref={ref}
+          data-mobile-active={isMobileViewport ? mobileActive : undefined}
           className="group relative mx-auto flex w-full max-w-xs flex-col items-center gap-3 text-center sm:max-w-sm"
           whileHover={{ y: -2.5, scale: 1.01, rotate: 0.4 }}
           whileTap={{ scale: 0.99 }}
@@ -43,7 +63,7 @@ export function ThoughtfulDetails() {
               />
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute -inset-3 rounded-[2.25rem] bg-gold/10 opacity-60 blur-2xl transition-opacity duration-300 group-hover:opacity-100 group-active:opacity-100"
+                className="pointer-events-none absolute -inset-3 rounded-[2.25rem] bg-gold/10 opacity-60 blur-2xl transition-opacity duration-300 group-hover:opacity-100 group-active:opacity-100 group-data-[mobile-active=true]:opacity-100"
               />
               <div
                 aria-hidden="true"
@@ -58,7 +78,7 @@ export function ThoughtfulDetails() {
                 <PhotoFrame
                   src={mimoImage}
                   alt={`Biscoitos personalizados oferecidos como mimo pela ${brand.name}`}
-                  className="relative w-full max-w-[14rem] transition-shadow duration-300 group-hover:border-gold/70 group-hover:shadow-warm group-active:border-gold/70 group-active:shadow-warm sm:max-w-[16rem]"
+                  className="relative w-full max-w-[14rem] transition-shadow duration-300 group-hover:border-gold/70 group-hover:shadow-warm group-active:border-gold/70 group-active:shadow-warm group-data-[mobile-active=true]:border-gold/70 group-data-[mobile-active=true]:shadow-warm sm:max-w-[16rem]"
                 />
 
                 {!prefersReducedMotion && (
@@ -67,6 +87,7 @@ export function ThoughtfulDetails() {
                     className="pointer-events-none absolute inset-0 overflow-hidden rounded-[2rem]"
                   >
                     <motion.div
+                      key={shimmerReplayKey}
                       aria-hidden="true"
                       className="absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-cream/60 to-transparent mix-blend-screen"
                       initial={{ x: '-40%', opacity: 0 }}
@@ -80,7 +101,7 @@ export function ThoughtfulDetails() {
           </Reveal>
 
           <Reveal active={isInView} delay={0.18}>
-            <h2 className="text-2xl text-brown-dark transition-colors duration-300 group-hover:text-gold group-active:text-gold sm:text-3xl">
+            <h2 className="text-2xl text-brown-dark transition-colors duration-300 group-hover:text-gold group-active:text-gold group-data-[mobile-active=true]:text-gold sm:text-3xl">
               {thoughtfulDetails.title}
             </h2>
           </Reveal>
@@ -90,6 +111,7 @@ export function ThoughtfulDetails() {
               {thoughtfulDetails.text}
             </p>
           </Reveal>
+        </motion.div>
         </motion.div>
       </Container>
     </section>

@@ -154,7 +154,7 @@ export function Splash({ onFinish }: SplashProps) {
       <button
         type="button"
         onClick={finish}
-        className={`fixed bottom-6 right-5 z-10 rounded-full border border-gold/40 bg-brown-dark/60 px-5 py-2.5 text-xs font-medium uppercase tracking-[0.2em] text-cream-light/85 backdrop-blur-sm transition-all duration-300 hover:border-gold hover:text-cream sm:bottom-8 sm:right-8 ${
+        className={`fixed bottom-6 right-5 z-10 rounded-full border border-gold/40 bg-brown-dark/60 px-5 py-2.5 text-xs font-medium uppercase tracking-[0.2em] text-cream-light/85 backdrop-blur-sm transition-all duration-300 hover:border-gold hover:text-cream active:border-gold active:text-cream sm:bottom-8 sm:right-8 ${
           showSkip ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
       >

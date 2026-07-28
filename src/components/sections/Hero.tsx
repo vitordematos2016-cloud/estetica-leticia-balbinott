@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from 'motion/react';
 import { siteContent } from '../../data/siteContent';
@@ -7,6 +8,8 @@ import { Button } from '../ui/Button';
 import { Reveal, RevealGroup, RevealItem } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useRepeatableInView } from '../../hooks/useRepeatableInView';
+import { useReplayKey } from '../../hooks/useReplayKey';
 
 interface HeroProps {
   splashFinished: boolean;
@@ -26,6 +29,11 @@ export function Hero({ splashFinished }: HeroProps) {
   const { hero } = siteContent;
   const professionalFirstName = siteContent.brand.professional.split(' ')[0];
   const prefersReducedMotion = useReducedMotion();
+
+  const frameRef = useRef<HTMLDivElement>(null);
+  const isFrameInView = useRepeatableInView(frameRef, { amount: 0.5 });
+  const shimmerActive = splashFinished && isFrameInView;
+  const shimmerReplayKey = useReplayKey(shimmerActive);
 
   const rawTiltX = useMotionValue(0);
   const rawTiltY = useMotionValue(0);
@@ -109,30 +117,17 @@ export function Hero({ splashFinished }: HeroProps) {
             </p>
           </RevealItem>
           <RevealItem className="flex w-full flex-col gap-3.5 sm:w-auto sm:flex-row sm:gap-4">
-            <motion.span
-              className="inline-block w-full sm:w-auto"
-              whileHover={{ y: -2, scale: 1.01 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.25, ease: EASE_OUT }}
+            <Button
+              href={hero.secondaryCta.href}
+              variant="primary"
+              shine
+              className="w-full shadow-[0_20px_45px_-18px_rgba(177,138,85,0.55)] hover:shadow-[0_24px_55px_-16px_rgba(177,138,85,0.65)] sm:w-auto"
             >
-              <Button
-                href={hero.secondaryCta.href}
-                variant="primary"
-                className="w-full shadow-[0_20px_45px_-18px_rgba(177,138,85,0.55)] hover:shadow-[0_24px_55px_-16px_rgba(177,138,85,0.65)] sm:w-auto"
-              >
-                {hero.secondaryCta.label}
-              </Button>
-            </motion.span>
-            <motion.span
-              className="inline-block w-full sm:w-auto"
-              whileHover={{ y: -1 }}
-              whileTap={{ scale: 0.985 }}
-              transition={{ duration: 0.25, ease: EASE_OUT }}
-            >
-              <Button href={hero.primaryCta.href} variant="secondary" className="w-full sm:w-auto">
-                {hero.primaryCta.label}
-              </Button>
-            </motion.span>
+              {hero.secondaryCta.label}
+            </Button>
+            <Button href={hero.primaryCta.href} variant="secondary" className="w-full sm:w-auto">
+              {hero.primaryCta.label}
+            </Button>
           </RevealItem>
         </RevealGroup>
 
@@ -142,6 +137,7 @@ export function Hero({ splashFinished }: HeroProps) {
           className="relative order-1 mx-auto aspect-[4/5] w-full max-w-md lg:order-2 lg:max-w-lg [perspective:1200px]"
         >
           <motion.div
+            ref={frameRef}
             onPointerMove={handleFramePointerMove}
             onPointerLeave={handleFramePointerLeave}
             initial={{ scale: 0.96 }}
@@ -227,10 +223,11 @@ export function Hero({ splashFinished }: HeroProps) {
                 className="pointer-events-none absolute inset-0 overflow-hidden rounded-[3rem] rounded-tr-[6rem]"
               >
                 <motion.div
+                  key={shimmerReplayKey}
                   aria-hidden="true"
                   className="absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-cream/50 to-transparent mix-blend-screen"
                   initial={{ x: '-40%', opacity: 0 }}
-                  animate={splashFinished ? { x: '340%', opacity: [0, 1, 0] } : {}}
+                  animate={shimmerActive ? { x: '340%', opacity: [0, 1, 0] } : {}}
                   transition={{ duration: 1, ease: EASE_OUT, delay: 0.9 }}
                 />
               </div>

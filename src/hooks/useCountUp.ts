@@ -1,11 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useReducedMotion } from './useReducedMotion';
 
 /**
  * Conta de 0 até `target` a ritmo linear via requestAnimationFrame,
- * disparada apenas quando `start` vira true, e apenas uma vez (ignora
- * `start` voltar a true depois de já ter contado). Com prefers-reduced-motion
- * mostra o valor final direto, sem animação.
+ * disparada quando `start` vira true. Repete a cada reentrada: quando
+ * `start` volta a `false` (elemento saiu da região visível), o valor é
+ * zerado e fica pronto para a próxima entrada contar de novo -- enquanto
+ * `start` permanece `true` sem mudar, o efeito não reexecuta (React só
+ * reage a mudanças de dependência), então o valor final fica parado. Com
+ * `prefers-reduced-motion`, mostra o valor final direto, sem animação, em
+ * toda entrada.
  *
  * Ritmo linear (em vez de ease-out) é proposital: com um `target` pequeno
  * (ex.: 8), um easing que desacelera no fim faz o valor chegar ao número
@@ -17,12 +21,13 @@ import { useReducedMotion } from './useReducedMotion';
  */
 export function useCountUp(target: number, durationMs: number, start: boolean) {
   const [value, setValue] = useState(0);
-  const hasStartedRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (!start || hasStartedRef.current) return;
-    hasStartedRef.current = true;
+    if (!start) {
+      setValue(0);
+      return;
+    }
 
     if (prefersReducedMotion) {
       setValue(target);

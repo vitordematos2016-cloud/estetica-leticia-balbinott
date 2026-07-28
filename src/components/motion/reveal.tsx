@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import type { ElementType, ReactNode } from 'react';
-import { EASE_OUT, directionOffset } from './variants';
+import { EASE_OUT, REPEAT_VIEWPORT_MARGIN, directionOffset } from './variants';
 import type { RevealDirection } from './variants';
 
 const tagMap = {
@@ -38,8 +38,11 @@ interface RevealProps {
 /**
  * Substitui o padrão manual (CSSProperties + IntersectionObserver) repetido
  * em várias seções por uma única primitiva Motion. Sem `active`, cada
- * instância observa sua própria entrada na viewport; com `active`, ela segue
- * uma visibilidade compartilhada vinda do componente pai.
+ * instância observa sua própria entrada na viewport e repete a entrada toda
+ * vez que volta a ela (once=false por padrão, com margem para não reiniciar
+ * perto da borda); com `active`, ela segue uma visibilidade compartilhada
+ * vinda do componente pai (cujo próprio `useInView`/`useRepeatableInView"
+ * decide se repete ou não).
  */
 export function Reveal({
   children,
@@ -48,7 +51,7 @@ export function Reveal({
   delay = 0,
   duration = 0.6,
   amount = 0.2,
-  once = true,
+  once = false,
   as = 'div',
   active,
   'aria-hidden': ariaHidden,
@@ -66,7 +69,7 @@ export function Reveal({
         aria-hidden={ariaHidden}
         initial={hidden}
         whileInView={visible}
-        viewport={{ once, amount }}
+        viewport={{ once, amount, margin: REPEAT_VIEWPORT_MARGIN }}
         transition={transition}
       >
         {children}
@@ -101,8 +104,9 @@ interface RevealGroupProps {
 
 /**
  * Container que orquestra a entrada escalonada dos `RevealItem` filhos.
- * Reaproveitado tanto para listas reveladas ao entrar na viewport quanto
- * para grades de cartão que aparecem em sequência ao abrir um acordeão.
+ * Reaproveitado tanto para listas reveladas ao entrar na viewport (repete a
+ * cada reentrada, once=false por padrão) quanto para grades de cartão que
+ * aparecem em sequência ao abrir um acordeão (via `active` controlado).
  */
 export function RevealGroup({
   children,
@@ -110,7 +114,7 @@ export function RevealGroup({
   stagger = 0.08,
   delayChildren = 0,
   amount = 0.2,
-  once = true,
+  once = false,
   as = 'div',
   active,
 }: RevealGroupProps) {
@@ -127,7 +131,7 @@ export function RevealGroup({
         variants={variants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once, amount }}
+        viewport={{ once, amount, margin: REPEAT_VIEWPORT_MARGIN }}
       >
         {children}
       </MotionTag>

@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { motion } from 'motion/react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { Modal } from '../ui/Modal';
 import { CredentialsModal } from '../credentials/CredentialsModal';
+import { EASE_OUT } from '../motion/variants';
 
 const certificateIcon = (
   <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
@@ -24,10 +26,13 @@ export function Credentials() {
   return (
     <section className="py-6 sm:py-8">
       <Container className="flex justify-center">
-        <button
+        <motion.button
           type="button"
           onClick={() => setIsAuthorityOpen(true)}
-          className="flex items-center gap-2 rounded-full border border-gold/40 bg-cream-light/40 px-5 py-2.5 text-xs font-medium uppercase tracking-[0.18em] text-brown-dark transition-colors hover:bg-gold/10"
+          whileHover={{ y: -1.5 }}
+          whileTap={{ scale: 0.975 }}
+          transition={{ duration: 0.2, ease: EASE_OUT }}
+          className="flex items-center gap-2 rounded-full border border-gold/40 bg-cream-light/40 px-5 py-2.5 text-xs font-medium uppercase tracking-[0.18em] text-brown-dark transition-colors hover:bg-gold/10 active:bg-gold/15"
         >
           <span className="flex h-5 w-5 items-center justify-center text-gold">
             <svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true">
@@ -41,7 +46,7 @@ export function Credentials() {
             </svg>
           </span>
           Autoridade
-        </button>
+        </motion.button>
       </Container>
 
       <Modal isOpen={isAuthorityOpen} onClose={() => setIsAuthorityOpen(false)} title={credentials.title}>
@@ -54,13 +59,16 @@ export function Credentials() {
             </span>
             <h4 className="text-base text-brown-dark">{credentials.moduleTitle}</h4>
             <p className="text-sm leading-relaxed text-brown/70">{credentials.moduleTeaser}</p>
-            <button
+            <motion.button
               type="button"
               onClick={() => setIsCredentialsOpen(true)}
-              className="mt-1 rounded-full border border-gold/50 px-5 py-2.5 text-xs font-medium uppercase tracking-wide text-brown-dark transition-colors hover:bg-gold/10"
+              whileHover={{ y: -1.5 }}
+              whileTap={{ scale: 0.975 }}
+              transition={{ duration: 0.2, ease: EASE_OUT }}
+              className="mt-1 rounded-full border border-gold/50 px-5 py-2.5 text-xs font-medium uppercase tracking-wide text-brown-dark transition-colors hover:bg-gold/10 active:bg-gold/15"
             >
               {credentials.moduleCta}
-            </button>
+            </motion.button>
           </div>
         </div>
       </Modal>

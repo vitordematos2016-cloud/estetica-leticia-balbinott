@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import type { TreatmentBeforeAfter } from '../../types/siteContent';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { useHeldValue } from '../../hooks/useHeldValue';
-import { overlayBackdropVariants } from '../motion/variants';
+import { EASE_OUT, overlayBackdropVariants } from '../motion/variants';
 
 interface BeforeAfterGalleryProps {
   beforeAfter: TreatmentBeforeAfter;
@@ -29,24 +29,27 @@ export function BeforeAfterGallery({ beforeAfter }: BeforeAfterGalleryProps) {
       </p>
       <div className="grid grid-cols-2 gap-3">
         {pairs.map((pair) => (
-          <button
+          <motion.button
             key={pair.side}
             type="button"
             onClick={() => setExpandedSide(pair.side)}
             aria-label={`Ampliar imagem: ${pair.label} do tratamento`}
-            className="group relative aspect-[3/4] w-full overflow-hidden rounded-2xl border border-gold/25 bg-cream-light/40"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.975 }}
+            transition={{ duration: 0.2, ease: EASE_OUT }}
+            className="group relative aspect-[3/4] w-full overflow-hidden rounded-2xl border border-gold/25 bg-cream-light/40 transition-colors hover:border-gold/50 active:border-gold/50"
           >
             <img
               src={pair.src}
               alt={pair.alt}
               loading="lazy"
               decoding="async"
-              className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
+              className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105 group-active:scale-105"
             />
             <span className="absolute left-2 top-2 rounded-full bg-brown-dark/70 px-3 py-1 text-[0.65rem] font-medium uppercase tracking-[0.18em] text-cream-light">
               {pair.label}
             </span>
-          </button>
+          </motion.button>
         ))}
       </div>
       <p className="mt-3 text-xs text-brown/50">
@@ -66,16 +69,19 @@ export function BeforeAfterGallery({ beforeAfter }: BeforeAfterGalleryProps) {
             exit="exit"
             variants={overlayBackdropVariants}
           >
-            <button
+            <motion.button
               type="button"
               onClick={() => setExpandedSide(null)}
               aria-label="Fechar"
-              className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-cream-light/40 text-cream-light transition-colors hover:bg-cream-light/10"
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.92 }}
+              transition={{ duration: 0.15, ease: EASE_OUT }}
+              className="absolute right-5 top-5 flex h-11 w-11 items-center justify-center rounded-full border border-cream-light/40 text-cream-light transition-colors hover:bg-cream-light/10 active:bg-cream-light/15"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M1 1l14 14M15 1L1 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
-            </button>
+            </motion.button>
 
             <div className="relative flex w-full max-w-xl flex-1 items-center justify-center">
               {pairs.map(
@@ -93,19 +99,21 @@ export function BeforeAfterGallery({ beforeAfter }: BeforeAfterGalleryProps) {
 
             <div className="flex items-center gap-3">
               {pairs.map((pair) => (
-                <button
+                <motion.button
                   key={pair.side}
                   type="button"
                   onClick={() => setExpandedSide(pair.side)}
                   aria-pressed={displaySide === pair.side}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ duration: 0.15, ease: EASE_OUT }}
                   className={`rounded-full px-4 py-1.5 text-xs font-medium uppercase tracking-wide transition-colors ${
                     displaySide === pair.side
                       ? 'bg-cream-light text-brown-dark'
-                      : 'border border-cream-light/40 text-cream-light hover:bg-cream-light/10'
+                      : 'border border-cream-light/40 text-cream-light hover:bg-cream-light/10 active:bg-cream-light/15'
                   }`}
                 >
                   {pair.label}
-                </button>
+                </motion.button>
               ))}
             </div>
           </motion.div>

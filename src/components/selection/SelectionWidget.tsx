@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
 import { useSelection } from '../../context/SelectionContext';
 import { useScrollLock } from '../../hooks/useScrollLock';
+import { EASE_OUT } from '../motion/variants';
 
 export function SelectionWidget() {
   const { items, removeItem, clearItems, isPanelOpen, openPanel, closePanel, toastMessage, notify } =
@@ -41,11 +43,14 @@ export function SelectionWidget() {
   return (
     <>
       {items.length > 0 && (
-        <button
+        <motion.button
           type="button"
           onClick={openPanel}
           aria-label={`Minha seleção, ${items.length} ${items.length === 1 ? 'item' : 'itens'}`}
-          className="fixed bottom-6 right-5 z-40 flex items-center gap-2 rounded-full bg-brown-dark px-5 py-3.5 text-cream shadow-warm transition-transform hover:scale-105 sm:bottom-8 sm:right-8"
+          whileHover={{ y: -2, scale: 1.03 }}
+          whileTap={{ scale: 0.975 }}
+          transition={{ duration: 0.2, ease: EASE_OUT }}
+          className="fixed bottom-6 right-5 z-40 flex items-center gap-2 rounded-full bg-brown-dark px-5 py-3.5 text-cream shadow-warm sm:bottom-8 sm:right-8"
         >
           <svg width="18" height="18" viewBox="0 0 22 22" fill="none" aria-hidden="true">
             <path
@@ -59,7 +64,7 @@ export function SelectionWidget() {
             <circle cx="16" cy="19" r="1.4" fill="currentColor" />
           </svg>
           <span className="text-sm font-medium">Minha seleção • {items.length}</span>
-        </button>
+        </motion.button>
       )}
 
       <div
@@ -90,10 +95,14 @@ export function SelectionWidget() {
               <h3 id="selection-panel-title" className="text-2xl text-brown-dark">
                 Minha Seleção
               </h3>
-              <button
+              <motion.button
+                type="button"
                 onClick={closePanel}
                 aria-label="Fechar"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-brown-dark hover:bg-gold/10"
+                whileHover={{ scale: 1.06 }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ duration: 0.15, ease: EASE_OUT }}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/40 text-brown-dark transition-colors hover:bg-gold/10 active:bg-gold/15"
               >
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                   <path
@@ -103,7 +112,7 @@ export function SelectionWidget() {
                     strokeLinecap="round"
                   />
                 </svg>
-              </button>
+              </motion.button>
             </div>
 
             <p className="mb-6 text-sm text-brown/60">
@@ -123,9 +132,10 @@ export function SelectionWidget() {
                     )}
                   </div>
                   <button
+                    type="button"
                     onClick={() => removeItem(item.id)}
                     aria-label={`Remover ${item.name} da seleção`}
-                    className="text-xs font-medium uppercase tracking-wide text-brown/60 hover:text-gold"
+                    className="text-xs font-medium uppercase tracking-wide text-brown/60 transition-colors hover:text-gold active:text-gold"
                   >
                     Remover
                   </button>
@@ -140,43 +150,59 @@ export function SelectionWidget() {
                     Deseja remover todos os serviços da sua seleção?
                   </p>
                   <div className="flex gap-3">
-                    <button
+                    <motion.button
+                      type="button"
                       onClick={() => setConfirmingClear(false)}
-                      className="flex-1 rounded-full border border-gold/50 px-4 py-2.5 text-xs font-medium uppercase tracking-wide text-brown-dark hover:bg-gold/10"
+                      whileHover={{ y: -1.5 }}
+                      whileTap={{ scale: 0.975 }}
+                      transition={{ duration: 0.2, ease: EASE_OUT }}
+                      className="flex-1 rounded-full border border-gold/50 px-4 py-2.5 text-xs font-medium uppercase tracking-wide text-brown-dark transition-colors hover:bg-gold/10 active:bg-gold/15"
                     >
                       Cancelar
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
+                      type="button"
                       onClick={handleConfirmClear}
-                      className="flex-1 rounded-full bg-brown-dark px-4 py-2.5 text-xs font-medium uppercase tracking-wide text-cream hover:bg-brown"
+                      whileHover={{ y: -1.5 }}
+                      whileTap={{ scale: 0.975 }}
+                      transition={{ duration: 0.2, ease: EASE_OUT }}
+                      className="flex-1 rounded-full bg-brown-dark px-4 py-2.5 text-xs font-medium uppercase tracking-wide text-cream transition-colors hover:bg-brown"
                     >
                       Limpar seleção
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
               ) : (
                 <>
                   <button
+                    type="button"
                     onClick={() => setConfirmingClear(true)}
-                    className="text-xs font-medium uppercase tracking-wide text-brown/60 hover:text-gold"
+                    className="text-xs font-medium uppercase tracking-wide text-brown/60 transition-colors hover:text-gold active:text-gold"
                   >
                     Limpar seleção
                   </button>
                   <div className="flex flex-col gap-3 sm:flex-row">
-                    <button
+                    <motion.button
+                      type="button"
                       onClick={closePanel}
-                      className="flex-1 rounded-full border border-gold/50 px-6 py-3.5 text-sm font-medium text-brown-dark transition-colors hover:bg-gold/10"
+                      whileHover={{ y: -1.5 }}
+                      whileTap={{ scale: 0.975 }}
+                      transition={{ duration: 0.2, ease: EASE_OUT }}
+                      className="flex-1 rounded-full border border-gold/50 px-6 py-3.5 text-sm font-medium text-brown-dark transition-colors hover:bg-gold/10 active:bg-gold/15"
                     >
                       Continuar navegando
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
                       type="button"
                       onClick={handleGoToScheduling}
                       disabled={items.length === 0}
+                      whileHover={items.length === 0 ? undefined : { y: -1.5 }}
+                      whileTap={items.length === 0 ? undefined : { scale: 0.975 }}
+                      transition={{ duration: 0.2, ease: EASE_OUT }}
                       className="flex-1 rounded-full bg-brown-dark px-6 py-3.5 text-center text-sm font-medium text-cream transition-colors hover:bg-brown disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-brown-dark"
                     >
                       Ir para agendamento
-                    </button>
+                    </motion.button>
                   </div>
                 </>
               )}

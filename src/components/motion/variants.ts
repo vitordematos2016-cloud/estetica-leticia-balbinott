@@ -5,6 +5,12 @@ export type RevealDirection = 'up' | 'down' | 'left' | 'right' | 'none';
 export const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 export const EASE_IN = [0.4, 0, 1, 1] as const;
 
+// Afasta o gatilho de entrada/saída da viewport das bordas cruas -- usado
+// por Reveal/RevealGroup e pelos hooks de reentrada (useRepeatableInView,
+// useInView com once:false) para não reiniciar animações com pequenos
+// movimentos de rolagem perto da borda.
+export const REPEAT_VIEWPORT_MARGIN = '-10% 0px -10% 0px' as const;
+
 export const directionOffset: Record<RevealDirection, { x?: number; y?: number }> = {
   up: { y: 22 },
   down: { y: -22 },

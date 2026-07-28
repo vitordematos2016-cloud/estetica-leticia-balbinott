@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { motion } from 'motion/react';
 import { siteContent } from '../../data/siteContent';
 import { Modal } from '../ui/Modal';
 import { PlaceholderMedia } from '../ui/PlaceholderMedia';
 import { CertificateLightbox } from './CertificateLightbox';
+import { EASE_OUT } from '../motion/variants';
 
 const typeLabels: Record<string, string> = {
   formacao: 'Formação profissional',
@@ -54,13 +56,16 @@ export function CredentialsModal({ isOpen, onClose }: CredentialsModalProps) {
                     <p className="mt-1 text-sm leading-relaxed text-brown/70">{item.description}</p>
                   )}
                 </div>
-                <button
+                <motion.button
                   type="button"
                   onClick={() => setActiveIndex(index)}
-                  className="mt-1 w-fit rounded-full border border-gold/50 px-4 py-2 text-xs font-medium uppercase tracking-wide text-brown-dark transition-colors hover:bg-gold/10"
+                  whileHover={{ y: -1.5 }}
+                  whileTap={{ scale: 0.975 }}
+                  transition={{ duration: 0.2, ease: EASE_OUT }}
+                  className="mt-1 w-fit rounded-full border border-gold/50 px-4 py-2 text-xs font-medium uppercase tracking-wide text-brown-dark transition-colors hover:bg-gold/10 active:bg-gold/15"
                 >
                   Ver certificado
-                </button>
+                </motion.button>
               </div>
             ))}
           </div>

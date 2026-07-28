@@ -1,11 +1,12 @@
 import { useRef } from 'react';
-import { motion, useInView } from 'motion/react';
+import { motion } from 'motion/react';
 import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
-import { PlaceholderMedia } from '../ui/PlaceholderMedia';
 import { Reveal, RevealGroup, RevealItem } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useRepeatableInView } from '../../hooks/useRepeatableInView';
+import { useReplayKey } from '../../hooks/useReplayKey';
 
 /**
  * Destaques são puramente informativos (sem onClick/href/role) — a
@@ -19,8 +20,9 @@ import { useReducedMotion } from '../../hooks/useReducedMotion';
 export function About() {
   const { about } = siteContent;
   const ref = useRef<HTMLElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const isInView = useRepeatableInView(ref, { amount: 0.3 });
   const prefersReducedMotion = useReducedMotion();
+  const shimmerReplayKey = useReplayKey(isInView);
 
   return (
     <section id="sobre" ref={ref} className="bg-cream-light/40 py-24 sm:py-28">
@@ -40,11 +42,18 @@ export function About() {
               aria-hidden="true"
               className="pointer-events-none absolute -inset-4 rounded-[3rem] bg-gold/10 opacity-70 blur-2xl transition-opacity duration-300 group-hover:opacity-100 group-active:opacity-100"
             />
-            <PlaceholderMedia
-              label={siteContent.brand.professional}
-              description="Foto oficial em preparação"
-              className="relative ring-1 ring-gold/10 transition-shadow duration-300 group-hover:border-gold/60 group-hover:shadow-warm group-active:border-gold/60 group-active:shadow-warm"
-            />
+            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[2.5rem] border border-gold/30 ring-1 ring-gold/10 shadow-warm-sm transition-shadow duration-300 group-hover:border-gold/60 group-hover:shadow-warm group-active:border-gold/60 group-active:shadow-warm">
+              <picture>
+                <source media="(max-width: 767px)" srcSet="/images/about/leticia-balbinott-sobre-mobile.webp" />
+                <img
+                  src="/images/about/leticia-balbinott-sobre-desktop.webp"
+                  alt={`${siteContent.brand.professional}, especialista em estética facial e regenerativa`}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover object-[center_25%] max-md:object-[center_20%]"
+                />
+              </picture>
+            </div>
 
             {!prefersReducedMotion && (
               <div
@@ -52,6 +61,7 @@ export function About() {
                 className="pointer-events-none absolute inset-0 overflow-hidden rounded-[2.5rem]"
               >
                 <motion.div
+                  key={shimmerReplayKey}
                   aria-hidden="true"
                   className="absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-cream/50 to-transparent mix-blend-screen"
                   initial={{ x: '-40%', opacity: 0 }}
