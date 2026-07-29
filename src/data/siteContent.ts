@@ -191,6 +191,23 @@ export const siteContent: SiteContent = {
     items: [],
   },
 
+  // Cada item aponta direto para os ids reais de `treatments` abaixo (fonte
+  // única -- nenhuma lista paralela). `treatmentIds` define o que aparece no
+  // filtro da seção Tratamentos ao clicar no card; `primaryTreatmentId`
+  // (sempre um dos ids acima) recebe o destaque temporário. Relação definida
+  // pelo que o próprio nome do tratamento já identifica sem ambiguidade (não
+  // é uma indicação clínica inventada):
+  // - "Tratamento Rejuvenescedor e Clareador" tem "Clareador" no nome
+  //   -> associado a manchas;
+  // - "Microagulhamento"/"Ultramed"/"Tratamento Rejuvenescedor e Clareador"
+  //   são os tratamentos de rejuvenescimento voltados a linhas/textura;
+  // - "Limpeza de Pele" é a limpeza facial básica -> associada a
+  //   oleosidade/acne;
+  // - "Skin Glass" continua ligado a textura e viço (id "skin-class",
+  //   confirmado, não alterado);
+  // - "Skin Booster" é hidratação/regeneração -> saúde da pele e prevenção;
+  // - "Jato de Plasma"/"Ultramed" já são classificados no catálogo acima
+  //   como tecnologias de firmeza -> flacidez.
   skinConcerns: {
     title: 'Qual cuidado sua pele precisa?',
     text: 'Cada objetivo pede um caminho diferente. Escolha o que mais se aproxima do que você sente hoje.',
@@ -199,43 +216,50 @@ export const siteContent: SiteContent = {
         id: 'manchas',
         label: 'Melhorar manchas',
         description: 'Uniformizar o tom e a aparência da pele.',
-        categoryId: 'manchas-uniformizacao',
+        treatmentIds: ['rejuvenescedor-clareador'],
+        primaryTreatmentId: 'rejuvenescedor-clareador',
       },
       {
         id: 'linhas-sinais',
         label: 'Suavizar linhas e sinais',
         description: 'Atenuar marcas de expressão e sinais do tempo.',
-        categoryId: 'rejuvenescimento',
+        treatmentIds: ['microagulhamento', 'rejuvenescedor-clareador'],
+        primaryTreatmentId: 'microagulhamento',
       },
       {
         id: 'oleosidade-acne',
         label: 'Controlar oleosidade e acne',
         description: 'Equilibrar a produção de oleosidade da pele.',
-        categoryId: 'acne-oleosidade',
+        treatmentIds: ['limpeza-pele-premium'],
+        primaryTreatmentId: 'limpeza-pele-premium',
       },
       {
         id: 'textura-vico',
         label: 'Melhorar textura e viço',
         description: 'Renovar a superfície da pele e devolver luminosidade.',
-        treatmentId: 'skin-class',
+        treatmentIds: ['skin-class'],
+        primaryTreatmentId: 'skin-class',
       },
       {
         id: 'saude-pele',
         label: 'Recuperar a saúde da pele',
         description: 'Fortalecer e regenerar a barreira natural da pele.',
-        categoryId: 'estetica-regenerativa',
+        treatmentIds: ['skin-booster'],
+        primaryTreatmentId: 'skin-booster',
       },
       {
         id: 'flacidez',
         label: 'Cuidar da flacidez',
         description: 'Trabalhar firmeza e sustentação da pele.',
-        categoryId: 'rejuvenescimento',
+        treatmentIds: ['ultramed', 'jato-de-plasma'],
+        primaryTreatmentId: 'jato-de-plasma',
       },
       {
         id: 'prevencao',
         label: 'Prevenir o envelhecimento',
         description: 'Cuidados contínuos para retardar sinais futuros.',
-        categoryId: 'rejuvenescimento',
+        treatmentIds: ['skin-booster'],
+        primaryTreatmentId: 'skin-booster',
       },
     ],
   },
@@ -278,28 +302,159 @@ export const siteContent: SiteContent = {
     },
   ],
 
-  // Tratamentos oficiais confirmados pela cliente. Os 6 abaixo (identificados
-  // originalmente em destaques fixos do Instagram @leh_estetic) ainda não têm
-  // descrição, benefícios, imagem ou preço confirmados -- ver
-  // docs/PENDENCIAS_CLIENTE.md para o que falta de cada um.
+  // Catálogo oficial completo (13 procedimentos) confirmado pela cliente. A
+  // "Limpeza de Pele" simples/básica não é um serviço oferecido -- só as
+  // variantes "Limpeza de Pele Premium" e "Limpeza de Pele GHK-Cu" existem.
+  // `summary` (breve, para os cards) e `description` (completa, para o
+  // modal) descrevem apenas o que o próprio nome do procedimento já define
+  // de forma genérica e amplamente conhecida (ex.: o que é uma limpeza de
+  // pele, um peeling, microagulhamento) -- nunca equipamento, substância,
+  // profundidade, indicação clínica específica, contraindicação, duração,
+  // preço, nº de sessões ou resultado garantido, que continuam pendentes de
+  // confirmação (ver docs/PENDENCIAS_CLIENTE.md). "Ultramed" é a exceção:
+  // não há informação oficial suficiente nem sobre o tipo de procedimento,
+  // então o texto é institucional neutro, sem citar tecnologia. Nenhum
+  // tratamento tem `media` (imagem/vídeo) ainda -- os componentes já
+  // funcionam com o placeholder enquanto ausente.
+  //
+  // IDs de 6 procedimentos já existiam de destaques fixos do Instagram
+  // @leh_estetic (limp-ghk-cu, herbal-peel, dep-laser-h, jato-de-plasma,
+  // rem-tatuagem, skin-class) e foram preservados -- só o nome visível de
+  // limp-ghk-cu/herbal-peel/dep-laser-h foi ajustado para o nome oficial
+  // confirmado; os demais 7 são novos.
   //
   // categoryId classificado pelo tipo de procedimento que o próprio nome já
   // identifica sem ambiguidade (não é uma descrição/benefício inventado):
-  // - Limp GHK-CU / Herbal Peel: limpeza/peeling -> limpeza-renovacao;
-  // - Dep. Laser H / Remoção de Tatuagem: procedimentos a laser, não são
-  //   cuidado de pele do rosto -> nova categoria depilacao-tecnologias;
-  // - Jato de Plasma: tecnologia usada no mercado quase exclusivamente para
-  //   firmeza/sinais do tempo -> rejuvenescimento.
+  // - Limpezas de pele, Dermaplaning, Skin Glass, Peeling Herbal e Peeling
+  //   de Hollywood: limpeza/renovação de superfície -> limpeza-renovacao;
+  // - Skin Booster: hidratação/regeneração da pele -> estetica-regenerativa;
+  // - Microagulhamento, Ultramed, Tratamento Rejuvenescedor e Clareador,
+  //   Jato de Plasma: firmeza/sinais do tempo -> rejuvenescimento;
+  // - Depilação a Laser / Remoção de Tatuagem: procedimentos a laser, não
+  //   são cuidado de pele do rosto -> depilacao-tecnologias.
   // "Skin Glass" (nome comercial real; "Peeling de Vidro" é o subtitle
   // técnico, confirmado pela cliente) é um peeling -> limpeza-renovacao. O id
-  // interno permanece "skin-class" para não quebrar referências já em uso.
+  // interno permanece "skin-class" para não quebrar referências já em uso
+  // (ver skinConcerns.items abaixo, item "textura-vico").
   treatments: [
-    { id: 'limp-ghk-cu', name: 'Limp GHK-CU', categoryId: 'limpeza-renovacao' },
-    { id: 'herbal-peel', name: 'Herbal Peel', categoryId: 'limpeza-renovacao' },
-    { id: 'dep-laser-h', name: 'Dep. Laser H', categoryId: 'depilacao-tecnologias' },
-    { id: 'jato-de-plasma', name: 'Jato de Plasma', categoryId: 'rejuvenescimento' },
-    { id: 'rem-tatuagem', name: 'Remoção de Tatuagem', categoryId: 'depilacao-tecnologias' },
-    { id: 'skin-class', name: 'Skin Glass', subtitle: 'Peeling de Vidro', categoryId: 'limpeza-renovacao' },
+    {
+      id: 'limpeza-pele-premium',
+      name: 'Limpeza de Pele Premium',
+      categoryId: 'limpeza-renovacao',
+      summary:
+        'Protocolo de limpeza mais completo, pensado para quem busca um cuidado aprofundado com atenção especial a cada etapa do procedimento.',
+      description:
+        'A Limpeza de Pele Premium é um protocolo mais completo de higienização facial, pensado para quem busca um cuidado mais aprofundado do que a limpeza tradicional. As etapas do procedimento são definidas conforme a avaliação individual realizada antes do atendimento.',
+    },
+    {
+      id: 'limp-ghk-cu',
+      name: 'Limpeza de Pele GHK-Cu',
+      categoryId: 'limpeza-renovacao',
+      summary:
+        'Limpeza facial associada ao complexo de cobre peptídeo (GHK-Cu), voltada a quem procura um cuidado de renovação mais completo para a pele.',
+      description:
+        'A Limpeza de Pele GHK-Cu associa a higienização facial ao uso do complexo de cobre peptídeo (GHK-Cu), um ativo conhecido no cuidado com a pele. É indicada para quem busca um protocolo de limpeza mais completo, sempre ajustado conforme avaliação individual.',
+    },
+    {
+      id: 'dermaplaning',
+      name: 'Dermaplaning',
+      categoryId: 'limpeza-renovacao',
+      summary:
+        'Esfoliação manual que remove células mortas e a penugem facial (buço), deixando a pele com textura mais lisa, uniforme e macia ao toque.',
+      description:
+        'O Dermaplaning é uma técnica de esfoliação manual que remove células mortas e a penugem facial, deixando a pele com textura mais lisa e uniforme. É um procedimento indicado para quem busca preparar a pele para uma aparência mais uniforme, sempre conforme avaliação individual.',
+    },
+    {
+      id: 'skin-class',
+      name: 'Skin Glass',
+      subtitle: 'Peeling de Vidro',
+      categoryId: 'limpeza-renovacao',
+      summary:
+        'Peeling que busca o efeito de pele lisa e translúcida, com foco em textura refinada, viço e um aspecto saudável e luminoso no dia a dia.',
+      description:
+        'O Skin Glass, também chamado de Peeling de Vidro, é um procedimento que busca o efeito de pele lisa, uniforme e translúcida. O protocolo é voltado à textura refinada e ao aspecto saudável e luminoso, sempre ajustado conforme avaliação individual.',
+    },
+    {
+      id: 'herbal-peel',
+      name: 'Peeling Herbal',
+      categoryId: 'limpeza-renovacao',
+      summary:
+        'Peeling formulado com ativos de origem vegetal, indicado para quem busca renovar a superfície da pele de um jeito suave e delicado.',
+      description:
+        'O Peeling Herbal utiliza ativos de origem vegetal para promover a renovação da camada superficial da pele. É indicado para quem busca um cuidado mais suave, com o protocolo ajustado conforme as características e a sensibilidade de cada pele, sempre a partir de avaliação individual.',
+    },
+    {
+      id: 'peeling-hollywood',
+      name: 'Peeling de Hollywood',
+      categoryId: 'limpeza-renovacao',
+      summary:
+        'Peeling voltado à renovação da pele, indicado para quem busca mais uniformidade de tom e luminosidade na aparência do rosto ao longo do tempo.',
+      description:
+        'O Peeling de Hollywood é um procedimento voltado à renovação da pele, indicado para quem busca mais uniformidade de tom e luminosidade na aparência do rosto. O protocolo é sempre personalizado conforme a avaliação individual realizada com a profissional.',
+    },
+    {
+      id: 'skin-booster',
+      name: 'Skin Booster',
+      categoryId: 'estetica-regenerativa',
+      summary:
+        'Protocolo voltado à hidratação profunda da pele, indicado para quem busca mais viço e uma aparência saudável no dia a dia.',
+      description:
+        'O Skin Booster é um protocolo voltado à hidratação profunda da pele, indicado para quem busca mais viço, maciez e uma aparência saudável. O plano de sessões e a técnica utilizada são definidos junto à profissional, de acordo com a avaliação individual de cada pele.',
+    },
+    {
+      id: 'microagulhamento',
+      name: 'Microagulhamento',
+      categoryId: 'rejuvenescimento',
+      summary:
+        'Técnica que estimula os processos naturais de renovação da pele por meio de microperfurações superficiais e controladas.',
+      description:
+        'O Microagulhamento é uma técnica que utiliza microperfurações superficiais e controladas para estimular os processos naturais de renovação da pele. O protocolo, incluindo a intensidade e a frequência das sessões, é definido conforme avaliação individual.',
+    },
+    {
+      id: 'ultramed',
+      name: 'Ultramed',
+      categoryId: 'rejuvenescimento',
+      summary:
+        'Tratamento avaliado individualmente com a profissional, que define o protocolo mais adequado conforme as necessidades da sua pele.',
+      description:
+        'O Ultramed é um dos procedimentos do catálogo da Estética Letícia Balbinott. Como ainda não há informações oficiais completas confirmadas sobre a técnica utilizada, o protocolo é explicado individualmente durante a consulta, sempre de acordo com a avaliação e a necessidade de cada pele.',
+    },
+    {
+      id: 'rejuvenescedor-clareador',
+      name: 'Tratamento Rejuvenescedor e Clareador',
+      categoryId: 'rejuvenescimento',
+      summary:
+        'Protocolo voltado a uniformizar o tom da pele e suavizar sinais do tempo, com abordagem personalizada para cada tipo de pele.',
+      description:
+        'O Tratamento Rejuvenescedor e Clareador é um protocolo voltado a uniformizar o tom da pele e suavizar sinais do tempo. As etapas e os ativos utilizados são definidos conforme a avaliação individual de cada pele, respeitando suas características e sensibilidade.',
+    },
+    {
+      id: 'jato-de-plasma',
+      name: 'Jato de Plasma',
+      categoryId: 'rejuvenescimento',
+      summary:
+        'Tecnologia utilizada com foco em firmeza da pele, indicada para quem busca um cuidado direcionado a sinais do tempo.',
+      description:
+        'O Jato de Plasma é uma tecnologia utilizada com foco em firmeza da pele, indicada para quem busca um cuidado direcionado a sinais do tempo. O protocolo de aplicação é definido junto à profissional, conforme avaliação individual de cada caso.',
+    },
+    {
+      id: 'dep-laser-h',
+      name: 'Depilação a Laser',
+      categoryId: 'depilacao-tecnologias',
+      summary:
+        'Tecnologia a laser voltada à redução do crescimento dos pelos, com protocolo definido de acordo com a avaliação individual.',
+      description:
+        'A Depilação a Laser é uma tecnologia voltada à redução do crescimento dos pelos ao longo de um protocolo de sessões. A área a ser tratada e o plano de atendimento são definidos previamente, de acordo com a avaliação individual de cada cliente.',
+    },
+    {
+      id: 'rem-tatuagem',
+      name: 'Remoção de Tatuagem',
+      categoryId: 'depilacao-tecnologias',
+      summary:
+        'Procedimento a laser voltado ao clareamento gradual de tatuagens, com técnica ajustada às características de cada pele e desenho.',
+      description:
+        'A Remoção de Tatuagem é um procedimento a laser voltado ao clareamento gradual do pigmento na pele. O número de sessões e o protocolo utilizado variam conforme as características da tatuagem e são definidos após avaliação individual.',
+    },
   ],
 
   aftercare: {

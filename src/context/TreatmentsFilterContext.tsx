@@ -4,17 +4,21 @@ import { siteContent } from '../data/siteContent';
 
 interface TreatmentsFilterContextValue {
   activeCategoryId: string | null;
+  /** Lista de ids ativa quando o filtro veio de um card de "Qual cuidado sua
+   * pele precisa?" (`requestTreatmentsHighlight`) -- nunca combinada com
+   * `activeCategoryId`, que fica null enquanto esta lista estiver ativa. */
+  activeTreatmentIds: string[] | null;
+  /** Seleciona uma categoria (ou `null` para "Todos os tratamentos") e
+   * sempre limpa o filtro especial por ids -- é assim que os chips normais e
+   * o botão "Ver todos os tratamentos" encerram o modo vindo do card. */
   selectCategory: (categoryId: string | null) => void;
   highlightTreatmentId: string | null;
-  /** Filtra pela categoria e, se houver um tratamento cadastrado nela, marca-o
-   * para ser localizado e destacado. Retorna o id encontrado (ou null caso
-   * nenhum tratamento dessa categoria exista ainda no catálogo). */
-  requestCategoryHighlight: (categoryId: string) => string | null;
-  /** Mesma finalidade de `requestCategoryHighlight`, mas para tratamentos sem
-   * categoria confirmada (ex.: Skin Class) — destaca pelo id do tratamento
-   * diretamente, só limpando o filtro de categoria ativo (nunca a busca).
-   * Retorna o id quando o tratamento existe no catálogo, senão null. */
-  requestTreatmentHighlight: (treatmentId: string) => string | null;
+  /** Filtra a grade pelos ids relacionados a um cuidado da pele e marca o
+   * tratamento principal para ser localizado e destacado. Ids que não
+   * existem mais no catálogo são descartados; se nenhum sobrar, não altera
+   * nada e retorna null (o card cai no salto padrão para `#tratamentos`, sem
+   * deixar a seção presa em um estado vazio). */
+  requestTreatmentsHighlight: (treatmentIds: string[], primaryTreatmentId: string) => string | null;
   clearHighlight: () => void;
 }
 
@@ -24,25 +28,22 @@ const TreatmentsFilterContext = createContext<TreatmentsFilterContextValue | und
 
 export function TreatmentsFilterProvider({ children }: { children: ReactNode }) {
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
+  const [activeTreatmentIds, setActiveTreatmentIds] = useState<string[] | null>(null);
   const [highlightTreatmentId, setHighlightTreatmentId] = useState<string | null>(null);
 
   const selectCategory = useCallback((categoryId: string | null) => {
     setActiveCategoryId(categoryId);
+    setActiveTreatmentIds(null);
   }, []);
 
-  const requestCategoryHighlight = useCallback((categoryId: string) => {
-    const match = siteContent.treatments.find((treatment) => treatment.categoryId === categoryId);
-    setActiveCategoryId(categoryId);
-    setHighlightTreatmentId(match ? match.id : null);
-    return match ? match.id : null;
-  }, []);
-
-  const requestTreatmentHighlight = useCallback((treatmentId: string) => {
-    const match = siteContent.treatments.find((treatment) => treatment.id === treatmentId);
-    if (!match) return null;
+  const requestTreatmentsHighlight = useCallback((treatmentIds: string[], primaryTreatmentId: string) => {
+    const validIds = treatmentIds.filter((id) => siteContent.treatments.some((t) => t.id === id));
+    if (validIds.length === 0) return null;
+    const resolvedPrimary = validIds.includes(primaryTreatmentId) ? primaryTreatmentId : validIds[0];
     setActiveCategoryId(null);
-    setHighlightTreatmentId(match.id);
-    return match.id;
+    setActiveTreatmentIds(validIds);
+    setHighlightTreatmentId(resolvedPrimary);
+    return resolvedPrimary;
   }, []);
 
   const clearHighlight = useCallback(() => {
@@ -52,18 +53,18 @@ export function TreatmentsFilterProvider({ children }: { children: ReactNode }) 
   const value = useMemo(
     () => ({
       activeCategoryId,
+      activeTreatmentIds,
       selectCategory,
       highlightTreatmentId,
-      requestCategoryHighlight,
-      requestTreatmentHighlight,
+      requestTreatmentsHighlight,
       clearHighlight,
     }),
     [
       activeCategoryId,
+      activeTreatmentIds,
       selectCategory,
       highlightTreatmentId,
-      requestCategoryHighlight,
-      requestTreatmentHighlight,
+      requestTreatmentsHighlight,
       clearHighlight,
     ],
   );

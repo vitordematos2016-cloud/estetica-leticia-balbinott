@@ -7,7 +7,10 @@ import { SectionHeading } from '../ui/SectionHeading';
 import { Reveal } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
 import { useMobileViewportActive } from '../../hooks/useMobileViewportActive';
-import { mobileCardTransition, mobileCardVariants } from '../motion/mobileActive';
+import { getMobileSurfaceStyle, mobileCardTransition, mobileCardVariants } from '../motion/mobileActive';
+import { useRepeatableInView } from '../../hooks/useRepeatableInView';
+import { useReplayKey } from '../../hooks/useReplayKey';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 function StarRow({ rating }: { rating: number }) {
   return (
@@ -64,6 +67,16 @@ export function Reviews() {
   const [direction, setDirection] = useState(0);
   const touchStartX = useRef<number | null>(null);
   const { ref: mobileRef, active: mobileActive, isMobileViewport } = useMobileViewportActive<HTMLDivElement>();
+  const googleLinkRef = useRef<HTMLAnchorElement>(null);
+  const isGoogleLinkInView = useRepeatableInView(googleLinkRef, { amount: 0.4 });
+  const googleLinkShineKey = useReplayKey(isGoogleLinkInView);
+  const prefersReducedMotion = useReducedMotion();
+  const {
+    ref: googleLinkMobileRef,
+    active: googleLinkMobileActive,
+    isMobileViewport: isGoogleLinkMobileViewport,
+  } = useMobileViewportActive<HTMLDivElement>();
+  const googleLinkSurfaceStyle = getMobileSurfaceStyle(isGoogleLinkMobileViewport, googleLinkMobileActive);
 
   function goToNext() {
     setDirection(1);
@@ -219,18 +232,50 @@ export function Reviews() {
           </>
         )}
 
-        <a
-          href={address.googleMapsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Ver todas as avaliações da Estética Letícia Balbinott no Google"
-          className="flex items-center gap-2 rounded-full border border-gold/40 bg-transparent px-5 py-2.5 text-xs font-medium uppercase tracking-wide text-brown-dark transition-colors hover:border-gold hover:bg-beige/30 active:border-gold active:bg-beige/30"
+        <motion.div
+          ref={googleLinkMobileRef}
+          variants={mobileCardVariants}
+          initial={false}
+          animate={isGoogleLinkMobileViewport ? (googleLinkMobileActive ? 'active' : 'rest') : undefined}
+          transition={mobileCardTransition}
         >
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M8 1l2.1 4.3 4.7.7-3.4 3.3.8 4.7L8 11.8l-4.2 2.2.8-4.7L1.2 6l4.7-.7L8 1Z" fill="currentColor" className="text-gold" />
-          </svg>
-          Ver todas as avaliações no Google
-        </a>
+          <motion.a
+            ref={googleLinkRef}
+            href={address.googleMapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Ver todas as avaliações da Estética Letícia Balbinott no Google"
+            data-mobile-active={isGoogleLinkMobileViewport ? googleLinkMobileActive : undefined}
+            initial={{ opacity: 0.85, y: 14, scale: 0.97 }}
+            animate={
+              isGoogleLinkMobileViewport
+                ? undefined
+                : prefersReducedMotion || isGoogleLinkInView
+                  ? { opacity: 1, y: 0, scale: 1 }
+                  : { opacity: 0.85, y: 14, scale: 0.97 }
+            }
+            whileHover={{ y: -2, scale: 1.015 }}
+            whileTap={{ scale: 0.96 }}
+            transition={{ duration: 0.45, ease: EASE_OUT }}
+            style={googleLinkSurfaceStyle}
+            className="group relative flex items-center gap-2 overflow-hidden rounded-full border border-gold/40 bg-transparent px-5 py-2.5 text-xs font-medium uppercase tracking-wide text-brown-dark shadow-warm-sm transition-[box-shadow,border-color,background-color] duration-300 hover:border-gold hover:bg-beige/30 hover:shadow-warm active:border-gold active:bg-beige/30 focus-visible:outline-offset-4"
+          >
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 1l2.1 4.3 4.7.7-3.4 3.3.8 4.7L8 11.8l-4.2 2.2.8-4.7L1.2 6l4.7-.7L8 1Z" fill="currentColor" className="text-gold" />
+            </svg>
+            Ver todas as avaliações no Google
+            {!prefersReducedMotion && (
+              <motion.span
+                key={googleLinkShineKey}
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-gold/30 to-transparent mix-blend-overlay"
+                initial={{ x: '-140%', opacity: 0 }}
+                animate={isGoogleLinkInView ? { x: '340%', opacity: [0, 1, 0] } : {}}
+                transition={{ duration: 0.9, ease: EASE_OUT }}
+              />
+            )}
+          </motion.a>
+        </motion.div>
       </Container>
     </section>
   );

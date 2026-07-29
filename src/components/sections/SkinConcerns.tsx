@@ -26,7 +26,7 @@ import { mobileCardTransition, mobileCardVariants } from '../motion/mobileActive
  * idêntico, só a origem do gatilho muda.
  */
 function ConcernCard({ concern }: { concern: SkinConcern }) {
-  const { requestCategoryHighlight, requestTreatmentHighlight } = useTreatmentsFilter();
+  const { requestTreatmentsHighlight } = useTreatmentsFilter();
   const { ref, active, isMobileViewport } = useMobileViewportActive<HTMLAnchorElement>();
 
   return (
@@ -42,16 +42,12 @@ function ConcernCard({ concern }: { concern: SkinConcern }) {
           href="#tratamentos"
           data-mobile-active={isMobileViewport ? active : undefined}
           onClick={(event) => {
-            // Se já existir um tratamento cadastrado nessa categoria (ou, para
-            // cuidados sem categoria confirmada, pelo id do tratamento), rolamos
-            // e destacamos esse card específico em vez do salto genérico do link.
-            const treatmentId = 'treatmentId' in concern ? concern.treatmentId : undefined;
-            const categoryId = 'categoryId' in concern ? concern.categoryId : undefined;
-            const matchedId = treatmentId
-              ? requestTreatmentHighlight(treatmentId)
-              : categoryId
-                ? requestCategoryHighlight(categoryId)
-                : null;
+            // Filtra a grade de Tratamentos pelos ids relacionados a este
+            // cuidado e rola/destaca o tratamento principal, em vez do salto
+            // genérico do link. Se nenhum id relacionado existir mais no
+            // catálogo, `matchedId` vem null e o link segue seu comportamento
+            // padrão (salto simples para #tratamentos, mostrando tudo).
+            const matchedId = requestTreatmentsHighlight(concern.treatmentIds, concern.primaryTreatmentId);
             if (matchedId) event.preventDefault();
           }}
           whileHover={{ y: -2.5 }}

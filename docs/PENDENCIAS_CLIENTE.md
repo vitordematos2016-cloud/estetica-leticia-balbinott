@@ -20,33 +20,42 @@ está preparado para recebê-los assim que estiverem disponíveis.
 - [ ] Fotos adicionais do ambiente (entrada, recepção, equipamentos, outros detalhes) — a cliente pediu para remover os cards vazios/placeholder da seção Experience; quando houver fotos reais novas (sem repetir as já usadas), podem virar um novo bloco alternado na mesma seção, seguindo o padrão de `src/components/sections/Experience.tsx`
 
 ## Tratamentos
-Os 6 tratamentos abaixo já são considerados oficiais e confirmados pela cliente
-(deixaram de ser tratados como "em identificação"/"aguardando confirmação").
-Cada um existe em `treatments` (`src/data/siteContent.ts`, tipo `Treatment` em
-`src/types/siteContent.ts`) apenas com `id`/`name`/`categoryId` preenchidos —
-todos os demais campos do tipo são opcionais e, enquanto ausentes, a interface
-mostra avisos honestos ("Descrição completa em atualização.", sem seção de
-benefícios/indicação/cuidados/antes e depois) em vez de inventar conteúdo.
-Assim que a Letícia confirmar qualquer campo de um item, é só preenchê-lo
-diretamente no objeto correspondente — a interface passa a exibir
-automaticamente, sem precisar mexer em nenhum componente:
-- [ ] **Limp GHK-CU** (categoria: Limpeza e renovação) — nome completo do procedimento, descrição/benefícios, indicação, duração/sessões, preço
-- [ ] **Herbal Peel** (categoria: Limpeza e renovação) — nome comercial exato, composição, indicação/benefícios, cuidados, duração, preço
-- [ ] **Dep. Laser H** (categoria: Depilação e tecnologias) — nome completo (o que "H" significa), se ainda é oferecido, indicação, duração/sessões, preço
+Os 13 tratamentos oficiais confirmados pela cliente já estão todos cadastrados
+em `treatments` (`src/data/siteContent.ts`, tipo `Treatment` em
+`src/types/siteContent.ts`), com `id`/`name`/`categoryId` (e `subtitle` no
+caso do Skin Glass) e agora também `summary` (resumo breve, usado nos cards) e
+`description` (explicação completa, usada no modal de detalhes) — escritos de
+forma genérica a partir do que o próprio nome do procedimento já define
+publicamente (o que é uma limpeza de pele, um peeling, microagulhamento
+etc.), sem citar equipamento, substância, indicação clínica específica,
+contraindicação, duração, sessões, preço ou resultado garantido. Todos os
+demais campos do tipo continuam opcionais e, enquanto ausentes, a interface
+mostra avisos honestos (sem seção de benefícios/indicação/cuidados/antes e
+depois) em vez de inventar conteúdo. Assim que a Letícia confirmar qualquer
+campo de um item, é só preenchê-lo diretamente no objeto correspondente — a
+interface passa a exibir automaticamente, sem precisar mexer em nenhum
+componente:
+- [ ] **Limpeza de Pele Premium** (categoria: Limpeza e renovação) — benefícios, indicação, duração/sessões, preço
+- [ ] **Limpeza de Pele GHK-Cu** (categoria: Limpeza e renovação) — benefícios, indicação, duração/sessões, preço
+- [ ] **Dermaplaning** (categoria: Limpeza e renovação) — benefícios, indicação, duração/sessões, preço
+- [ ] **Skin Glass** ("Peeling de Vidro", categoria: Limpeza e renovação) — benefícios, indicação, duração/sessões, preço
+- [ ] **Peeling Herbal** (categoria: Limpeza e renovação) — composição, indicação/benefícios, cuidados, duração, preço
+- [ ] **Peeling de Hollywood** (categoria: Limpeza e renovação) — benefícios, indicação, duração/sessões, preço
+- [ ] **Skin Booster** (categoria: Estética regenerativa) — benefícios, indicação, duração/sessões, preço
+- [ ] **Microagulhamento** (categoria: Rejuvenescimento) — benefícios, indicação, duração/sessões, preço
+- [ ] **Ultramed** (categoria: Rejuvenescimento) — **prioridade**: sequer o tipo de procedimento está confirmado (facial ou corporal, tecnologia utilizada); o `summary`/`description` atuais são intencionalmente neutros até isso ser esclarecido; depois, nome comercial do equipamento, indicação/benefícios, contraindicações, duração, preço
+- [ ] **Tratamento Rejuvenescedor e Clareador** (categoria: Rejuvenescimento) — benefícios, indicação, duração/sessões, preço
 - [ ] **Jato de Plasma** (categoria: Rejuvenescimento) — nome comercial do equipamento, indicação/benefícios, contraindicações, duração, preço
+- [ ] **Depilação a Laser** (categoria: Depilação e tecnologias) — indicação, duração/sessões, preço
 - [ ] **Remoção de Tatuagem** (categoria: Depilação e tecnologias) — técnica utilizada, nº de sessões, indicação, contraindicações, preço
-- [ ] **Skin Class** — **sem categoria de propósito**: o nome não deixa claro se é um tratamento para cliente ou um curso/aula da profissional; categorizar sem essa confirmação seria adivinhar. Confirmar com a Letícia o que é, e então a categoria correta e as demais informações. Continua aparecendo em "Todos os tratamentos", só não em nenhum filtro de categoria até ser confirmado.
-- [ ] Imagem principal de cada tratamento (campo `image`)
+- [ ] Imagem ou vídeo de cada tratamento (campo `media`, tipo `TreatmentMedia` em `src/types/siteContent.ts`: `type` ("image"/"video"), `src`, `poster` opcional para vídeo, `alt`). Enquanto ausente, o card mostra um placeholder e o modal de detalhes mostra "Conteúdo visual em preparação" — nunca uma imagem quebrada ou espaço vazio.
 
-As 4 categorias que não têm nenhum tratamento hoje (Estética regenerativa,
-Manchas e uniformização, Acne e oleosidade, Protocolos personalizados) ficam
-automaticamente ocultas do filtro em Tratamentos (`Treatments.tsx` só renderiza
-o botão de uma categoria quando `treatments.some(t => t.categoryId === category.id)`)
-— reaparecem sozinhas assim que houver um tratamento real classificado nelas,
-sem precisar mexer em código. Foi criada uma nova categoria, **Depilação e
-tecnologias**, para os dois procedimentos a laser que não são cuidado de pele
-do rosto (Dep. Laser H, Remoção de Tatuagem) e que não se encaixavam em
-nenhuma das categorias já existentes.
+A categoria **Protocolos personalizados** é a única que ainda não tem nenhum
+tratamento; fica automaticamente oculta do filtro em Tratamentos
+(`Treatments.tsx` só renderiza o botão de uma categoria quando
+`treatments.some(t => t.categoryId === category.id)`) — reaparece sozinha
+assim que houver um tratamento real classificado nela, sem precisar mexer em
+código.
 
 ## Ofertas e condições comerciais
 Não existe mais uma seção separada de "Ofertas" — condições especiais agora
@@ -92,7 +101,7 @@ correspondente com `active: true`.
 
 ## Técnico (não depende da cliente)
 - [ ] `src/components/NotFoundPage.tsx` está pronto mas não está montado — o site hoje é uma página única com âncoras, sem rotas. Só faz sentido ativá-lo se o site ganhar páginas internas separadas (ex.: `/gestao`, política de privacidade em página própria) no futuro.
-- [ ] **Atalho "Qual cuidado sua pele precisa?" → tratamento específico**: `requestCategoryHighlight` (em `src/context/TreatmentsFilterContext.tsx`) já localiza o primeiro tratamento confirmado de cada categoria, rola até ele (`servico-${id}`) e o destaca por ~2s. Hoje, os 6 tratamentos oficiais existem em `treatments`, mas nenhum tem `categoryId` preenchido ainda — então todo clique cai no fallback (âncora simples para a seção Tratamentos, filtro por categoria) sem erro, mas sem destaque, porque nenhum card confirmado aponta para nenhuma categoria ainda. Assim que a Letícia confirmar a categoria de qualquer tratamento (campo `categoryId`), o destaque passa a funcionar automaticamente para essa categoria, sem precisar mexer no código.
+- [x] **Atalho "Qual cuidado sua pele precisa?" → tratamento específico**: cada item de `skinConcerns.items` aponta direto para os `treatmentIds` relacionados do catálogo oficial (`requestTreatmentsHighlight` em `src/context/TreatmentsFilterContext.tsx`), filtra a seção Tratamentos, rola até o card (`servico-${id}`) e o destaca por ~2s. Os 13 tratamentos oficiais têm `categoryId` preenchido e os relacionamentos já usam ids reais e válidos do catálogo.
 
 ## Observação
 Todos os textos, valores e dados já publicados no site (nome, profissional,

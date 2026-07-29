@@ -101,18 +101,17 @@ export interface TreatmentCategory {
   description: string;
 }
 
-interface SkinConcernBase {
+/** Cada cuidado aponta direto para os tratamentos relacionados do catálogo
+ * oficial (`treatments[].id`), nunca por categoria ou nome visível --
+ * `primaryTreatmentId` (sempre um dos ids em `treatmentIds`) define qual
+ * card recebe o destaque temporário ao clicar. */
+export interface SkinConcern {
   id: string;
   label: string;
   description: string;
+  treatmentIds: string[];
+  primaryTreatmentId: string;
 }
-
-/** Cada cuidado direciona por categoria (caminho padrão) ou por um
- * tratamento específico (ex.: Skin Class, que não tem categoria confirmada)
- * — nunca os dois, nunca nenhum. */
-export type SkinConcern =
-  | (SkinConcernBase & { categoryId: string; treatmentId?: never })
-  | (SkinConcernBase & { treatmentId: string; categoryId?: never });
 
 export interface SkinConcernsContent {
   title: string;
@@ -136,6 +135,18 @@ export interface TreatmentSpecialOffer {
   validUntil?: string;
 }
 
+/** Estrutura única para a mídia de destaque de um tratamento (card e modal
+ * de detalhes) -- substitui o antigo campo `image` solto. `poster` só se
+ * aplica a vídeo (miniatura exibida antes do play e usada como imagem nos
+ * cards, que nunca reproduzem vídeo). Enquanto ausente, os componentes
+ * mostram um placeholder elegante em vez de imagem quebrada ou espaço vazio. */
+export interface TreatmentMedia {
+  type: 'image' | 'video';
+  src: string;
+  poster?: string;
+  alt: string;
+}
+
 export interface Treatment {
   id: string;
   name: string;
@@ -143,9 +154,12 @@ export interface Treatment {
    * quando existir (ex.: "Peeling de Vidro" para o Skin Glass). */
   subtitle?: string;
   categoryId?: string;
+  /** Resumo breve (120-170 caracteres) exibido nos cards -- card em
+   * Tratamentos, card no catálogo do Agendamento. */
   summary?: string;
+  /** Explicação completa exibida no modal de detalhes. */
   description?: string;
-  image?: string;
+  media?: TreatmentMedia;
   indication?: string;
   howItWorks?: string;
   benefits?: string[];

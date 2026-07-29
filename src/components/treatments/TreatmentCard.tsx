@@ -37,6 +37,10 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
   // O destaque temporário de busca (isHighlighted) tem prioridade sobre a
   // presença mobile por rolagem -- nunca os dois competindo pelo mesmo estilo.
   const surfaceStyle = isHighlighted ? undefined : getMobileSurfaceStyle(isMobileViewport, mobileActive);
+  // Cards nunca reproduzem vídeo -- quando a mídia é um vídeo, usamos o
+  // poster (miniatura) como imagem estática; sem media, cai no placeholder.
+  const cardImageSrc = treatment.media?.type === 'image' ? treatment.media.src : treatment.media?.poster;
+  const cardImageAlt = treatment.media?.alt ?? treatment.name;
 
   return (
     <motion.div
@@ -45,6 +49,7 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
       initial={false}
       animate={isMobileViewport ? (mobileActive ? 'active' : 'rest') : undefined}
       transition={mobileCardTransition}
+      className="h-full"
     >
       <motion.article
         id={`servico-${treatment.id}`}
@@ -52,20 +57,30 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
         whileTap={{ scale: 0.988 }}
         transition={{ duration: 0.3, ease: EASE_OUT }}
         style={surfaceStyle}
-        className={`group flex scroll-mt-28 flex-col overflow-hidden rounded-[1.75rem] border bg-cream shadow-warm-sm transition-[box-shadow,border-color] duration-700 ease-out motion-reduce:duration-0 hover:shadow-warm active:shadow-warm ${
+        className={`group flex h-full scroll-mt-28 flex-col overflow-hidden rounded-[1.75rem] border bg-cream shadow-warm-sm transition-[box-shadow,border-color] duration-700 ease-out motion-reduce:duration-0 hover:shadow-warm active:shadow-warm ${
           isHighlighted ? 'border-gold shadow-warm' : 'border-gold/25'
         }`}
       >
         <div
           style={isMobileViewport ? { transform: `scale(${mobileActive ? 1.02 : 1})` } : undefined}
-          className="transition-transform duration-500 ease-out motion-reduce:transition-none"
+          className="shrink-0 transition-transform duration-500 ease-out motion-reduce:transition-none"
         >
-          <PlaceholderMedia
-            label={treatment.name}
-            description="Imagem em preparação"
-            ratio="landscape"
-            className="rounded-none rounded-t-[1.75rem] transition-transform duration-500 ease-out motion-reduce:transition-none group-hover:scale-[1.02] group-active:scale-[1.015]"
-          />
+          {cardImageSrc ? (
+            <img
+              src={cardImageSrc}
+              alt={cardImageAlt}
+              loading="lazy"
+              decoding="async"
+              className="aspect-[4/3] w-full rounded-t-[1.75rem] object-cover transition-transform duration-500 ease-out motion-reduce:transition-none group-hover:scale-[1.02] group-active:scale-[1.015]"
+            />
+          ) : (
+            <PlaceholderMedia
+              label={treatment.name}
+              description="Imagem em preparação"
+              ratio="landscape"
+              className="rounded-none rounded-t-[1.75rem] transition-transform duration-500 ease-out motion-reduce:transition-none group-hover:scale-[1.02] group-active:scale-[1.015]"
+            />
+          )}
         </div>
 
       <div className="flex flex-1 flex-col gap-3 p-6">
@@ -81,11 +96,11 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
             </span>
           )}
         </div>
-        <h3 className="text-xl text-brown-dark">{treatment.name}</h3>
+        <h3 className="min-h-[3.375rem] line-clamp-2 text-xl text-brown-dark">{treatment.name}</h3>
         {treatment.subtitle && (
-          <p className="-mt-1.5 text-sm font-medium text-brown/70">{treatment.subtitle}</p>
+          <p className="-mt-1.5 min-h-[1.25rem] text-sm font-medium text-brown/70">{treatment.subtitle}</p>
         )}
-        <p className="flex-1 text-sm leading-relaxed text-brown/70">
+        <p className="min-h-[4.5rem] flex-1 line-clamp-3 text-sm leading-relaxed text-brown/70">
           {treatment.summary ?? 'Descrição completa em atualização.'}
         </p>
 

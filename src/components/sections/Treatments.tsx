@@ -6,6 +6,7 @@ import { Container } from '../ui/Container';
 import { TreatmentCard } from '../treatments/TreatmentCard';
 import { TreatmentModal } from '../treatments/TreatmentModal';
 import { useTreatmentsFilter } from '../../context/TreatmentsFilterContext';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { Reveal } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
 
@@ -47,49 +48,48 @@ export function Treatments() {
   const availableCategories = treatmentCategories.filter((category) =>
     treatments.some((treatment) => treatment.categoryId === category.id),
   );
-  const { activeCategoryId, selectCategory, highlightTreatmentId, clearHighlight } =
+  const { activeCategoryId, activeTreatmentIds, selectCategory, highlightTreatmentId, clearHighlight } =
     useTreatmentsFilter();
   const [search, setSearch] = useState('');
   const [selectedTreatment, setSelectedTreatment] = useState<Treatment | null>(null);
+  const prefersReducedMotion = useReducedMotion();
 
+  // Tanto um filtro de categoria quanto o filtro especial por ids (vindo dos
+  // cards de "Qual cuidado sua pele precisa?") descartam uma busca antiga
+  // incompatível, para que ela não continue escondendo os tratamentos que
+  // deveriam aparecer.
   useEffect(() => {
-    if (activeCategoryId) setSearch('');
-  }, [activeCategoryId]);
+    if (activeCategoryId || activeTreatmentIds) setSearch('');
+  }, [activeCategoryId, activeTreatmentIds]);
 
-  // Cards que direcionam por treatmentId (ex.: Skin Class) zeram a categoria
-  // mas não têm categoria para acionar o efeito acima -- limpamos a busca
-  // aqui para que uma busca antiga incompatível não continue escondendo o
-  // tratamento indicado. Não interfere no caminho por categoryId, que
-  // sempre chega aqui com activeCategoryId preenchido.
-  useEffect(() => {
-    if (!activeCategoryId && highlightTreatmentId && search.trim().length > 0) {
-      setSearch('');
-    }
-  }, [activeCategoryId, highlightTreatmentId, search]);
-
-  // Rola até o tratamento pedido pelos cards de "Qual cuidado sua pele
-  // precisa?" e o destaca por ~2s. Se o id não existir mais no DOM (ex.:
-  // catálogo mudou), apenas limpa o estado sem quebrar nada. Quando o
-  // destaque veio por treatmentId, a busca antiga pode ainda não ter sido
-  // limpa nesta mesma renderização -- aguardamos o efeito acima antes de
-  // desistir, em vez de cancelar o destaque prematuramente.
+  // Rola até o tratamento principal pedido pelos cards de "Qual cuidado sua
+  // pele precisa?" e o destaca por ~2s. Se o id não existir no DOM ainda
+  // (ex.: a busca antiga não foi limpa nesta mesma leva de atualizações),
+  // aguardamos o efeito acima antes de desistir, em vez de cancelar o
+  // destaque prematuramente.
   useEffect(() => {
     if (!highlightTreatmentId) return;
 
     const node = document.getElementById(`servico-${highlightTreatmentId}`);
     if (!node) {
-      if (!activeCategoryId && search.trim().length > 0) return;
+      if (search.trim().length > 0) return;
       clearHighlight();
       return;
     }
 
-    node.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    node.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
     const timeout = window.setTimeout(clearHighlight, 2000);
     return () => window.clearTimeout(timeout);
-  }, [highlightTreatmentId, activeCategoryId, search, clearHighlight]);
+  }, [highlightTreatmentId, search, clearHighlight, prefersReducedMotion]);
 
   const filteredTreatments = useMemo(() => {
     return treatments.filter((treatment) => {
+      // O filtro especial por ids (cards de "Qual cuidado sua pele precisa?")
+      // tem prioridade e ignora categoria/busca -- mostra só os tratamentos
+      // relacionados, na ordem oficial do catálogo, até o cliente escolher
+      // outro filtro ou "Ver todos os tratamentos".
+      if (activeTreatmentIds) return activeTreatmentIds.includes(treatment.id);
+
       const matchesCategory =
         !activeCategoryId ||
         (activeCategoryId === SPECIAL_OFFERS_FILTER_ID
@@ -101,7 +101,7 @@ export function Treatments() {
         (treatment.summary ?? '').toLowerCase().includes(search.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [treatments, activeCategoryId, search]);
+  }, [treatments, activeCategoryId, activeTreatmentIds, search]);
 
   return (
     <section
@@ -153,10 +153,10 @@ export function Treatments() {
               <motion.button
                 type="button"
                 onClick={() => selectCategory(null)}
-                aria-pressed={activeCategoryId === null}
+                aria-pressed={activeCategoryId === null && activeTreatmentIds === null}
                 whileTap={CHIP_TAP}
                 transition={CHIP_TRANSITION}
-                className={chipClass(activeCategoryId === null)}
+                className={chipClass(activeCategoryId === null && activeTreatmentIds === null)}
               >
                 Todos os tratamentos
               </motion.button>
@@ -231,6 +231,7 @@ export function Treatments() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.35, ease: EASE_OUT }}
+                  className="h-full"
                 >
                   <TreatmentCard
                     treatment={treatment}
@@ -243,7 +244,7 @@ export function Treatments() {
           </motion.div>
         )}
 
-        {activeCategoryId !== null && (
+        {(activeCategoryId !== null || activeTreatmentIds !== null) && (
           <div className="flex justify-center">
             <motion.button
               type="button"

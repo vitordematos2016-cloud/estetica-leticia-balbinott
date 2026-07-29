@@ -35,6 +35,9 @@ function CheckIcon() {
  */
 export function SchedulingTreatmentCard({ treatment, isSelected, onSelect }: SchedulingTreatmentCardProps) {
   const categoryName = getTreatmentCategoryName(treatment.categoryId);
+  // Igual ao TreatmentCard: sem vídeo no card, o poster vira a miniatura.
+  const cardImageSrc = treatment.media?.type === 'image' ? treatment.media.src : treatment.media?.poster;
+  const cardImageAlt = treatment.media?.alt ?? treatment.name;
 
   return (
     <motion.button
@@ -48,13 +51,23 @@ export function SchedulingTreatmentCard({ treatment, isSelected, onSelect }: Sch
         isSelected ? 'border-gold shadow-warm' : 'border-gold/25'
       }`}
     >
-      <div className="relative">
-        <PlaceholderMedia
-          label={treatment.name}
-          description="Imagem em preparação"
-          ratio="landscape"
-          className="rounded-none rounded-t-[1.75rem] transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-        />
+      <div className="relative shrink-0">
+        {cardImageSrc ? (
+          <img
+            src={cardImageSrc}
+            alt={cardImageAlt}
+            loading="lazy"
+            decoding="async"
+            className="aspect-[4/3] w-full rounded-t-[1.75rem] object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+          />
+        ) : (
+          <PlaceholderMedia
+            label={treatment.name}
+            description="Imagem em preparação"
+            ratio="landscape"
+            className="rounded-none rounded-t-[1.75rem] transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+          />
+        )}
         {isSelected && (
           <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-gold px-2.5 py-1 text-[0.65rem] font-medium uppercase tracking-wide text-brown-dark shadow-warm-sm">
             <CheckIcon />
@@ -67,13 +80,13 @@ export function SchedulingTreatmentCard({ treatment, isSelected, onSelect }: Sch
         {categoryName && (
           <span className="text-xs font-medium uppercase tracking-[0.2em] text-gold-deep">{categoryName}</span>
         )}
-        <h3 className="text-lg text-brown-dark">{treatment.name}</h3>
+        <h3 className="min-h-[3rem] line-clamp-2 text-lg text-brown-dark">{treatment.name}</h3>
         {treatment.subtitle && (
-          <p className="-mt-1 text-sm font-medium text-brown/70">{treatment.subtitle}</p>
+          <p className="-mt-1 min-h-[1.25rem] text-sm font-medium text-brown/70">{treatment.subtitle}</p>
         )}
-        {treatment.summary && (
-          <p className="flex-1 text-sm leading-relaxed text-brown/70">{treatment.summary}</p>
-        )}
+        <p className="min-h-[4.5rem] flex-1 line-clamp-3 text-sm leading-relaxed text-brown/70">
+          {treatment.summary ?? 'Descrição completa em atualização.'}
+        </p>
         <span
           className={`mt-2 inline-flex w-fit items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium uppercase tracking-wide transition-colors ${
             isSelected

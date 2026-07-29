@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import type { Treatment } from '../../types/siteContent';
 import { Modal } from '../ui/Modal';
-import { PlaceholderMedia } from '../ui/PlaceholderMedia';
+import { TreatmentMedia } from './TreatmentMedia';
 import { BeforeAfterGallery } from './BeforeAfterGallery';
 import { useSelection } from '../../context/SelectionContext';
 import { buildTreatmentInquiryMessage, buildWhatsAppUrl } from '../../utils/whatsapp';
@@ -64,19 +64,7 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
           )}
         </div>
 
-        {treatmentData.image ? (
-          <div className="aspect-[4/3] w-full overflow-hidden rounded-2xl border border-gold/30">
-            <img
-              src={treatmentData.image}
-              alt={treatmentData.name}
-              loading="lazy"
-              decoding="async"
-              className="h-full w-full object-contain"
-            />
-          </div>
-        ) : (
-          <PlaceholderMedia label={treatmentData.name} description="Imagem em preparação" ratio="landscape" />
-        )}
+        <TreatmentMedia media={treatmentData.media} name={treatmentData.name} />
 
         <p className="text-sm leading-relaxed text-brown/80">
           {treatmentData.description ?? 'Descrição completa em atualização.'}

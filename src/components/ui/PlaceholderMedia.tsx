@@ -2,13 +2,16 @@ interface PlaceholderMediaProps {
   label: string;
   description?: string;
   className?: string;
-  ratio?: 'square' | 'portrait' | 'landscape';
+  ratio?: 'square' | 'portrait' | 'landscape' | 'media';
 }
 
 const ratioClasses = {
   square: 'aspect-square',
   portrait: 'aspect-[3/4]',
   landscape: 'aspect-[4/3]',
+  // Área de imagem/vídeo do modal de detalhes: 4:3 no celular, 16:9 a partir
+  // do breakpoint sm (mesmo comportamento pedido para a mídia real).
+  media: 'aspect-[4/3] sm:aspect-video',
 };
 
 export function PlaceholderMedia({
