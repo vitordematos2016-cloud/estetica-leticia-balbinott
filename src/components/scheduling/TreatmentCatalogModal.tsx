@@ -8,6 +8,7 @@ import { getTreatmentCategoryName } from '../../utils/treatments';
 import { RevealGroup, RevealItem } from '../motion/reveal';
 import { EASE_OUT, overlayBackdropVariants, overlayPanelVariants } from '../motion/variants';
 import { SchedulingTreatmentCard } from './SchedulingTreatmentCard';
+import { TreatmentModal } from '../treatments/TreatmentModal';
 
 interface TreatmentCatalogModalProps {
   isOpen: boolean;
@@ -51,6 +52,7 @@ export function TreatmentCatalogModal({ isOpen, onClose }: TreatmentCatalogModal
   const { addItem, removeItem, isSelected } = useSelection();
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [detailsTreatment, setDetailsTreatment] = useState<Treatment | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -130,11 +132,21 @@ export function TreatmentCatalogModal({ isOpen, onClose }: TreatmentCatalogModal
     onClose();
   }
 
+  // Fecha o catálogo e abre o modal de detalhes no lugar -- mesmo padrão que
+  // "Selecionar" já usa (fechar ao agir); evita dois overlays em tela cheia
+  // simultâneos com dois listeners de Escape independentes disputando o
+  // mesmo evento. Nunca adiciona à seleção sozinho.
+  function handleViewDetails(treatment: Treatment) {
+    setDetailsTreatment(treatment);
+    onClose();
+  }
+
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6"
+    <>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6"
           initial="hidden"
           animate="visible"
           exit="exit"
@@ -231,6 +243,7 @@ export function TreatmentCatalogModal({ isOpen, onClose }: TreatmentCatalogModal
                         treatment={treatment}
                         isSelected={isSelected(treatment.id)}
                         onSelect={handleSelect}
+                        onViewDetails={handleViewDetails}
                       />
                     </RevealItem>
                   ))}
@@ -239,7 +252,10 @@ export function TreatmentCatalogModal({ isOpen, onClose }: TreatmentCatalogModal
             </div>
           </motion.div>
         </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+
+      <TreatmentModal treatment={detailsTreatment} onClose={() => setDetailsTreatment(null)} />
+    </>
   );
 }

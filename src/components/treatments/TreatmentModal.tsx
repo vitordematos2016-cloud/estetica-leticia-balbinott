@@ -1,8 +1,7 @@
 import { motion } from 'motion/react';
 import type { Treatment } from '../../types/siteContent';
 import { Modal } from '../ui/Modal';
-import { TreatmentMedia } from './TreatmentMedia';
-import { BeforeAfterGallery } from './BeforeAfterGallery';
+import { TreatmentMediaShowcase } from './media/TreatmentMediaShowcase';
 import { useSelection } from '../../context/SelectionContext';
 import { buildTreatmentInquiryMessage, buildWhatsAppUrl } from '../../utils/whatsapp';
 import { getTreatmentCategoryName } from '../../utils/treatments';
@@ -63,8 +62,6 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
             </span>
           )}
         </div>
-
-        <TreatmentMedia media={treatmentData.media} name={treatmentData.name} />
 
         <p className="text-sm leading-relaxed text-brown/80">
           {treatmentData.description ?? 'Descrição completa em atualização.'}
@@ -198,7 +195,14 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
           </div>
         )}
 
-        {treatmentData.beforeAfter && <BeforeAfterGallery beforeAfter={treatmentData.beforeAfter} />}
+        <TreatmentMediaShowcase key={treatmentData.id} treatment={treatmentData} isOpen={!!treatment} />
+
+        {treatmentData.beforeAfter && treatmentData.beforeAfter.length > 0 && (
+          <p className="-mt-2 text-xs text-brown/50">
+            Resultados individuais podem variar. Cada tratamento é indicado após avaliação
+            personalizada.
+          </p>
+        )}
 
         <p className="text-xs text-brown/50">Cada atendimento é avaliado individualmente.</p>
 
@@ -216,7 +220,8 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.975 }}
             transition={{ duration: 0.2, ease: EASE_OUT }}
-            className={`flex-1 rounded-full px-6 py-3 text-sm font-medium transition-colors ${
+            aria-label={alreadySelected ? 'Tratamento já adicionado à seleção' : 'Adicionar tratamento à seleção'}
+            className={`flex-1 rounded-full px-6 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 focus-visible:ring-offset-2 focus-visible:ring-offset-cream ${
               alreadySelected
                 ? 'bg-gold/20 text-brown-dark'
                 : 'border border-gold/50 text-brown-dark hover:bg-gold/10 active:bg-gold/15'
@@ -227,10 +232,11 @@ export function TreatmentModal({ treatment, onClose }: TreatmentModalProps) {
           <motion.button
             type="button"
             onClick={handleGoToScheduling}
+            aria-label="Ir para agendamento com este tratamento selecionado"
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.975 }}
             transition={{ duration: 0.2, ease: EASE_OUT }}
-            className="flex-1 rounded-full bg-brown-dark px-6 py-3 text-center text-sm font-medium text-cream shadow-warm-sm transition-all hover:bg-brown hover:shadow-warm"
+            className="flex-1 rounded-full bg-brown-dark px-6 py-3 text-center text-sm font-medium text-cream shadow-warm-sm transition-all hover:bg-brown hover:shadow-warm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
           >
             Ir para agendamento
           </motion.button>

@@ -191,23 +191,10 @@ export const siteContent: SiteContent = {
     items: [],
   },
 
-  // Cada item aponta direto para os ids reais de `treatments` abaixo (fonte
-  // única -- nenhuma lista paralela). `treatmentIds` define o que aparece no
-  // filtro da seção Tratamentos ao clicar no card; `primaryTreatmentId`
-  // (sempre um dos ids acima) recebe o destaque temporário. Relação definida
-  // pelo que o próprio nome do tratamento já identifica sem ambiguidade (não
-  // é uma indicação clínica inventada):
-  // - "Tratamento Rejuvenescedor e Clareador" tem "Clareador" no nome
-  //   -> associado a manchas;
-  // - "Microagulhamento"/"Ultramed"/"Tratamento Rejuvenescedor e Clareador"
-  //   são os tratamentos de rejuvenescimento voltados a linhas/textura;
-  // - "Limpeza de Pele" é a limpeza facial básica -> associada a
-  //   oleosidade/acne;
-  // - "Skin Glass" continua ligado a textura e viço (id "skin-class",
-  //   confirmado, não alterado);
-  // - "Skin Booster" é hidratação/regeneração -> saúde da pele e prevenção;
-  // - "Jato de Plasma"/"Ultramed" já são classificados no catálogo acima
-  //   como tecnologias de firmeza -> flacidez.
+  // Cada item aponta pelo próprio `id` (um `SkinGoal`) para a lista de
+  // tratamentos relacionados em `src/data/treatmentsByGoal.ts` -- fonte
+  // única, sem duplicar ids aqui. Ver aquele arquivo para a justificativa de
+  // cada associação.
   skinConcerns: {
     title: 'Qual cuidado sua pele precisa?',
     text: 'Cada objetivo pede um caminho diferente. Escolha o que mais se aproxima do que você sente hoje.',
@@ -216,50 +203,36 @@ export const siteContent: SiteContent = {
         id: 'manchas',
         label: 'Melhorar manchas',
         description: 'Uniformizar o tom e a aparência da pele.',
-        treatmentIds: ['rejuvenescedor-clareador'],
-        primaryTreatmentId: 'rejuvenescedor-clareador',
       },
       {
         id: 'linhas-sinais',
         label: 'Suavizar linhas e sinais',
         description: 'Atenuar marcas de expressão e sinais do tempo.',
-        treatmentIds: ['microagulhamento', 'rejuvenescedor-clareador'],
-        primaryTreatmentId: 'microagulhamento',
       },
       {
         id: 'oleosidade-acne',
         label: 'Controlar oleosidade e acne',
         description: 'Equilibrar a produção de oleosidade da pele.',
-        treatmentIds: ['limpeza-pele-premium'],
-        primaryTreatmentId: 'limpeza-pele-premium',
       },
       {
         id: 'textura-vico',
         label: 'Melhorar textura e viço',
         description: 'Renovar a superfície da pele e devolver luminosidade.',
-        treatmentIds: ['skin-class'],
-        primaryTreatmentId: 'skin-class',
       },
       {
         id: 'saude-pele',
         label: 'Recuperar a saúde da pele',
         description: 'Fortalecer e regenerar a barreira natural da pele.',
-        treatmentIds: ['skin-booster'],
-        primaryTreatmentId: 'skin-booster',
       },
       {
         id: 'flacidez',
         label: 'Cuidar da flacidez',
         description: 'Trabalhar firmeza e sustentação da pele.',
-        treatmentIds: ['ultramed', 'jato-de-plasma'],
-        primaryTreatmentId: 'jato-de-plasma',
       },
       {
-        id: 'prevencao',
+        id: 'prevencao-envelhecimento',
         label: 'Prevenir o envelhecimento',
         description: 'Cuidados contínuos para retardar sinais futuros.',
-        treatmentIds: ['skin-booster'],
-        primaryTreatmentId: 'skin-booster',
       },
     ],
   },
@@ -328,7 +301,7 @@ export const siteContent: SiteContent = {
   // - Limpezas de pele, Dermaplaning, Skin Glass, Peeling Herbal e Peeling
   //   de Hollywood: limpeza/renovação de superfície -> limpeza-renovacao;
   // - Skin Booster: hidratação/regeneração da pele -> estetica-regenerativa;
-  // - Microagulhamento, Ultramed, Tratamento Rejuvenescedor e Clareador,
+  // - Microagulhamento GHK-Cu, Ultramed, Tratamento Rejuvenescedor e Clareador,
   //   Jato de Plasma: firmeza/sinais do tempo -> rejuvenescimento;
   // - Depilação a Laser / Remoção de Tatuagem: procedimentos a laser, não
   //   são cuidado de pele do rosto -> depilacao-tecnologias.
@@ -341,15 +314,41 @@ export const siteContent: SiteContent = {
       id: 'limpeza-pele-premium',
       name: 'Limpeza de Pele Premium',
       categoryId: 'limpeza-renovacao',
+      coverImage: '/treatments/covers/limpeza-de-pele-premium.webp',
       summary:
         'Protocolo de limpeza mais completo, pensado para quem busca um cuidado aprofundado com atenção especial a cada etapa do procedimento.',
       description:
         'A Limpeza de Pele Premium é um protocolo mais completo de higienização facial, pensado para quem busca um cuidado mais aprofundado do que a limpeza tradicional. As etapas do procedimento são definidas conforme a avaliação individual realizada antes do atendimento.',
+      media: [
+        {
+          type: 'video',
+          src: '/treatments/limpeza-pele-premium/procedimento.mp4',
+          alt: 'Procedimento de Limpeza de Pele Premium em andamento',
+        },
+      ],
+      beforeAfter: [
+        {
+          type: 'image',
+          src: '/treatments/limpeza-pele-premium/antes-depois-1.jpg',
+          alt: 'Antes e depois da Limpeza de Pele Premium',
+        },
+        {
+          type: 'image',
+          src: '/treatments/limpeza-pele-premium/antes-depois-2.jpg',
+          alt: 'Antes e depois da Limpeza de Pele Premium',
+        },
+        {
+          type: 'image',
+          src: '/treatments/limpeza-pele-premium/antes-depois-3.jpg',
+          alt: 'Antes e depois da Limpeza de Pele Premium',
+        },
+      ],
     },
     {
       id: 'limp-ghk-cu',
       name: 'Limpeza de Pele GHK-Cu',
       categoryId: 'limpeza-renovacao',
+      coverImage: '/treatments/covers/limpeza-de-pele-ghk-cu.webp',
       summary:
         'Limpeza facial associada ao complexo de cobre peptídeo (GHK-Cu), voltada a quem procura um cuidado de renovação mais completo para a pele.',
       description:
@@ -359,79 +358,208 @@ export const siteContent: SiteContent = {
       id: 'dermaplaning',
       name: 'Dermaplaning',
       categoryId: 'limpeza-renovacao',
+      coverImage: '/treatments/covers/dermaplaning.webp',
       summary:
         'Esfoliação manual que remove células mortas e a penugem facial (buço), deixando a pele com textura mais lisa, uniforme e macia ao toque.',
       description:
         'O Dermaplaning é uma técnica de esfoliação manual que remove células mortas e a penugem facial, deixando a pele com textura mais lisa e uniforme. É um procedimento indicado para quem busca preparar a pele para uma aparência mais uniforme, sempre conforme avaliação individual.',
+      media: [
+        {
+          type: 'image',
+          src: '/treatments/dermaplaning/procedimento.jpg',
+          alt: 'Procedimento de Dermaplaning em andamento',
+        },
+      ],
+      beforeAfter: [
+        {
+          type: 'image',
+          src: '/treatments/dermaplaning/antes-depois-1.jpg',
+          alt: 'Antes e depois do Dermaplaning',
+        },
+      ],
     },
     {
       id: 'skin-class',
       name: 'Skin Glass',
       subtitle: 'Peeling de Vidro',
       categoryId: 'limpeza-renovacao',
+      coverImage: '/treatments/covers/peeling-de-vidro-skin-glass.webp',
       summary:
         'Peeling que busca o efeito de pele lisa e translúcida, com foco em textura refinada, viço e um aspecto saudável e luminoso no dia a dia.',
       description:
         'O Skin Glass, também chamado de Peeling de Vidro, é um procedimento que busca o efeito de pele lisa, uniforme e translúcida. O protocolo é voltado à textura refinada e ao aspecto saudável e luminoso, sempre ajustado conforme avaliação individual.',
+      media: [
+        {
+          type: 'image',
+          src: '/treatments/skin-class/procedimento.jpg',
+          alt: 'Procedimento de Skin Glass (Peeling de Vidro) em andamento',
+        },
+        {
+          type: 'video',
+          src: '/treatments/skin-class/procedimento.mp4',
+          alt: 'Procedimento de Skin Glass (Peeling de Vidro) em andamento',
+        },
+      ],
     },
     {
       id: 'herbal-peel',
       name: 'Peeling Herbal',
       categoryId: 'limpeza-renovacao',
+      coverImage: '/treatments/covers/peeling-herbal.webp',
       summary:
         'Peeling formulado com ativos de origem vegetal, indicado para quem busca renovar a superfície da pele de um jeito suave e delicado.',
       description:
         'O Peeling Herbal utiliza ativos de origem vegetal para promover a renovação da camada superficial da pele. É indicado para quem busca um cuidado mais suave, com o protocolo ajustado conforme as características e a sensibilidade de cada pele, sempre a partir de avaliação individual.',
+      media: [
+        {
+          type: 'video',
+          src: '/treatments/herbal-peel/procedimento-1.mp4',
+          alt: 'Procedimento de Peeling Herbal em andamento',
+        },
+        {
+          type: 'video',
+          src: '/treatments/herbal-peel/procedimento-2.mp4',
+          alt: 'Procedimento de Peeling Herbal em andamento',
+        },
+        {
+          type: 'video',
+          src: '/treatments/herbal-peel/procedimento-3.mp4',
+          alt: 'Procedimento de Peeling Herbal em andamento',
+        },
+        {
+          type: 'video',
+          src: '/treatments/herbal-peel/procedimento-4.mp4',
+          alt: 'Procedimento de Peeling Herbal em andamento',
+        },
+      ],
+      beforeAfter: [
+        {
+          type: 'image',
+          src: '/treatments/herbal-peel/antes-depois-1.jpg',
+          alt: 'Antes e depois do Peeling Herbal',
+        },
+        {
+          type: 'image',
+          src: '/treatments/herbal-peel/antes-depois-2.jpg',
+          alt: 'Antes e depois do Peeling Herbal',
+        },
+        {
+          type: 'image',
+          src: '/treatments/herbal-peel/antes-depois-3.jpg',
+          alt: 'Antes e depois do Peeling Herbal',
+        },
+        {
+          type: 'image',
+          src: '/treatments/herbal-peel/antes-depois-4.jpg',
+          alt: 'Antes e depois do Peeling Herbal',
+        },
+        {
+          type: 'image',
+          src: '/treatments/herbal-peel/antes-depois-5.jpg',
+          alt: 'Antes e depois do Peeling Herbal',
+        },
+        {
+          type: 'image',
+          src: '/treatments/herbal-peel/antes-depois-6.jpg',
+          alt: 'Antes e depois do Peeling Herbal',
+        },
+      ],
     },
     {
       id: 'peeling-hollywood',
       name: 'Peeling de Hollywood',
       categoryId: 'limpeza-renovacao',
+      coverImage: '/treatments/covers/peeling-de-hollywood.webp',
       summary:
         'Peeling voltado à renovação da pele, indicado para quem busca mais uniformidade de tom e luminosidade na aparência do rosto ao longo do tempo.',
       description:
         'O Peeling de Hollywood é um procedimento voltado à renovação da pele, indicado para quem busca mais uniformidade de tom e luminosidade na aparência do rosto. O protocolo é sempre personalizado conforme a avaliação individual realizada com a profissional.',
+      media: [
+        {
+          type: 'video',
+          src: '/treatments/peeling-hollywood/procedimento.mp4',
+          alt: 'Procedimento de Peeling de Hollywood em andamento',
+        },
+      ],
     },
     {
       id: 'skin-booster',
       name: 'Skin Booster',
       categoryId: 'estetica-regenerativa',
+      coverImage: '/treatments/covers/skin-booster.webp',
       summary:
         'Protocolo voltado à hidratação profunda da pele, indicado para quem busca mais viço e uma aparência saudável no dia a dia.',
       description:
         'O Skin Booster é um protocolo voltado à hidratação profunda da pele, indicado para quem busca mais viço, maciez e uma aparência saudável. O plano de sessões e a técnica utilizada são definidos junto à profissional, de acordo com a avaliação individual de cada pele.',
+      media: [
+        {
+          type: 'video',
+          src: '/treatments/skin-booster/procedimento-1.mp4',
+          alt: 'Procedimento de Skin Booster em andamento',
+        },
+        {
+          type: 'video',
+          src: '/treatments/skin-booster/procedimento-2.mp4',
+          alt: 'Procedimento de Skin Booster em andamento',
+        },
+      ],
     },
     {
       id: 'microagulhamento',
-      name: 'Microagulhamento',
+      name: 'Microagulhamento GHK-Cu',
       categoryId: 'rejuvenescimento',
+      coverImage: '/treatments/covers/microagulhamento-ghk-cu.webp',
       summary:
         'Técnica que estimula os processos naturais de renovação da pele por meio de microperfurações superficiais e controladas.',
       description:
-        'O Microagulhamento é uma técnica que utiliza microperfurações superficiais e controladas para estimular os processos naturais de renovação da pele. O protocolo, incluindo a intensidade e a frequência das sessões, é definido conforme avaliação individual.',
+        'O Microagulhamento GHK-Cu é uma técnica que utiliza microperfurações superficiais e controladas para estimular os processos naturais de renovação da pele. O protocolo, incluindo a intensidade e a frequência das sessões, é definido conforme avaliação individual.',
+      media: [
+        {
+          type: 'video',
+          src: '/treatments/microagulhamento/procedimento.mp4',
+          alt: 'Procedimento de Microagulhamento GHK-Cu em andamento',
+        },
+      ],
     },
     {
       id: 'ultramed',
       name: 'Ultramed',
       categoryId: 'rejuvenescimento',
+      coverImage: '/treatments/covers/ultramed.webp',
       summary:
         'Tratamento avaliado individualmente com a profissional, que define o protocolo mais adequado conforme as necessidades da sua pele.',
       description:
         'O Ultramed é um dos procedimentos do catálogo da Estética Letícia Balbinott. Como ainda não há informações oficiais completas confirmadas sobre a técnica utilizada, o protocolo é explicado individualmente durante a consulta, sempre de acordo com a avaliação e a necessidade de cada pele.',
+      media: [
+        {
+          type: 'video',
+          src: '/treatments/ultramed/procedimento.mp4',
+          alt: 'Procedimento de Ultramed em andamento',
+        },
+      ],
     },
     {
       id: 'rejuvenescedor-clareador',
       name: 'Tratamento Rejuvenescedor e Clareador',
       categoryId: 'rejuvenescimento',
+      coverImage: '/treatments/covers/tratamento-rejuvenescedor-e-clareador.webp',
       summary:
         'Protocolo voltado a uniformizar o tom da pele e suavizar sinais do tempo, com abordagem personalizada para cada tipo de pele.',
       description:
         'O Tratamento Rejuvenescedor e Clareador é um protocolo voltado a uniformizar o tom da pele e suavizar sinais do tempo. As etapas e os ativos utilizados são definidos conforme a avaliação individual de cada pele, respeitando suas características e sensibilidade.',
+      beforeAfter: [
+        {
+          type: 'image',
+          src: '/treatments/rejuvenescedor-clareador/antes-depois-1.jpg',
+          alt: 'Antes e depois do Tratamento Rejuvenescedor e Clareador',
+        },
+      ],
     },
     {
       id: 'jato-de-plasma',
       name: 'Jato de Plasma',
       categoryId: 'rejuvenescimento',
+      coverImage: '/treatments/covers/jato-de-plasma.webp',
       summary:
         'Tecnologia utilizada com foco em firmeza da pele, indicada para quem busca um cuidado direcionado a sinais do tempo.',
       description:
@@ -441,19 +569,40 @@ export const siteContent: SiteContent = {
       id: 'dep-laser-h',
       name: 'Depilação a Laser',
       categoryId: 'depilacao-tecnologias',
+      coverImage: '/treatments/covers/depilacao-a-laser.webp',
       summary:
         'Tecnologia a laser voltada à redução do crescimento dos pelos, com protocolo definido de acordo com a avaliação individual.',
       description:
         'A Depilação a Laser é uma tecnologia voltada à redução do crescimento dos pelos ao longo de um protocolo de sessões. A área a ser tratada e o plano de atendimento são definidos previamente, de acordo com a avaliação individual de cada cliente.',
+      media: [
+        {
+          type: 'video',
+          src: '/treatments/dep-laser-h/procedimento-1.mp4',
+          alt: 'Procedimento de Depilação a Laser em andamento',
+        },
+        {
+          type: 'video',
+          src: '/treatments/dep-laser-h/procedimento-2.mp4',
+          alt: 'Procedimento de Depilação a Laser em andamento',
+        },
+      ],
     },
     {
       id: 'rem-tatuagem',
       name: 'Remoção de Tatuagem',
       categoryId: 'depilacao-tecnologias',
+      coverImage: '/treatments/covers/remocao-de-tatuagem.webp',
       summary:
         'Procedimento a laser voltado ao clareamento gradual de tatuagens, com técnica ajustada às características de cada pele e desenho.',
       description:
         'A Remoção de Tatuagem é um procedimento a laser voltado ao clareamento gradual do pigmento na pele. O número de sessões e o protocolo utilizado variam conforme as características da tatuagem e são definidos após avaliação individual.',
+      media: [
+        {
+          type: 'video',
+          src: '/treatments/rem-tatuagem/procedimento.mp4',
+          alt: 'Procedimento de Remoção de Tatuagem em andamento',
+        },
+      ],
     },
   ],
 

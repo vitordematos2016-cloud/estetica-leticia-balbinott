@@ -93,18 +93,11 @@ export function TreatmentPicker({ triggerRef, error }: TreatmentPickerProps) {
         <ul className="flex flex-col gap-2">
           {selectedTreatments.map((treatment) => {
             const categoryName = getTreatmentCategoryName(treatment.categoryId);
-            // Miniatura vem da imagem real ou, na ausência dela, do poster do
-            // vídeo -- sem nenhum dos dois, o item simplesmente fica sem foto.
-            const thumbnailSrc =
-              treatment.media?.type === 'image' ? treatment.media.src : treatment.media?.poster;
             return (
               <li
                 key={treatment.id}
                 className="flex items-center gap-3 rounded-xl border border-gold/25 bg-cream p-3"
               >
-                {thumbnailSrc && (
-                  <img src={thumbnailSrc} alt="" className="h-12 w-12 shrink-0 rounded-lg object-cover" />
-                )}
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-brown-dark">{treatment.name}</p>
                   {treatment.subtitle && (

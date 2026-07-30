@@ -42,7 +42,7 @@ componente:
 - [ ] **Peeling Herbal** (categoria: Limpeza e renovação) — composição, indicação/benefícios, cuidados, duração, preço
 - [ ] **Peeling de Hollywood** (categoria: Limpeza e renovação) — benefícios, indicação, duração/sessões, preço
 - [ ] **Skin Booster** (categoria: Estética regenerativa) — benefícios, indicação, duração/sessões, preço
-- [ ] **Microagulhamento** (categoria: Rejuvenescimento) — benefícios, indicação, duração/sessões, preço
+- [ ] **Microagulhamento GHK-Cu** (categoria: Rejuvenescimento) — benefícios, indicação, duração/sessões, preço
 - [ ] **Ultramed** (categoria: Rejuvenescimento) — **prioridade**: sequer o tipo de procedimento está confirmado (facial ou corporal, tecnologia utilizada); o `summary`/`description` atuais são intencionalmente neutros até isso ser esclarecido; depois, nome comercial do equipamento, indicação/benefícios, contraindicações, duração, preço
 - [ ] **Tratamento Rejuvenescedor e Clareador** (categoria: Rejuvenescimento) — benefícios, indicação, duração/sessões, preço
 - [ ] **Jato de Plasma** (categoria: Rejuvenescimento) — nome comercial do equipamento, indicação/benefícios, contraindicações, duração, preço

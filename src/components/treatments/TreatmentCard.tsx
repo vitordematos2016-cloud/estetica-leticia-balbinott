@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import type { Treatment } from '../../types/siteContent';
-import { PlaceholderMedia } from '../ui/PlaceholderMedia';
+import { TreatmentCoverImage } from './TreatmentCoverImage';
 import { useSelection } from '../../context/SelectionContext';
 import { getTreatmentCategoryName } from '../../utils/treatments';
 import { EASE_OUT } from '../motion/variants';
@@ -13,13 +13,43 @@ interface TreatmentCardProps {
   isHighlighted?: boolean;
 }
 
+function ArrowIcon() {
+  return (
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 14 14"
+      fill="none"
+      aria-hidden="true"
+      className="transition-transform duration-300 ease-out group-hover/btn:translate-x-0.5"
+    >
+      <path
+        d="M2.5 7h9M7.5 3l4 4-4 4"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+const SWEEP_CLASSES =
+  'pointer-events-none absolute inset-0 z-[3] -translate-x-[120%] skew-x-[-14deg] bg-gradient-to-r from-transparent via-gold-soft/25 to-transparent opacity-0 transition-[transform,opacity] duration-[1100ms] ease-out group-hover:translate-x-[120%] group-hover:opacity-100 group-active:translate-x-[120%] group-active:opacity-100 motion-reduce:transition-none motion-reduce:opacity-0';
+
+const TEXT_SHADOW = '0 1px 3px rgba(30,20,14,0.45)';
+
 /**
- * O card em si não é um link/botão — só os controles internos são
- * interativos. `whileHover`/`whileTap` do Motion já ficam restritos a
- * ponteiro fino real e são neutralizados sob `prefers-reduced-motion` pelo
- * `MotionConfig reducedMotion="user"` global; `motion-reduce:duration-0`
- * cobre a transição de cor/sombra do destaque temporário (`isHighlighted`),
- * que não é controlada pelo Motion.
+ * Card com composição única: capa preenchendo 100% da área (posicionamento
+ * absoluto), gradiente de legibilidade e conteúdo sobreposto na parte
+ * inferior -- sem faixa separada de imagem/texto. Só os controles internos
+ * são interativos, o card em si não é um link/botão.
+ *
+ * `whileHover`/`whileTap` do Motion já ficam restritos a ponteiro fino real e
+ * são neutralizados sob `prefers-reduced-motion` pelo `MotionConfig
+ * reducedMotion="user"` global; `motion-reduce:duration-0` cobre a transição
+ * de cor/sombra do destaque temporário (`isHighlighted`), que não é
+ * controlada pelo Motion.
  *
  * O wrapper externo (`mobileActiveRef`) só entra em ação abaixo de 768px:
  * ele recua o card (`rest`) quando fora da região central da tela e devolve
@@ -37,11 +67,6 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
   // O destaque temporário de busca (isHighlighted) tem prioridade sobre a
   // presença mobile por rolagem -- nunca os dois competindo pelo mesmo estilo.
   const surfaceStyle = isHighlighted ? undefined : getMobileSurfaceStyle(isMobileViewport, mobileActive);
-  // Cards nunca reproduzem vídeo -- quando a mídia é um vídeo, usamos o
-  // poster (miniatura) como imagem estática; sem media, cai no placeholder.
-  const cardImageSrc = treatment.media?.type === 'image' ? treatment.media.src : treatment.media?.poster;
-  const cardImageAlt = treatment.media?.alt ?? treatment.name;
-
   return (
     <motion.div
       ref={mobileActiveRef}
@@ -53,121 +78,141 @@ export function TreatmentCard({ treatment, onViewDetails, isHighlighted = false 
     >
       <motion.article
         id={`servico-${treatment.id}`}
-        whileHover={{ y: -2, scale: 1.01 }}
+        whileHover={{ y: -3, scale: 1.01 }}
         whileTap={{ scale: 0.988 }}
         transition={{ duration: 0.3, ease: EASE_OUT }}
         style={surfaceStyle}
-        className={`group flex h-full scroll-mt-28 flex-col overflow-hidden rounded-[1.75rem] border bg-cream shadow-warm-sm transition-[box-shadow,border-color] duration-700 ease-out motion-reduce:duration-0 hover:shadow-warm active:shadow-warm ${
-          isHighlighted ? 'border-gold shadow-warm' : 'border-gold/25'
+        className={`group relative isolate aspect-[4/5] min-h-[430px] w-full overflow-hidden rounded-[1.75rem] border shadow-warm-sm transition-[box-shadow,border-color] duration-700 ease-out motion-reduce:duration-0 hover:shadow-warm active:shadow-warm ${
+          isHighlighted ? 'border-gold shadow-warm' : 'border-gold/25 hover:border-gold/60 active:border-gold/60'
         }`}
       >
+        <TreatmentCoverImage
+          treatmentId={treatment.id}
+          coverImage={treatment.coverImage}
+          label={treatment.name}
+          className="group-hover:scale-[1.035] group-active:scale-[1.015]"
+        />
+
+        {/* Gradiente de legibilidade -- forte só atrás do texto, some suave
+            no topo; nunca escurece a capa inteira. */}
         <div
-          style={isMobileViewport ? { transform: `scale(${mobileActive ? 1.02 : 1})` } : undefined}
-          className="shrink-0 transition-transform duration-500 ease-out motion-reduce:transition-none"
-        >
-          {cardImageSrc ? (
-            <img
-              src={cardImageSrc}
-              alt={cardImageAlt}
-              loading="lazy"
-              decoding="async"
-              className="aspect-[4/3] w-full rounded-t-[1.75rem] object-cover transition-transform duration-500 ease-out motion-reduce:transition-none group-hover:scale-[1.02] group-active:scale-[1.015]"
-            />
-          ) : (
-            <PlaceholderMedia
-              label={treatment.name}
-              description="Imagem em preparação"
-              ratio="landscape"
-              className="rounded-none rounded-t-[1.75rem] transition-transform duration-500 ease-out motion-reduce:transition-none group-hover:scale-[1.02] group-active:scale-[1.015]"
-            />
-          )}
-        </div>
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-[1] opacity-90 transition-opacity duration-500 ease-out group-hover:opacity-100"
+          style={{
+            background:
+              'linear-gradient(to top, rgba(48,34,28,0.88) 0%, rgba(63,42,27,0.62) 28%, rgba(91,64,51,0.22) 52%, rgba(255,253,249,0.03) 74%, transparent 100%)',
+          }}
+        />
 
-      <div className="flex flex-1 flex-col gap-3 p-6">
-        <div className="flex flex-wrap items-center gap-2">
-          {categoryName && (
-            <span className="text-xs font-medium uppercase tracking-[0.2em] text-gold-deep">
-              {categoryName}
-            </span>
-          )}
-          {specialOffer && (
-            <span className="rounded-full border border-gold/50 bg-beige/40 px-2.5 py-0.5 text-[0.65rem] font-medium uppercase tracking-[0.15em] text-brown-dark">
-              Condição especial
-            </span>
-          )}
-        </div>
-        <h3 className="min-h-[3.375rem] line-clamp-2 text-xl text-brown-dark">{treatment.name}</h3>
-        {treatment.subtitle && (
-          <p className="-mt-1.5 min-h-[1.25rem] text-sm font-medium text-brown/70">{treatment.subtitle}</p>
-        )}
-        <p className="min-h-[4.5rem] flex-1 line-clamp-3 text-sm leading-relaxed text-brown/70">
-          {treatment.summary ?? 'Descrição completa em atualização.'}
-        </p>
-
-        {specialOffer && (
-          <div className="rounded-2xl border border-gold/30 bg-beige/25 p-4">
-            {specialOffer.description && (
-              <p className="text-sm leading-relaxed text-brown-dark">{specialOffer.description}</p>
+        <div className="relative z-[2] flex h-full min-h-full flex-col justify-end gap-2.5 p-6 transition-transform duration-500 ease-out group-hover:-translate-y-0.5 motion-reduce:transition-none">
+          <div className="flex flex-wrap items-center gap-2">
+            {categoryName && (
+              <span
+                style={{ textShadow: TEXT_SHADOW }}
+                className="text-xs font-medium uppercase tracking-[0.2em] text-gold-soft"
+              >
+                {categoryName}
+              </span>
             )}
-            <p className="mt-1 text-xs font-medium text-gold-deep">
-              {specialOffer.validUntil
-                ? `Válida até ${specialOffer.validUntil}`
-                : 'Condição disponível por tempo limitado'}
-            </p>
-            {specialOffer.promoPrice && (
-              <p className="mt-1 text-sm text-brown-dark">
-                {specialOffer.originalPrice && (
-                  <span className="mr-2 text-brown/50 line-through">{specialOffer.originalPrice}</span>
-                )}
-                <span className="font-medium">{specialOffer.promoPrice}</span>
-              </p>
+            {specialOffer && (
+              <span className="rounded-full border border-gold/60 bg-brown-dark/45 px-2.5 py-0.5 text-[0.65rem] font-medium uppercase tracking-[0.15em] text-cream backdrop-blur-sm">
+                Condição especial
+              </span>
             )}
           </div>
-        )}
 
-        <div className="mt-2 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={() => onViewDetails(treatment)}
-            aria-label={`Ver mais detalhes do tratamento ${treatment.name}`}
-            className="text-sm font-medium text-brown-dark underline decoration-gold/50 underline-offset-4 transition-colors hover:text-gold active:text-gold"
+          <h3
+            style={{ textShadow: TEXT_SHADOW }}
+            className="line-clamp-2 text-xl font-medium leading-snug text-cream"
           >
-            Ver mais detalhes
-          </button>
-          <div className="ml-auto flex items-center gap-2">
+            {treatment.name}
+          </h3>
+
+          {treatment.subtitle && (
+            <p style={{ textShadow: TEXT_SHADOW }} className="-mt-1.5 text-sm font-medium text-cream-light/90">
+              {treatment.subtitle}
+            </p>
+          )}
+
+          <p
+            style={{ textShadow: TEXT_SHADOW }}
+            className="line-clamp-2 text-sm leading-relaxed text-cream-light/90"
+          >
+            {treatment.summary ?? 'Descrição completa em atualização.'}
+          </p>
+
+          {specialOffer && (
+            <div className="rounded-2xl border border-gold/40 bg-brown-dark/45 p-4 backdrop-blur-sm">
+              {specialOffer.description && (
+                <p style={{ textShadow: TEXT_SHADOW }} className="text-sm leading-relaxed text-cream">
+                  {specialOffer.description}
+                </p>
+              )}
+              <p className="mt-1 text-xs font-medium text-gold-soft">
+                {specialOffer.validUntil
+                  ? `Válida até ${specialOffer.validUntil}`
+                  : 'Condição disponível por tempo limitado'}
+              </p>
+              {specialOffer.promoPrice && (
+                <p style={{ textShadow: TEXT_SHADOW }} className="mt-1 text-sm text-cream">
+                  {specialOffer.originalPrice && (
+                    <span className="mr-2 text-cream-light/60 line-through">{specialOffer.originalPrice}</span>
+                  )}
+                  <span className="font-medium">{specialOffer.promoPrice}</span>
+                </p>
+              )}
+            </div>
+          )}
+
+          <div className="mt-1 flex flex-wrap items-center gap-3">
             <motion.button
               type="button"
-              onClick={() =>
-                addItem({
-                  id: treatment.id,
-                  type: 'treatment',
-                  name: treatment.name,
-                  category: categoryName,
-                })
-              }
-              whileHover={{ y: -1 }}
-              whileTap={{ scale: 0.97 }}
+              onClick={() => onViewDetails(treatment)}
+              aria-label={`Ver mais detalhes do tratamento ${treatment.name}`}
+              whileTap={{ scale: 0.96 }}
               transition={{ duration: 0.2, ease: EASE_OUT }}
-              className={`rounded-full px-4 py-2 text-xs font-medium uppercase tracking-wide transition-colors ${
-                alreadySelected
-                  ? 'bg-gold/20 text-brown-dark'
-                  : 'border border-gold/50 text-brown-dark hover:bg-gold/10 active:bg-gold/15'
-              }`}
+              className="group/btn inline-flex items-center gap-1.5 rounded-full border border-gold/65 bg-cream-light/10 px-4 py-2 text-sm font-medium text-cream backdrop-blur-md transition-colors duration-300 hover:border-gold hover:bg-cream-light/20 active:bg-cream-light/25"
             >
-              {alreadySelected ? 'Adicionado ✓' : 'Adicionar à seleção'}
+              Ver mais detalhes
+              <ArrowIcon />
             </motion.button>
-            {alreadySelected && (
-              <button
+            <div className="ml-auto flex items-center gap-2">
+              <motion.button
                 type="button"
-                onClick={() => removeItem(treatment.id)}
-                className="text-xs font-medium text-brown/50 underline decoration-gold/40 underline-offset-2 transition-colors hover:text-gold active:text-gold"
+                onClick={() =>
+                  addItem({
+                    id: treatment.id,
+                    type: 'treatment',
+                    name: treatment.name,
+                    category: categoryName,
+                  })
+                }
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ duration: 0.2, ease: EASE_OUT }}
+                className={`rounded-full px-4 py-2 text-xs font-medium uppercase tracking-wide backdrop-blur-md transition-colors duration-300 ${
+                  alreadySelected
+                    ? 'bg-gold/85 text-brown-dark'
+                    : 'border border-gold/65 bg-cream-light/10 text-cream hover:border-gold hover:bg-cream-light/20 active:bg-cream-light/25'
+                }`}
               >
-                Remover
-              </button>
-            )}
+                {alreadySelected ? 'Adicionado ✓' : 'Adicionar à seleção'}
+              </motion.button>
+              {alreadySelected && (
+                <button
+                  type="button"
+                  onClick={() => removeItem(treatment.id)}
+                  style={{ textShadow: TEXT_SHADOW }}
+                  className="text-xs font-medium text-cream-light/80 underline decoration-gold/60 underline-offset-2 transition-colors hover:text-gold active:text-gold"
+                >
+                  Remover
+                </button>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+
+        <div className={SWEEP_CLASSES} />
       </motion.article>
     </motion.div>
   );

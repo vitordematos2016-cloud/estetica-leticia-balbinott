@@ -48,7 +48,7 @@ export function Treatments() {
   const availableCategories = treatmentCategories.filter((category) =>
     treatments.some((treatment) => treatment.categoryId === category.id),
   );
-  const { activeCategoryId, activeTreatmentIds, selectCategory, highlightTreatmentId, clearHighlight } =
+  const { activeCategoryId, activeTreatmentIds, activeGoalLabel, selectCategory, highlightTreatmentId, clearHighlight } =
     useTreatmentsFilter();
   const [search, setSearch] = useState('');
   const [selectedTreatment, setSelectedTreatment] = useState<Treatment | null>(null);
@@ -148,6 +148,24 @@ export function Treatments() {
         </div>
 
         <div className="flex flex-col gap-5 rounded-[2rem] border border-gold/15 bg-cream p-4 shadow-warm-sm sm:p-6">
+          {activeTreatmentIds && activeGoalLabel && (
+            <div className="flex flex-wrap items-center justify-center gap-2 self-center rounded-full border border-gold/40 bg-beige/30 px-4 py-2 text-xs font-medium uppercase tracking-wide text-brown-dark">
+              <span>
+                Tratamentos indicados para: <span className="text-gold-deep">{activeGoalLabel}</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => selectCategory(null)}
+                aria-label="Limpar filtro e ver todos os tratamentos"
+                className="flex h-5 w-5 items-center justify-center rounded-full border border-gold/40 text-brown-dark transition-colors hover:bg-gold/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+              >
+                <svg width="9" height="9" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                  <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+          )}
+
           <div className="relative">
             <div className="flex gap-2.5 overflow-x-auto pb-1 lg:flex-wrap lg:justify-center lg:overflow-visible lg:pb-0">
               <motion.button
@@ -223,14 +241,14 @@ export function Treatments() {
         {filteredTreatments.length > 0 && (
           <motion.div layout className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             <AnimatePresence mode="popLayout">
-              {filteredTreatments.map((treatment) => (
+              {filteredTreatments.map((treatment, index) => (
                 <motion.div
                   key={treatment.id}
                   layout
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.35, ease: EASE_OUT }}
+                  transition={{ duration: 0.5, ease: EASE_OUT, delay: Math.min(index * 0.05, 0.3) }}
                   className="h-full"
                 >
                   <TreatmentCard

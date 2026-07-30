@@ -101,29 +101,29 @@ export interface TreatmentCategory {
   description: string;
 }
 
-/** Cada cuidado aponta direto para os tratamentos relacionados do catálogo
- * oficial (`treatments[].id`), nunca por categoria ou nome visível --
- * `primaryTreatmentId` (sempre um dos ids em `treatmentIds`) define qual
- * card recebe o destaque temporário ao clicar. */
+/** Os 7 objetivos de "Qual cuidado sua pele precisa?" -- também a chave de
+ * `treatmentsByGoal` (src/data/treatmentsByGoal.ts), a configuração
+ * centralizada e única que liga cada objetivo aos tratamentos reais do
+ * catálogo. `SkinConcern` não guarda mais essa lista (evita duplicar). */
+export type SkinGoal =
+  | 'manchas'
+  | 'linhas-sinais'
+  | 'oleosidade-acne'
+  | 'textura-vico'
+  | 'saude-pele'
+  | 'flacidez'
+  | 'prevencao-envelhecimento';
+
 export interface SkinConcern {
-  id: string;
+  id: SkinGoal;
   label: string;
   description: string;
-  treatmentIds: string[];
-  primaryTreatmentId: string;
 }
 
 export interface SkinConcernsContent {
   title: string;
   text: string;
   items: SkinConcern[];
-}
-
-export interface TreatmentBeforeAfter {
-  before: string;
-  beforeAlt: string;
-  after: string;
-  afterAlt: string;
 }
 
 export interface TreatmentSpecialOffer {
@@ -135,11 +135,11 @@ export interface TreatmentSpecialOffer {
   validUntil?: string;
 }
 
-/** Estrutura única para a mídia de destaque de um tratamento (card e modal
- * de detalhes) -- substitui o antigo campo `image` solto. `poster` só se
- * aplica a vídeo (miniatura exibida antes do play e usada como imagem nos
- * cards, que nunca reproduzem vídeo). Enquanto ausente, os componentes
- * mostram um placeholder elegante em vez de imagem quebrada ou espaço vazio. */
+/** Estrutura única para um item de mídia do tratamento (card e modal de
+ * detalhes) -- substitui o antigo campo `image` solto. `poster` só se aplica
+ * a vídeo (miniatura exibida antes do play e usada como imagem nos cards,
+ * que nunca reproduzem vídeo). Enquanto ausente, os componentes mostram um
+ * placeholder elegante em vez de imagem quebrada ou espaço vazio. */
 export interface TreatmentMedia {
   type: 'image' | 'video';
   src: string;
@@ -154,12 +154,20 @@ export interface Treatment {
    * quando existir (ex.: "Peeling de Vidro" para o Skin Glass). */
   subtitle?: string;
   categoryId?: string;
+  /** Capa oficial exclusiva do card (Tratamentos e catálogo do Agendamento)
+   * -- nunca usada dentro do modal de detalhes, galeria de procedimento,
+   * antes/depois ou vídeos, que continuam vindo só de `media`/`beforeAfter`.
+   * Enquanto ausente, o card mostra a ilustração conceitual de
+   * `TreatmentCoverArt` como alternativa. */
+  coverImage?: string;
   /** Resumo breve (120-170 caracteres) exibido nos cards -- card em
    * Tratamentos, card no catálogo do Agendamento. */
   summary?: string;
   /** Explicação completa exibida no modal de detalhes. */
   description?: string;
-  media?: TreatmentMedia;
+  /** Mídia do conteúdo "Procedimento" no showcase do modal -- imagens e/ou
+   * vídeos, navegados em carrossel quando há mais de um item. */
+  media?: TreatmentMedia[];
   indication?: string;
   howItWorks?: string;
   benefits?: string[];
@@ -171,7 +179,11 @@ export interface Treatment {
   price?: string;
   professional?: string;
   whatsappMessage?: string;
-  beforeAfter?: TreatmentBeforeAfter;
+  /** Imagens do conteúdo "Antes/Depois" no showcase do modal -- cada item já
+   * é uma foto composta (antes e depois na mesma imagem), por isso reaproveita
+   * `TreatmentMedia` em vez de um par de campos separados; navegadas em
+   * carrossel quando há mais de uma. */
+  beforeAfter?: TreatmentMedia[];
   specialOffer?: TreatmentSpecialOffer;
 }
 

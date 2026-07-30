@@ -4,9 +4,8 @@ import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { Reveal, RevealGroup, RevealItem } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
-import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useRepeatableInView } from '../../hooks/useRepeatableInView';
-import { useReplayKey } from '../../hooks/useReplayKey';
+import { AboutOrganicPhoto } from './AboutOrganicPhoto';
 
 /**
  * Destaques são puramente informativos (sem onClick/href/role) — a
@@ -21,55 +20,22 @@ export function About() {
   const { about } = siteContent;
   const ref = useRef<HTMLElement>(null);
   const isInView = useRepeatableInView(ref, { amount: 0.3 });
-  const prefersReducedMotion = useReducedMotion();
-  const shimmerReplayKey = useReplayKey(isInView);
 
   return (
     <section id="sobre" ref={ref} className="bg-cream-light/40 py-24 sm:py-28">
       <Container className="grid items-center gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <Reveal active={isInView} direction="left">
           <motion.div
-            className="group relative mx-auto max-w-md lg:mx-0"
+            className="group relative"
             whileHover={{ y: -2.5, scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
             transition={{ duration: 0.3, ease: EASE_OUT }}
           >
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 -translate-x-3 translate-y-3 rounded-[2.5rem] bg-beige/40 transition-transform duration-300 motion-safe:group-hover:-translate-x-3.5 motion-safe:group-hover:translate-y-3.5 motion-safe:group-active:-translate-x-3.5 motion-safe:group-active:translate-y-3.5"
+            <AboutOrganicPhoto
+              src="/images/about/leticia-balbinott-sobre-invertida.webp"
+              alt={`${siteContent.brand.professional}, especialista em estética facial e regenerativa`}
+              isInView={isInView}
             />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -inset-4 rounded-[3rem] bg-gold/10 opacity-70 blur-2xl transition-opacity duration-300 group-hover:opacity-100 group-active:opacity-100"
-            />
-            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[2.5rem] border border-gold/30 ring-1 ring-gold/10 shadow-warm-sm transition-shadow duration-300 group-hover:border-gold/60 group-hover:shadow-warm group-active:border-gold/60 group-active:shadow-warm">
-              <picture>
-                <source media="(max-width: 767px)" srcSet="/images/about/leticia-balbinott-sobre-mobile.webp" />
-                <img
-                  src="/images/about/leticia-balbinott-sobre-desktop.webp"
-                  alt={`${siteContent.brand.professional}, especialista em estética facial e regenerativa`}
-                  loading="lazy"
-                  decoding="async"
-                  className="h-full w-full object-cover object-[center_25%] max-md:object-[center_20%]"
-                />
-              </picture>
-            </div>
-
-            {!prefersReducedMotion && (
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 overflow-hidden rounded-[2.5rem]"
-              >
-                <motion.div
-                  key={shimmerReplayKey}
-                  aria-hidden="true"
-                  className="absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-cream/50 to-transparent mix-blend-screen"
-                  initial={{ x: '-40%', opacity: 0 }}
-                  animate={isInView ? { x: '340%', opacity: [0, 1, 0] } : {}}
-                  transition={{ duration: 1.1, ease: EASE_OUT, delay: 0.9 }}
-                />
-              </div>
-            )}
           </motion.div>
         </Reveal>
 

@@ -5,20 +5,24 @@ import { siteContent } from '../data/siteContent';
 interface TreatmentsFilterContextValue {
   activeCategoryId: string | null;
   /** Lista de ids ativa quando o filtro veio de um card de "Qual cuidado sua
-   * pele precisa?" (`requestTreatmentsHighlight`) -- nunca combinada com
+   * pele precisa?" (`requestTreatmentsFilterByGoal`) -- nunca combinada com
    * `activeCategoryId`, que fica null enquanto esta lista estiver ativa. */
   activeTreatmentIds: string[] | null;
+  /** Rótulo do objetivo que gerou `activeTreatmentIds` (ex.: "Melhorar
+   * manchas"), usado só para exibir "Tratamentos para: {label}" -- sempre
+   * null quando o filtro veio de um chip de categoria comum. */
+  activeGoalLabel: string | null;
   /** Seleciona uma categoria (ou `null` para "Todos os tratamentos") e
    * sempre limpa o filtro especial por ids -- é assim que os chips normais e
    * o botão "Ver todos os tratamentos" encerram o modo vindo do card. */
   selectCategory: (categoryId: string | null) => void;
   highlightTreatmentId: string | null;
-  /** Filtra a grade pelos ids relacionados a um cuidado da pele e marca o
-   * tratamento principal para ser localizado e destacado. Ids que não
-   * existem mais no catálogo são descartados; se nenhum sobrar, não altera
-   * nada e retorna null (o card cai no salto padrão para `#tratamentos`, sem
-   * deixar a seção presa em um estado vazio). */
-  requestTreatmentsHighlight: (treatmentIds: string[], primaryTreatmentId: string) => string | null;
+  /** Filtra a grade pelos ids relacionados a um objetivo de pele e marca o
+   * primeiro id válido para ser localizado e destacado. Ids que não existem
+   * mais no catálogo são descartados; se nenhum sobrar, não altera nada e
+   * retorna null (o card cai no salto padrão para `#tratamentos`, sem deixar
+   * a seção presa em um estado vazio). */
+  requestTreatmentsFilterByGoal: (goalLabel: string, treatmentIds: string[]) => string | null;
   clearHighlight: () => void;
 }
 
@@ -29,21 +33,23 @@ const TreatmentsFilterContext = createContext<TreatmentsFilterContextValue | und
 export function TreatmentsFilterProvider({ children }: { children: ReactNode }) {
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   const [activeTreatmentIds, setActiveTreatmentIds] = useState<string[] | null>(null);
+  const [activeGoalLabel, setActiveGoalLabel] = useState<string | null>(null);
   const [highlightTreatmentId, setHighlightTreatmentId] = useState<string | null>(null);
 
   const selectCategory = useCallback((categoryId: string | null) => {
     setActiveCategoryId(categoryId);
     setActiveTreatmentIds(null);
+    setActiveGoalLabel(null);
   }, []);
 
-  const requestTreatmentsHighlight = useCallback((treatmentIds: string[], primaryTreatmentId: string) => {
+  const requestTreatmentsFilterByGoal = useCallback((goalLabel: string, treatmentIds: string[]) => {
     const validIds = treatmentIds.filter((id) => siteContent.treatments.some((t) => t.id === id));
     if (validIds.length === 0) return null;
-    const resolvedPrimary = validIds.includes(primaryTreatmentId) ? primaryTreatmentId : validIds[0];
     setActiveCategoryId(null);
     setActiveTreatmentIds(validIds);
-    setHighlightTreatmentId(resolvedPrimary);
-    return resolvedPrimary;
+    setActiveGoalLabel(goalLabel);
+    setHighlightTreatmentId(validIds[0]);
+    return validIds[0];
   }, []);
 
   const clearHighlight = useCallback(() => {
@@ -54,17 +60,19 @@ export function TreatmentsFilterProvider({ children }: { children: ReactNode }) 
     () => ({
       activeCategoryId,
       activeTreatmentIds,
+      activeGoalLabel,
       selectCategory,
       highlightTreatmentId,
-      requestTreatmentsHighlight,
+      requestTreatmentsFilterByGoal,
       clearHighlight,
     }),
     [
       activeCategoryId,
       activeTreatmentIds,
+      activeGoalLabel,
       selectCategory,
       highlightTreatmentId,
-      requestTreatmentsHighlight,
+      requestTreatmentsFilterByGoal,
       clearHighlight,
     ],
   );
