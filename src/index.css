@@ -485,6 +485,7 @@
     position: relative;
     perspective: 1400px;
     perspective-origin: center;
+    transform-style: preserve-3d;
   }
 
   .hero-visual-image {
@@ -492,6 +493,8 @@
     max-height: min(650px, calc(100dvh - 210px));
     aspect-ratio: 900 / 1200;
     transform-style: preserve-3d;
+    backface-visibility: hidden;
+    will-change: transform, opacity, filter;
   }
 
   .hero-visual-card {
