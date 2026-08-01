@@ -109,7 +109,8 @@ foco, anos de experiência, WhatsApp, e-mail, Instagram, endereço, propósito,
 objetivo, diferencial e valores) foram confirmados diretamente pela cliente
 e não devem ser alterados sem uma nova confirmação.
 
-O item "+ de 1000 clientes atendidas" (em `about.highlights`) é uma exceção
+O item "+ de 1000 clientes atendidos" (em `about.highlights`) é uma exceção
 pontual: veio direto da bio pública do Instagram @leh_estetic (texto literal,
-não deduzido), aprovado pela cliente em 2026-07-24 para uso no site. Se esse
-número mudar no Instagram, atualizar aqui também.
+não deduzido), aprovado pela cliente em 2026-07-24 para uso no site. Em
+2026-07-31 o texto foi corrigido de "atendidas" para "atendidos" (concordância
+com "clientes"). Se esse número mudar no Instagram, atualizar aqui também.

@@ -6,21 +6,22 @@ import { Ornament } from '../ui/Ornament';
 import { useCountUp } from '../../hooks/useCountUp';
 import { Reveal } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
-import { useRepeatableInView } from '../../hooks/useRepeatableInView';
+import { useOnceInView } from '../../hooks/useOnceInView';
 import { useReplayKey } from '../../hooks/useReplayKey';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 /**
  * Painel de conquista discreto: quando os dois contadores terminam (ambos
- * atingem o valor final), um brilho curto passa uma única vez -- nunca em
- * loop enquanto o painel segue visível. `useReplayKey` remonta o flare a
- * cada nova conclusão (inclusive ao sair e voltar à tela, já que
- * `useCountUp` zera e reconta do zero nessa transição).
+ * atingem o valor final), um brilho curto passa uma única vez. `isInView`
+ * agora é "uma vez só" (nunca mais volta a `false`) -- os contadores contam
+ * do zero até o valor final apenas na primeira vez que a seção é vista, e
+ * permanecem no valor final para sempre depois disso (não recontam ao
+ * rolar pra cima e descer de novo).
  */
 export function FacadeYears() {
   const { facade } = siteContent;
   const ref = useRef<HTMLElement>(null);
-  const isInView = useRepeatableInView(ref, { amount: 0.3 });
+  const isInView = useOnceInView(ref, { amount: 0.3 });
   const prefersReducedMotion = useReducedMotion();
 
   const yearsValue = useCountUp(facade.years, 1200, isInView);

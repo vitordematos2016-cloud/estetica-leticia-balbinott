@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import type { Treatment } from '../../types/siteContent';
-import { TreatmentCoverImage } from '../treatments/TreatmentCoverImage';
-import { getTreatmentCategoryName } from '../../utils/treatments';
+import { TreatmentCoverFrame } from '../treatments/TreatmentCoverFrame';
+import { TreatmentCoverContent } from '../treatments/TreatmentCoverContent';
 import { EASE_OUT } from '../motion/variants';
 
 interface SchedulingTreatmentCardProps {
@@ -25,40 +25,31 @@ function CheckIcon() {
   );
 }
 
-function ArrowIcon() {
+function PlusIcon() {
   return (
-    <svg
-      width="13"
-      height="13"
-      viewBox="0 0 14 14"
-      fill="none"
-      aria-hidden="true"
-      className="transition-transform duration-300 ease-out group-hover/btn:translate-x-0.5"
-    >
-      <path
-        d="M2.5 7h9M7.5 3l4 4-4 4"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M7 1.5v11M1.5 7h11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   );
 }
 
-const SWEEP_CLASSES =
-  'pointer-events-none absolute inset-0 z-[3] -translate-x-[120%] skew-x-[-14deg] bg-gradient-to-r from-transparent via-gold-soft/25 to-transparent opacity-0 transition-[transform,opacity] duration-[1100ms] ease-out group-hover:translate-x-[120%] group-hover:opacity-100 group-active:translate-x-[120%] group-active:opacity-100 motion-reduce:transition-none motion-reduce:opacity-0';
-
-const TEXT_SHADOW = '0 1px 3px rgba(30,20,14,0.45)';
+/** Mesma altura de TreatmentCard, só um pouco maior para reservar espaço à
+ * ação de seleção (`footerExtra`) sem comprimir o resto da capa -- não é uma
+ * segunda proporção independente, é a mesma base (`aspect-[4/5]` no
+ * desktop, mesma largura/formato no mobile) com ~48px a mais no fim. */
+const SIZE_CLASSES =
+  'mx-auto w-[min(calc(100vw-32px),340px)] h-[clamp(438px,124vw,488px)] min-h-0 sm:mx-0 sm:h-auto sm:w-full sm:aspect-[4/5] sm:min-h-[478px]';
 
 /**
- * Card do catálogo de tratamentos dentro do agendamento -- mesma composição
- * de capa preenchendo 100% do card usada em `TreatmentCard` (imagem,
- * gradiente, conteúdo sobreposto), com duas ações reais lado a lado -- "Ver
- * mais detalhes" (ação secundária, abre o mesmo modal completo da seção
- * principal) e "Selecionar tratamento" (ação principal) -- sem aninhar
- * `<button>` dentro de `<button>`, que é HTML inválido; por isso o wrapper
- * externo é um `motion.article` (não clicável).
+ * Card compacto do catálogo de Agendamento -- mesma capa oficial do card da
+ * grade principal (`TreatmentCard`): mesma moldura (`TreatmentCoverFrame`) e
+ * mesmo conteúdo (`TreatmentCoverContent`, logo LB, nome, descrição breve,
+ * "Ver mais detalhes"), sem duplicar CSS/estrutura entre os dois lugares.
+ * A única diferença é a ação de seleção, injetada via `footerExtra` --
+ * reservada numa área própria abaixo de "Ver mais detalhes", nunca
+ * sobrepondo texto ou arte. O selo "Selecionado" no canto superior (pequeno,
+ * discreto) e o botão de seleção alternam texto conforme o estado, mantendo
+ * a mesma lógica/rótulos já usados pelo agendamento.
  */
 export function SchedulingTreatmentCard({
   treatment,
@@ -66,72 +57,19 @@ export function SchedulingTreatmentCard({
   onSelect,
   onViewDetails,
 }: SchedulingTreatmentCardProps) {
-  const categoryName = getTreatmentCategoryName(treatment.categoryId);
-
   return (
-    <motion.article
-      whileHover={{ y: -3, scale: 1.01 }}
-      whileTap={{ scale: 0.985 }}
-      transition={{ duration: 0.25, ease: EASE_OUT }}
-      className={`group relative isolate aspect-[4/5] min-h-[430px] w-full overflow-hidden rounded-[1.75rem] border shadow-warm-sm transition-[box-shadow,border-color] duration-300 hover:shadow-warm active:shadow-warm ${
-        isSelected ? 'border-gold shadow-warm' : 'border-gold/25 hover:border-gold/60 active:border-gold/60'
-      }`}
-    >
-      <TreatmentCoverImage
-        treatmentId={treatment.id}
-        coverImage={treatment.coverImage}
-        label={treatment.name}
-        className="group-hover:scale-[1.035] group-active:scale-[1.015]"
-      />
-
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-[1] opacity-90 transition-opacity duration-500 ease-out group-hover:opacity-100"
-        style={{
-          background:
-            'linear-gradient(to top, rgba(48,34,28,0.88) 0%, rgba(63,42,27,0.62) 28%, rgba(91,64,51,0.22) 52%, rgba(255,253,249,0.03) 74%, transparent 100%)',
-        }}
-      />
-
+    <TreatmentCoverFrame treatment={treatment} isHighlighted={isSelected} sizeClassName={SIZE_CLASSES}>
       {isSelected && (
-        <span className="absolute right-3 top-3 z-[2] flex items-center gap-1 rounded-full bg-gold px-2.5 py-1 text-[0.65rem] font-medium uppercase tracking-wide text-brown-dark shadow-warm-sm">
+        <span className="absolute right-3 top-3 z-[3] flex items-center gap-1 rounded-full bg-gold px-2.5 py-1 text-[0.65rem] font-medium uppercase tracking-wide text-brown-dark shadow-warm-sm">
           <CheckIcon />
           Selecionado
         </span>
       )}
 
-      <div className="relative z-[2] flex h-full min-h-full flex-col justify-end gap-2 p-5 transition-transform duration-500 ease-out group-hover:-translate-y-0.5">
-        {categoryName && (
-          <span
-            style={{ textShadow: TEXT_SHADOW }}
-            className="text-xs font-medium uppercase tracking-[0.2em] text-gold-soft"
-          >
-            {categoryName}
-          </span>
-        )}
-        <h3 style={{ textShadow: TEXT_SHADOW }} className="line-clamp-2 text-lg text-cream">
-          {treatment.name}
-        </h3>
-        {treatment.subtitle && (
-          <p style={{ textShadow: TEXT_SHADOW }} className="-mt-1 text-sm font-medium text-cream-light/90">
-            {treatment.subtitle}
-          </p>
-        )}
-        <p style={{ textShadow: TEXT_SHADOW }} className="line-clamp-2 text-sm leading-relaxed text-cream-light/90">
-          {treatment.summary ?? 'Descrição completa em atualização.'}
-        </p>
-
-        <div className="mt-2 flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            onClick={() => onViewDetails(treatment)}
-            aria-label={`Ver mais detalhes do tratamento ${treatment.name}`}
-            className="group/btn inline-flex items-center gap-1.5 rounded-full border border-gold/65 bg-cream-light/10 px-4 py-2 text-sm font-medium text-cream backdrop-blur-md transition-colors duration-300 hover:border-gold hover:bg-cream-light/20 active:bg-cream-light/25"
-          >
-            Ver mais detalhes
-            <ArrowIcon />
-          </button>
-
+      <TreatmentCoverContent
+        treatment={treatment}
+        onViewDetails={onViewDetails}
+        footerExtra={
           <motion.button
             type="button"
             onClick={() => onSelect(treatment)}
@@ -139,30 +77,31 @@ export function SchedulingTreatmentCard({
             aria-label={
               isSelected
                 ? `Remover ${treatment.name} da seleção`
-                : `Selecionar ${treatment.name} para o agendamento`
+                : `Adicionar ${treatment.name} à seleção`
             }
             whileHover={{ y: -1 }}
-            whileTap={{ scale: 0.97 }}
+            whileTap={{ scale: 0.96 }}
             transition={{ duration: 0.2, ease: EASE_OUT }}
-            className={`ml-auto inline-flex w-fit items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium uppercase tracking-wide backdrop-blur-md transition-colors duration-300 ${
+            className={`inline-flex min-h-11 w-full max-w-[230px] items-center justify-center gap-1.5 rounded-full border px-4 py-2.5 text-xs font-semibold uppercase tracking-wide backdrop-blur-sm transition-colors duration-300 sm:w-auto ${
               isSelected
-                ? 'bg-gold/85 text-brown-dark'
-                : 'border border-gold/65 bg-cream-light/10 text-cream hover:border-gold hover:bg-cream-light/20 active:bg-cream-light/25'
+                ? 'border-gold-deep/30 bg-gold text-brown-dark hover:bg-gold-soft'
+                : 'border-gold/50 bg-cream/70 text-brown-dark hover:border-gold hover:bg-cream'
             }`}
           >
             {isSelected ? (
               <>
                 <CheckIcon />
-                Selecionado
+                Remover da seleção
               </>
             ) : (
-              'Selecionar tratamento'
+              <>
+                <PlusIcon />
+                Adicionar à seleção
+              </>
             )}
           </motion.button>
-        </div>
-      </div>
-
-      <div className={SWEEP_CLASSES} />
-    </motion.article>
+        }
+      />
+    </TreatmentCoverFrame>
   );
 }

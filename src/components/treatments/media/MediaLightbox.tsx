@@ -93,7 +93,7 @@ export function MediaLightbox({ isOpen, slides, activeIndex, onClose, onSelectIn
           role="dialog"
           aria-modal="true"
           aria-label="Visualização ampliada"
-          className="fixed inset-0 z-[200] flex items-center justify-center bg-brown-dark/92 px-4"
+          className="media-carousel fixed inset-0 z-[200] flex items-center justify-center bg-brown-dark/92 px-4"
           initial="hidden"
           animate="visible"
           exit="exit"

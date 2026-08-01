@@ -23,8 +23,29 @@
     box-sizing: border-box;
   }
 
+  html,
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
   html {
     scroll-behavior: smooth;
+    /* Sem isso, o navegador ajusta sozinho a posição de rolagem sempre que
+       algo acima do viewport muda de tamanho (ex.: uma imagem `lazy` que
+       termina de carregar durante uma rolagem programática longa) --
+       "âncora de rolagem" pensada para leitura normal, mas que briga com um
+       `scrollIntoView` em andamento e faz a seção assentar antes do alvo. */
+    overflow-anchor: none;
+  }
+
+  /* Compensa o cabeçalho fixo (76px na maioria das larguras, ~88px quando a
+     logo quebra em duas linhas no mobile bem estreito) ao rolar até uma
+     seção pelo menu -- sem isso o título ficaria escondido atrás dele. */
+  section[id] {
+    scroll-margin-top: 96px;
   }
 
   body {
@@ -73,6 +94,23 @@
 }
 
 @layer utilities {
+  /* Área de carrossel/mídia tocável -- o gesto horizontal deve trocar a
+     mídia (ou ser consumido pelo drag vertical do lightbox) em vez de
+     brigar com o pan/scroll nativo da página ou com o gesto de "voltar" do
+     navegador. `pan-y` mantém a rolagem vertical funcionando normalmente. */
+  .media-carousel {
+    touch-action: pan-y;
+    overscroll-behavior-x: contain;
+  }
+
+  /* Fileiras de chips horizontais (categorias) -- rolagem horizontal
+     intencional, mas sem deixar o gesto vazar para a página (bounce/scroll
+     chaining) fora dos limites da própria fileira. */
+  .chip-row-scroll {
+    touch-action: pan-x;
+    overscroll-behavior-x: contain;
+  }
+
   .marquee-track {
     animation: marquee 30s linear infinite;
   }

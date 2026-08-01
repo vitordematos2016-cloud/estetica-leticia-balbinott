@@ -8,7 +8,7 @@ import { Reveal, RevealGroup, RevealItem } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
 import { useMobileViewportActive } from '../../hooks/useMobileViewportActive';
 import { getMobileSurfaceStyle, mobileCardTransition, mobileCardVariants } from '../motion/mobileActive';
-import { useRepeatableInView } from '../../hooks/useRepeatableInView';
+import { useOnceInView } from '../../hooks/useOnceInView';
 
 const icons = [
   <path key="ethics" d="M14 3v22M6 9l8-4 8 4M6 9l-4 10h8L6 9Zm16 0l-4 10h8l-4-10Z" />,
@@ -96,7 +96,7 @@ function ValueCard({ value, index, isOpen }: { value: ValueItem; index: number; 
 export function Differentials() {
   const { differential, values } = siteContent;
   const headingRef = useRef<HTMLDivElement>(null);
-  const isHeadingInView = useRepeatableInView(headingRef, { amount: 0.2 });
+  const isHeadingInView = useOnceInView(headingRef, { amount: 0.2 });
   const [isOpen, setIsOpen] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);

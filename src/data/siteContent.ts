@@ -77,7 +77,7 @@ export const siteContent: SiteContent = {
       'Especialista em estética facial',
       'Estética regenerativa',
       '+ de 8 anos de experiência',
-      '+ de 1000 clientes atendidas',
+      '+ de 1000 clientes atendidos',
     ],
   },
 
@@ -317,6 +317,7 @@ export const siteContent: SiteContent = {
       coverImage: '/treatments/covers/limpeza-de-pele-premium.webp',
       summary:
         'Protocolo de limpeza mais completo, pensado para quem busca um cuidado aprofundado com atenção especial a cada etapa do procedimento.',
+      shortCoverDescription: 'Pele limpa, saudável e radiante.',
       description:
         'A Limpeza de Pele Premium é um protocolo mais completo de higienização facial, pensado para quem busca um cuidado mais aprofundado do que a limpeza tradicional. As etapas do procedimento são definidas conforme a avaliação individual realizada antes do atendimento.',
       media: [
@@ -351,8 +352,21 @@ export const siteContent: SiteContent = {
       coverImage: '/treatments/covers/limpeza-de-pele-ghk-cu.webp',
       summary:
         'Limpeza facial associada ao complexo de cobre peptídeo (GHK-Cu), voltada a quem procura um cuidado de renovação mais completo para a pele.',
+      shortCoverDescription: 'Tecnologia avançada que renova e revitaliza.',
       description:
         'A Limpeza de Pele GHK-Cu associa a higienização facial ao uso do complexo de cobre peptídeo (GHK-Cu), um ativo conhecido no cuidado com a pele. É indicada para quem busca um protocolo de limpeza mais completo, sempre ajustado conforme avaliação individual.',
+      media: [
+        {
+          type: 'video',
+          src: '/treatments/limp-ghk-cu/procedimento-1.mp4',
+          alt: 'Procedimento de Limpeza de Pele GHK-Cu em andamento',
+        },
+        {
+          type: 'video',
+          src: '/treatments/limp-ghk-cu/procedimento-2.mp4',
+          alt: 'Procedimento de Limpeza de Pele GHK-Cu em andamento',
+        },
+      ],
     },
     {
       id: 'dermaplaning',
@@ -361,6 +375,7 @@ export const siteContent: SiteContent = {
       coverImage: '/treatments/covers/dermaplaning.webp',
       summary:
         'Esfoliação manual que remove células mortas e a penugem facial (buço), deixando a pele com textura mais lisa, uniforme e macia ao toque.',
+      shortCoverDescription: 'Renovação e suavidade para uma pele perfeita.',
       description:
         'O Dermaplaning é uma técnica de esfoliação manual que remove células mortas e a penugem facial, deixando a pele com textura mais lisa e uniforme. É um procedimento indicado para quem busca preparar a pele para uma aparência mais uniforme, sempre conforme avaliação individual.',
       media: [
@@ -386,6 +401,7 @@ export const siteContent: SiteContent = {
       coverImage: '/treatments/covers/peeling-de-vidro-skin-glass.webp',
       summary:
         'Peeling que busca o efeito de pele lisa e translúcida, com foco em textura refinada, viço e um aspecto saudável e luminoso no dia a dia.',
+      shortCoverDescription: 'Efeito glass skin para uma pele luminosa e uniforme.',
       description:
         'O Skin Glass, também chamado de Peeling de Vidro, é um procedimento que busca o efeito de pele lisa, uniforme e translúcida. O protocolo é voltado à textura refinada e ao aspecto saudável e luminoso, sempre ajustado conforme avaliação individual.',
       media: [
@@ -408,6 +424,7 @@ export const siteContent: SiteContent = {
       coverImage: '/treatments/covers/peeling-herbal.webp',
       summary:
         'Peeling formulado com ativos de origem vegetal, indicado para quem busca renovar a superfície da pele de um jeito suave e delicado.',
+      shortCoverDescription: 'Renovação natural que transforma sua pele.',
       description:
         'O Peeling Herbal utiliza ativos de origem vegetal para promover a renovação da camada superficial da pele. É indicado para quem busca um cuidado mais suave, com o protocolo ajustado conforme as características e a sensibilidade de cada pele, sempre a partir de avaliação individual.',
       media: [
@@ -472,6 +489,7 @@ export const siteContent: SiteContent = {
       coverImage: '/treatments/covers/peeling-de-hollywood.webp',
       summary:
         'Peeling voltado à renovação da pele, indicado para quem busca mais uniformidade de tom e luminosidade na aparência do rosto ao longo do tempo.',
+      shortCoverDescription: 'Pele renovada com o glow de celebridades.',
       description:
         'O Peeling de Hollywood é um procedimento voltado à renovação da pele, indicado para quem busca mais uniformidade de tom e luminosidade na aparência do rosto. O protocolo é sempre personalizado conforme a avaliação individual realizada com a profissional.',
       media: [
@@ -489,6 +507,7 @@ export const siteContent: SiteContent = {
       coverImage: '/treatments/covers/skin-booster.webp',
       summary:
         'Protocolo voltado à hidratação profunda da pele, indicado para quem busca mais viço e uma aparência saudável no dia a dia.',
+      shortCoverDescription: 'Hidratação profunda e viço natural.',
       description:
         'O Skin Booster é um protocolo voltado à hidratação profunda da pele, indicado para quem busca mais viço, maciez e uma aparência saudável. O plano de sessões e a técnica utilizada são definidos junto à profissional, de acordo com a avaliação individual de cada pele.',
       media: [
@@ -511,6 +530,7 @@ export const siteContent: SiteContent = {
       coverImage: '/treatments/covers/microagulhamento-ghk-cu.webp',
       summary:
         'Técnica que estimula os processos naturais de renovação da pele por meio de microperfurações superficiais e controladas.',
+      shortCoverDescription: 'Estimula o colágeno e rejuvenesce a pele.',
       description:
         'O Microagulhamento GHK-Cu é uma técnica que utiliza microperfurações superficiais e controladas para estimular os processos naturais de renovação da pele. O protocolo, incluindo a intensidade e a frequência das sessões, é definido conforme avaliação individual.',
       media: [
@@ -528,6 +548,7 @@ export const siteContent: SiteContent = {
       coverImage: '/treatments/covers/ultramed.webp',
       summary:
         'Tratamento avaliado individualmente com a profissional, que define o protocolo mais adequado conforme as necessidades da sua pele.',
+      shortCoverDescription: 'Ultrassom microfocado para firmeza e sustentação.',
       description:
         'O Ultramed é um dos procedimentos do catálogo da Estética Letícia Balbinott. Como ainda não há informações oficiais completas confirmadas sobre a técnica utilizada, o protocolo é explicado individualmente durante a consulta, sempre de acordo com a avaliação e a necessidade de cada pele.',
       media: [
@@ -545,6 +566,7 @@ export const siteContent: SiteContent = {
       coverImage: '/treatments/covers/tratamento-rejuvenescedor-e-clareador.webp',
       summary:
         'Protocolo voltado a uniformizar o tom da pele e suavizar sinais do tempo, com abordagem personalizada para cada tipo de pele.',
+      shortCoverDescription: 'Uniformiza o tom e devolve a vitalidade da pele.',
       description:
         'O Tratamento Rejuvenescedor e Clareador é um protocolo voltado a uniformizar o tom da pele e suavizar sinais do tempo. As etapas e os ativos utilizados são definidos conforme a avaliação individual de cada pele, respeitando suas características e sensibilidade.',
       beforeAfter: [
@@ -562,8 +584,16 @@ export const siteContent: SiteContent = {
       coverImage: '/treatments/covers/jato-de-plasma.webp',
       summary:
         'Tecnologia utilizada com foco em firmeza da pele, indicada para quem busca um cuidado direcionado a sinais do tempo.',
+      shortCoverDescription: 'Contra flacidez, rugas e manchas de forma eficaz.',
       description:
         'O Jato de Plasma é uma tecnologia utilizada com foco em firmeza da pele, indicada para quem busca um cuidado direcionado a sinais do tempo. O protocolo de aplicação é definido junto à profissional, conforme avaliação individual de cada caso.',
+      beforeAfter: [
+        {
+          type: 'image',
+          src: '/treatments/jato-de-plasma/antes-depois-1.webp',
+          alt: 'Antes e depois do Jato de Plasma',
+        },
+      ],
     },
     {
       id: 'dep-laser-h',
@@ -572,6 +602,7 @@ export const siteContent: SiteContent = {
       coverImage: '/treatments/covers/depilacao-a-laser.webp',
       summary:
         'Tecnologia a laser voltada à redução do crescimento dos pelos, com protocolo definido de acordo com a avaliação individual.',
+      shortCoverDescription: 'Tecnologia avançada para uma pele lisa e livre de pelos.',
       description:
         'A Depilação a Laser é uma tecnologia voltada à redução do crescimento dos pelos ao longo de um protocolo de sessões. A área a ser tratada e o plano de atendimento são definidos previamente, de acordo com a avaliação individual de cada cliente.',
       media: [
@@ -594,6 +625,7 @@ export const siteContent: SiteContent = {
       coverImage: '/treatments/covers/remocao-de-tatuagem.webp',
       summary:
         'Procedimento a laser voltado ao clareamento gradual de tatuagens, com técnica ajustada às características de cada pele e desenho.',
+      shortCoverDescription: 'Tecnologia que remove com segurança e precisão.',
       description:
         'A Remoção de Tatuagem é um procedimento a laser voltado ao clareamento gradual do pigmento na pele. O número de sessões e o protocolo utilizado variam conforme as características da tatuagem e são definidos após avaliação individual.',
       media: [
@@ -694,10 +726,12 @@ export const siteContent: SiteContent = {
   ],
 
   finalCta: {
-    title: 'Sua pele merece um cuidado pensado especialmente para ela',
-    text: 'Agende uma avaliação e descubra quais cuidados fazem sentido para as necessidades da sua pele.',
-    primaryCta: { label: 'Agendar avaliação', href: '#agendamento' },
-    secondaryCtaLabel: 'Falar pelo WhatsApp',
+    eyebrow: 'Agende sua avaliação',
+    title: 'Quanto mais você adia, mais tempo sua pele continua sem o cuidado certo',
+    titleHighlight: 'cuidado certo',
+    text: 'Manchas, oleosidade, textura irregular e sinais não desaparecem apenas com o tempo. Agende sua avaliação agora e descubra quais tratamentos podem ajudar sua pele de forma personalizada.',
+    primaryCta: { label: 'Quero cuidar da minha pele agora', href: '#agendamento' },
+    secondaryCtaLabel: 'Falar com a especialista',
   },
 
   seo: {

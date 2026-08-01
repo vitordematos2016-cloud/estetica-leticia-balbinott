@@ -5,6 +5,7 @@ import { Container } from '../ui/Container';
 import { Button } from '../ui/Button';
 import { EASE_OUT } from '../motion/variants';
 import { useRepeatableInView } from '../../hooks/useRepeatableInView';
+import { useOnceInView } from '../../hooks/useOnceInView';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 function InstagramIcon() {
@@ -86,7 +87,12 @@ const LIKE_ICONS: LikeConfig[] = [
 export function InstagramShowcase() {
   const { instagramShowcase, contact } = siteContent;
   const sectionRef = useRef<HTMLElement>(null);
+  // `isInView` (repete) só controla o loop dos "likes" decorativos --
+  // entram/saem de propósito a cada vez que a seção cruza a viewport. A
+  // entrada do card em si usa `hasBeenSeen` (uma vez só), então não volta a
+  // ficar semi-opaco/deslocado ao rolar de volta pra cima.
   const isInView = useRepeatableInView(sectionRef, { amount: 0.4 });
+  const hasBeenSeen = useOnceInView(sectionRef, { amount: 0.4 });
   const prefersReducedMotion = useReducedMotion();
   const showLikes = isInView && !prefersReducedMotion;
 
@@ -126,7 +132,7 @@ export function InstagramShowcase() {
             className="relative z-10"
             initial={{ opacity: 0.92, y: 10, scale: 0.98 }}
             animate={
-              isInView
+              hasBeenSeen
                 ? { opacity: 1, y: 0, scale: 1 }
                 : { opacity: 0.92, y: 10, scale: 0.98 }
             }

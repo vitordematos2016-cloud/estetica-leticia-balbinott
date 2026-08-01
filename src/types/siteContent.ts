@@ -160,9 +160,13 @@ export interface Treatment {
    * Enquanto ausente, o card mostra a ilustração conceitual de
    * `TreatmentCoverArt` como alternativa. */
   coverImage?: string;
-  /** Resumo breve (120-170 caracteres) exibido nos cards -- card em
-   * Tratamentos, card no catálogo do Agendamento. */
+  /** Resumo breve (120-170 caracteres) exibido no catálogo de busca do
+   * Agendamento (`TreatmentCatalogModal`) -- não é mais o texto da capa. */
   summary?: string;
+  /** Frase curta (1-2 linhas) exibida na própria capa, abaixo do nome --
+   * deliberadamente bem mais curta que `summary`, para caber numa área
+   * padronizada e igual em todos os cards. */
+  shortCoverDescription?: string;
   /** Explicação completa exibida no modal de detalhes. */
   description?: string;
   /** Mídia do conteúdo "Procedimento" no showcase do modal -- imagens e/ou
@@ -217,7 +221,9 @@ export interface CredentialsContent {
 }
 
 export interface FinalCtaContent {
+  eyebrow: string;
   title: string;
+  titleHighlight: string;
   text: string;
   primaryCta: { label: string; href: string };
   secondaryCtaLabel: string;

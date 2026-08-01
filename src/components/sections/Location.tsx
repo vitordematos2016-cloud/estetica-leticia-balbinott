@@ -159,11 +159,12 @@ export function Location() {
             <motion.div
               ref={beamFrameMobileRef}
               style={prefersReducedMotion ? undefined : { boxShadow: photoBoxShadow }}
-              className="relative isolate w-full overflow-hidden rounded-[2rem] shadow-warm-sm"
+              className="location-media relative isolate mx-auto w-full max-w-[270px] overflow-hidden rounded-[2rem] shadow-warm-sm"
             >
               <PhotoFrame
                 src={fachadaImage}
                 alt={facadeAlt}
+                imgClassName="h-full w-full object-contain object-center"
                 className="w-full transition-[border-color,box-shadow] duration-300 motion-reduce:transition-none group-hover:border-gold group-hover:shadow-warm group-active:border-gold group-active:shadow-warm"
               />
               {!prefersReducedMotion && (
@@ -329,11 +330,12 @@ export function Location() {
             >
               <div
                 ref={beamFrameDesktopRef}
-                className="relative isolate mx-auto w-full max-w-sm overflow-hidden rounded-[2rem] lg:max-w-none"
+                className="location-media relative isolate mx-auto w-full max-w-[340px] overflow-hidden rounded-[2rem] lg:max-w-[400px]"
               >
                 <PhotoFrame
                   src={fachadaImage}
                   alt={facadeAlt}
+                  imgClassName="h-full w-full object-contain object-center"
                   className="w-full transition-[border-color,box-shadow] duration-300 motion-reduce:transition-none group-hover:border-gold group-hover:shadow-warm group-active:border-gold group-active:shadow-warm"
                 />
                 {!prefersReducedMotion && (

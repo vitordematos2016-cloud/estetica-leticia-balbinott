@@ -26,7 +26,7 @@ const OBJECT_POSITIONS: Record<string, string> = {
   'skin-booster': '72% 62%',
   microagulhamento: 'center 72%',
   ultramed: 'center 82%',
-  'rejuvenescedor-clareador': '72% 68%',
+  'rejuvenescedor-clareador': 'center',
   'jato-de-plasma': '58% 62%',
   'dep-laser-h': '42% 68%',
   'rem-tatuagem': '72% 74%',

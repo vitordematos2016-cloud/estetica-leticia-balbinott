@@ -7,7 +7,7 @@ import { Reveal } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
 import { useMobileViewportActive } from '../../hooks/useMobileViewportActive';
 import { getMobileSurfaceStyle, mobileCardTransition, mobileCardVariants } from '../motion/mobileActive';
-import { useRepeatableInView } from '../../hooks/useRepeatableInView';
+import { useOnceInView } from '../../hooks/useOnceInView';
 
 const GOLD_RGB = '177,138,85';
 const restColor = `rgba(${GOLD_RGB},0.4)`;
@@ -32,7 +32,7 @@ const activeColor = `rgba(${GOLD_RGB},0.75)`;
 export function Purpose() {
   const { purpose } = siteContent;
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useRepeatableInView(ref, { amount: 0.2 });
+  const isInView = useOnceInView(ref, { amount: 0.2 });
   const [purposeActive, setPurposeActive] = useState(false);
   const [objectiveActive, setObjectiveActive] = useState(false);
   const purposeMobile = useMobileViewportActive<HTMLDivElement>();

@@ -15,7 +15,7 @@ import { isDaySchedulable, isPeriodAvailable, getPeriodUnavailableReason } from 
 import type { Period } from '../../utils/period';
 import { Reveal } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
-import { useRepeatableInView } from '../../hooks/useRepeatableInView';
+import { useOnceInView } from '../../hooks/useOnceInView';
 
 const PERIOD_OPTIONS: { value: Period; label: string }[] = [
   { value: 'manha', label: 'Manhã' },
@@ -94,7 +94,7 @@ export function Scheduling() {
   const periodRef = useRef<HTMLButtonElement>(null);
   const consentRef = useRef<HTMLInputElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useRepeatableInView(sectionRef, { amount: 0.2 });
+  const isInView = useOnceInView(sectionRef, { amount: 0.2 });
 
   const fieldRefs: Record<string, RefObject<HTMLElement | null>> = {
     name: nameRef,

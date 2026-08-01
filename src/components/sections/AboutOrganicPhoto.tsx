@@ -189,7 +189,7 @@ export function AboutOrganicPhoto({ src, alt, isInView }: AboutOrganicPhotoProps
 
   return (
     <div className="flex w-full min-w-0 justify-center overflow-hidden">
-      <div className="relative isolate w-[min(calc(100vw-36px),380px)] max-w-full max-[360px]:w-[calc(100vw-28px)] md:w-[min(62vw,450px)] lg:mx-0 lg:w-[clamp(390px,42vw,500px)] xl:w-[clamp(420px,39vw,550px)]">
+      <div className="relative isolate w-full max-w-[380px] md:w-[min(62vw,450px)] lg:mx-0 lg:w-[clamp(390px,42vw,500px)] xl:w-[clamp(420px,39vw,550px)]">
         {/* Halo estático suave -- profundidade sem competir com o rosto. */}
         <div
           aria-hidden="true"

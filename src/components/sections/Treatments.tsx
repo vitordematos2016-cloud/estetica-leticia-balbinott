@@ -7,6 +7,8 @@ import { TreatmentCard } from '../treatments/TreatmentCard';
 import { TreatmentModal } from '../treatments/TreatmentModal';
 import { useTreatmentsFilter } from '../../context/TreatmentsFilterContext';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useHistoryLayer } from '../../hooks/useHistoryLayer';
+import { buildTreatmentHash } from '../../utils/treatmentDeepLink';
 import { Reveal } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
 
@@ -48,11 +50,47 @@ export function Treatments() {
   const availableCategories = treatmentCategories.filter((category) =>
     treatments.some((treatment) => treatment.categoryId === category.id),
   );
-  const { activeCategoryId, activeTreatmentIds, activeGoalLabel, selectCategory, highlightTreatmentId, clearHighlight } =
-    useTreatmentsFilter();
+  const {
+    activeCategoryId,
+    activeTreatmentIds,
+    activeGoalLabel,
+    selectCategory,
+    highlightTreatmentId,
+    clearHighlight,
+    pendingTreatmentId,
+    clearPendingTreatment,
+  } = useTreatmentsFilter();
   const [search, setSearch] = useState('');
   const [selectedTreatment, setSelectedTreatment] = useState<Treatment | null>(null);
   const prefersReducedMotion = useReducedMotion();
+
+  function closeTreatmentModal() {
+    setSelectedTreatment(null);
+  }
+
+  // Faz o botão/gesto "Voltar" nativo do celular fechar o modal "Ver mais
+  // detalhes" e devolver a cliente exatamente à seção Tratamentos, na mesma
+  // posição de rolagem, em vez de sair do site -- ver `useHistoryLayer`.
+  const requestCloseTreatmentModal = useHistoryLayer({
+    layer: 'treatment-details',
+    isOpen: selectedTreatment !== null,
+    onPopClose: closeTreatmentModal,
+    hash: selectedTreatment ? buildTreatmentHash(selectedTreatment.id) : undefined,
+    data: selectedTreatment ? { treatmentId: selectedTreatment.id } : undefined,
+  });
+
+  // Consome um link direto (`#tratamento-{id}`) validado no carregamento da
+  // página (ver `TreatmentDeepLinkGate` em `App.tsx`) -- localiza o
+  // tratamento e abre o modal corretamente, em vez de deixar um hash inerte
+  // ou um modal quebrado sem dados.
+  useEffect(() => {
+    if (!pendingTreatmentId) return;
+    const found = treatments.find((item) => item.id === pendingTreatmentId);
+    clearPendingTreatment();
+    if (!found) return;
+    document.getElementById('tratamentos')?.scrollIntoView({ behavior: 'auto', block: 'start' });
+    setSelectedTreatment(found);
+  }, [pendingTreatmentId, treatments, clearPendingTreatment]);
 
   // Tanto um filtro de categoria quanto o filtro especial por ids (vindo dos
   // cards de "Qual cuidado sua pele precisa?") descartam uma busca antiga
@@ -167,7 +205,7 @@ export function Treatments() {
           )}
 
           <div className="relative">
-            <div className="flex gap-2.5 overflow-x-auto pb-1 lg:flex-wrap lg:justify-center lg:overflow-visible lg:pb-0">
+            <div className="chip-row-scroll flex gap-2.5 overflow-x-auto pb-1 lg:flex-wrap lg:justify-center lg:overflow-visible lg:pb-0">
               <motion.button
                 type="button"
                 onClick={() => selectCategory(null)}
@@ -278,7 +316,7 @@ export function Treatments() {
         )}
       </Container>
 
-      <TreatmentModal treatment={selectedTreatment} onClose={() => setSelectedTreatment(null)} />
+      <TreatmentModal treatment={selectedTreatment} onClose={requestCloseTreatmentModal} />
     </section>
   );
 }

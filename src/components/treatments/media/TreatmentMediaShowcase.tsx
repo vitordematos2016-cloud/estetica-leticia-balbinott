@@ -14,6 +14,7 @@ import {
   PREMIUM_TAP_TRANSITION,
 } from '../../motion/variants';
 import { useGoldRipple } from '../../../hooks/useGoldRipple';
+import { useHistoryLayer } from '../../../hooks/useHistoryLayer';
 import { CarouselArrows } from './CarouselArrows';
 import { CarouselIndicators } from './CarouselIndicators';
 import { MediaCoverCard, type MediaCoverKind } from './MediaCoverCard';
@@ -126,6 +127,15 @@ export function TreatmentMediaShowcase({ treatment, isOpen }: TreatmentMediaShow
     lightboxVideoRef.current?.pause();
   }, [isOpen]);
 
+  // Faz o botão/gesto "Voltar" nativo fechar primeiro a mídia em tela cheia
+  // (uma camada própria, aninhada dentro do modal de detalhes) em vez de
+  // fechar o modal inteiro ou sair do site -- ver `useHistoryLayer`.
+  const requestCloseLightbox = useHistoryLayer({
+    layer: 'media-fullscreen',
+    isOpen: lightboxOpen,
+    onPopClose: closeLightbox,
+  });
+
   const mediaTypeTabs: SegmentedTabItem[] =
     revealed === 'antesDepois'
       ? [{ id: 'image', label: 'Imagem', icon: ImageIcon }]
@@ -206,6 +216,10 @@ export function TreatmentMediaShowcase({ treatment, isOpen }: TreatmentMediaShow
     setLightboxOpen(true);
   }
 
+  function closeLightbox() {
+    setLightboxOpen(false);
+  }
+
   return (
     <>
       <motion.div layout transition={{ duration: 0.3, ease: EASE_OUT }} className={SHOWCASE_FRAME_CLASSES}>
@@ -255,7 +269,7 @@ export function TreatmentMediaShowcase({ treatment, isOpen }: TreatmentMediaShow
                 />
               </div>
 
-              <div className="relative flex items-center justify-center overflow-hidden rounded-[1.25rem] bg-beige/25 p-2 sm:p-3">
+              <div className="media-carousel relative flex items-center justify-center overflow-hidden rounded-[1.25rem] bg-beige/25 p-2 sm:p-3">
                 <AnimatePresence custom={direction} initial={false}>
                   <motion.div
                     key={`${mediaType}:${activeIndex}`}
@@ -323,7 +337,7 @@ export function TreatmentMediaShowcase({ treatment, isOpen }: TreatmentMediaShow
         isOpen={lightboxOpen}
         slides={slides}
         activeIndex={activeIndex}
-        onClose={() => setLightboxOpen(false)}
+        onClose={requestCloseLightbox}
         onSelectIndex={setIndex}
         videoRef={lightboxVideoRef}
       />

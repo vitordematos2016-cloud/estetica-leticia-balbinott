@@ -6,7 +6,7 @@ import { SectionHeading } from '../ui/SectionHeading';
 import { Ornament } from '../ui/Ornament';
 import { Reveal, RevealGroup, RevealItem } from '../motion/reveal';
 import { EASE_OUT } from '../motion/variants';
-import { useRepeatableInView } from '../../hooks/useRepeatableInView';
+import { useOnceInView } from '../../hooks/useOnceInView';
 import { useMobileViewportActive } from '../../hooks/useMobileViewportActive';
 import { getMobileSurfaceStyle, mobileCardTransition, mobileCardVariants } from '../motion/mobileActive';
 
@@ -77,7 +77,7 @@ function HowItWorksStep({
 export function HowItWorks() {
   const { howItWorks } = siteContent;
   const pathRef = useRef<HTMLDivElement>(null);
-  const isPathInView = useRepeatableInView(pathRef, { amount: 0.25 });
+  const isPathInView = useOnceInView(pathRef, { amount: 0.25 });
   const [hoveredCount, setHoveredCount] = useState(0);
   const isAnyHovered = hoveredCount > 0;
 

@@ -189,7 +189,7 @@ export function TreatmentCatalogModal({ isOpen, onClose }: TreatmentCatalogModal
             </div>
 
             <div className="flex shrink-0 flex-col items-center gap-3 border-b border-gold/10 p-4 sm:p-5">
-              <div className="flex w-full gap-2.5 overflow-x-auto pb-1 lg:flex-wrap lg:justify-center">
+              <div className="chip-row-scroll flex w-full gap-2.5 overflow-x-auto pb-1 lg:flex-wrap lg:justify-center">
                 <motion.button
                   type="button"
                   onClick={() => setActiveCategoryId(null)}

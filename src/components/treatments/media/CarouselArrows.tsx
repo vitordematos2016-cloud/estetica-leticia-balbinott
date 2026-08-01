@@ -10,9 +10,11 @@ interface CarouselArrowsProps {
 }
 
 /**
- * Setas premium do carrossel -- dourado fosco sobre fundo translúcido escuro
- * para manter contraste em cima de qualquer foto/vídeo. Só deve ser
- * renderizado pelo chamador quando a lista ativa tem mais de um item.
+ * Setas premium do carrossel -- fundo creme translúcido com borda dourada
+ * fina e ícone marrom/dourado profundo, para manter contraste suficiente
+ * sobre qualquer foto/vídeo (claro ou escuro), diferente da versão anterior
+ * (dourado fosco sobre fundo escuro, que sumia sobre mídias claras). Só deve
+ * ser renderizado pelo chamador quando a lista ativa tem mais de um item.
  */
 export function CarouselArrows({ onPrev, onNext, prevLabel = 'Item anterior', nextLabel = 'Próximo item' }: CarouselArrowsProps) {
   return (
@@ -42,15 +44,22 @@ function CarouselArrow({
       onPointerDown={onPointerDown}
       aria-label={label}
       whileHover={{
-        scale: 1.08,
-        rotate: isPrev ? -6 : 6,
-        boxShadow: '0 0 0 4px rgba(177,138,85,0.16), 0 8px 18px -8px rgba(177,138,85,0.55)',
+        scale: 1.06,
+        x: isPrev ? -3 : 3,
+        boxShadow: '0 0 0 4px rgba(190,145,77,0.22), 0 6px 16px -6px rgba(61,40,24,0.28)',
         transition: PREMIUM_HOVER_TRANSITION,
       }}
-      whileTap={{ scale: 0.92 }}
+      whileTap={{ scale: 0.9, transition: { duration: 0.1 } }}
+      style={{
+        background: 'rgba(255,248,237,0.9)',
+        color: '#6f4f2d',
+        border: '1px solid rgba(190,145,77,0.75)',
+        boxShadow: '0 4px 14px rgba(61,40,24,0.18)',
+        backdropFilter: 'blur(8px)',
+      }}
       className={`absolute top-1/2 z-20 -translate-y-1/2 ${
-        isPrev ? 'left-3' : 'right-3'
-      } flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border border-gold/50 bg-brown-dark/35 text-gold-soft backdrop-blur-sm transition-colors hover:border-gold hover:bg-brown-dark/45`}
+        isPrev ? 'left-4' : 'right-4'
+      } flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl`}
     >
       {rippleLayer}
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">

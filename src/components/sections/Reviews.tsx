@@ -9,6 +9,7 @@ import { EASE_OUT } from '../motion/variants';
 import { useMobileViewportActive } from '../../hooks/useMobileViewportActive';
 import { getMobileSurfaceStyle, mobileCardTransition, mobileCardVariants } from '../motion/mobileActive';
 import { useRepeatableInView } from '../../hooks/useRepeatableInView';
+import { useOnceInView } from '../../hooks/useOnceInView';
 import { useReplayKey } from '../../hooks/useReplayKey';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
@@ -68,7 +69,10 @@ export function Reviews() {
   const touchStartX = useRef<number | null>(null);
   const { ref: mobileRef, active: mobileActive, isMobileViewport } = useMobileViewportActive<HTMLDivElement>();
   const googleLinkRef = useRef<HTMLAnchorElement>(null);
+  // `isGoogleLinkInView` (repete) só alimenta o brilho -- a entrada do link
+  // em si usa `hasGoogleLinkBeenSeen` (uma vez só).
   const isGoogleLinkInView = useRepeatableInView(googleLinkRef, { amount: 0.4 });
+  const hasGoogleLinkBeenSeen = useOnceInView(googleLinkRef, { amount: 0.4 });
   const googleLinkShineKey = useReplayKey(isGoogleLinkInView);
   const prefersReducedMotion = useReducedMotion();
   const {
@@ -250,7 +254,7 @@ export function Reviews() {
             animate={
               isGoogleLinkMobileViewport
                 ? undefined
-                : prefersReducedMotion || isGoogleLinkInView
+                : prefersReducedMotion || hasGoogleLinkBeenSeen
                   ? { opacity: 1, y: 0, scale: 1 }
                   : { opacity: 0.85, y: 14, scale: 0.97 }
             }

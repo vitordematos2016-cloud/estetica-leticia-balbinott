@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import type { ElementType, ReactNode } from 'react';
 import { EASE_OUT, REPEAT_VIEWPORT_MARGIN, directionOffset } from './variants';
 import type { RevealDirection } from './variants';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 const tagMap = {
   div: motion.div,
@@ -38,11 +39,12 @@ interface RevealProps {
 /**
  * Substitui o padrão manual (CSSProperties + IntersectionObserver) repetido
  * em várias seções por uma única primitiva Motion. Sem `active`, cada
- * instância observa sua própria entrada na viewport e repete a entrada toda
- * vez que volta a ela (once=false por padrão, com margem para não reiniciar
- * perto da borda); com `active`, ela segue uma visibilidade compartilhada
- * vinda do componente pai (cujo próprio `useInView`/`useRepeatableInView"
- * decide se repete ou não).
+ * instância observa sua própria entrada na viewport e anima uma única vez
+ * (once=true por padrão -- depois de vista, a cliente pode subir/descer a
+ * página livremente sem o conteúdo sumir de novo); com `active`, ela segue
+ * uma visibilidade compartilhada vinda do componente pai (cujo próprio
+ * `useOnceInView`/`useRepeatableInView` decide se repete ou não -- ver os
+ * dois hooks para quando usar cada um).
  */
 export function Reveal({
   children,
@@ -51,16 +53,31 @@ export function Reveal({
   delay = 0,
   duration = 0.6,
   amount = 0.2,
-  once = false,
+  once = true,
   as = 'div',
   active,
   'aria-hidden': ariaHidden,
 }: RevealProps) {
+  const prefersReducedMotion = useReducedMotion();
   const offset = directionOffset[direction];
   const MotionTag = tagMap[as] as ElementType;
   const hidden = { opacity: 0, x: offset.x ?? 0, y: offset.y ?? 0 };
   const visible = { opacity: 1, x: 0, y: 0 };
   const transition = { duration, delay, ease: EASE_OUT };
+
+  // Sob `prefers-reduced-motion`, o gatilho de entrada por rolagem
+  // (`whileInView`) nunca chega a disparar para conteúdo fora da viewport --
+  // o `MotionConfig reducedMotion="user"` global só neutraliza as
+  // propriedades de transform (x/y/scale/...) de uma animação já em
+  // andamento, não a opacidade nem o próprio gatilho. Sem este atalho, tudo
+  // abaixo da dobra ficaria preso em `opacity: 0` para sempre.
+  if (prefersReducedMotion) {
+    return (
+      <MotionTag className={className} aria-hidden={ariaHidden} initial={visible} animate={visible}>
+        {children}
+      </MotionTag>
+    );
+  }
 
   if (active === undefined) {
     return (
@@ -104,9 +121,11 @@ interface RevealGroupProps {
 
 /**
  * Container que orquestra a entrada escalonada dos `RevealItem` filhos.
- * Reaproveitado tanto para listas reveladas ao entrar na viewport (repete a
- * cada reentrada, once=false por padrão) quanto para grades de cartão que
- * aparecem em sequência ao abrir um acordeão (via `active` controlado).
+ * Reaproveitado tanto para listas reveladas ao entrar na viewport (anima uma
+ * única vez, once=true por padrão) quanto para grades de cartão que
+ * aparecem em sequência ao abrir um acordeão (via `active` controlado --
+ * esse caso é sobre abrir/fechar, não sobre rolagem, então legitimamente
+ * continua alternando visível/oculto).
  */
 export function RevealGroup({
   children,
@@ -114,15 +133,27 @@ export function RevealGroup({
   stagger = 0.08,
   delayChildren = 0,
   amount = 0.2,
-  once = false,
+  once = true,
   as = 'div',
   active,
 }: RevealGroupProps) {
+  const prefersReducedMotion = useReducedMotion();
   const MotionTag = tagMap[as] as ElementType;
   const variants = {
     hidden: {},
     visible: { transition: { staggerChildren: stagger, delayChildren } },
   };
+
+  // Mesmo raciocínio do `Reveal` acima: sem isto, os `RevealItem` filhos
+  // (que herdam o estado "hidden"/"visible" deste grupo) ficariam presos
+  // invisíveis até a rolagem alcançar o grupo, mesmo sob reduced-motion.
+  if (prefersReducedMotion) {
+    return (
+      <MotionTag className={className} variants={variants} initial="visible" animate="visible">
+        {children}
+      </MotionTag>
+    );
+  }
 
   if (active === undefined) {
     return (

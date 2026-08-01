@@ -36,30 +36,30 @@ export function buildSchedulingMessage(fields: SchedulingMessageFields): string 
       ? fields.treatments.map((name) => `- ${name}`).join('\n')
       : '';
 
-  const notesBlock = isFilled(fields.notes) ? `\n*Observacoes:*\n${fields.notes.trim()}\n` : '';
+  const notesBlock = isFilled(fields.notes) ? `\nObservações:\n${fields.notes.trim()}\n` : '';
 
   const phoneFormatted = isFilled(fields.phone) ? formatPhoneDisplay(fields.phone.trim()) : '';
 
-  return `*SOLICITACAO DE AGENDAMENTO*
-Estetica Leticia Balbinott
+  return `SOLICITAÇÃO DE AGENDAMENTO:
+Estética Letícia Balbinott
 
-Ola, meu nome e *${(fields.name ?? '').trim()}*.
+Olá, meu nome é ${(fields.name ?? '').trim()}.
 
 Gostaria de verificar a disponibilidade para o seguinte agendamento:
 
-*Tratamentos selecionados:*
+Tratamentos selecionados:
 ${treatmentsFormatted}
 
-*Data de preferencia:*
+Data de preferência:
 ${fields.date ?? ''}
 
-*Periodo de preferencia:*
+Período de preferência:
 ${fields.period ?? ''}
 
-*Telefone para contato:*
+Telefone para contato:
 ${phoneFormatted}
 ${notesBlock}
-A data e o periodo informados representam apenas uma preferencia. Ficarei no aguardo do retorno da equipe para confirmar a disponibilidade e o agendamento.`;
+A data e o período informados representam apenas uma preferência. Ficarei no aguardo do retorno da equipe para confirmar a disponibilidade e o agendamento.`;
 }
 
 export function buildTreatmentInquiryMessage(treatmentName: string): string {

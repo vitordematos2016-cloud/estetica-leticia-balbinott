@@ -24,6 +24,13 @@ interface TreatmentsFilterContextValue {
    * a seção presa em um estado vazio). */
   requestTreatmentsFilterByGoal: (goalLabel: string, treatmentIds: string[]) => string | null;
   clearHighlight: () => void;
+  /** Id de tratamento pedido por um link direto (`#tratamento-{id}`) ainda não
+   * consumido pela seção Tratamentos -- `null` quando não há nenhum pendente. */
+  pendingTreatmentId: string | null;
+  /** Registrado pelo carregamento inicial da página quando a URL já chega com
+   * um hash de tratamento válido; a seção Tratamentos consome e abre o modal. */
+  requestDeepLinkTreatment: (treatmentId: string) => void;
+  clearPendingTreatment: () => void;
 }
 
 const TreatmentsFilterContext = createContext<TreatmentsFilterContextValue | undefined>(
@@ -35,6 +42,7 @@ export function TreatmentsFilterProvider({ children }: { children: ReactNode }) 
   const [activeTreatmentIds, setActiveTreatmentIds] = useState<string[] | null>(null);
   const [activeGoalLabel, setActiveGoalLabel] = useState<string | null>(null);
   const [highlightTreatmentId, setHighlightTreatmentId] = useState<string | null>(null);
+  const [pendingTreatmentId, setPendingTreatmentId] = useState<string | null>(null);
 
   const selectCategory = useCallback((categoryId: string | null) => {
     setActiveCategoryId(categoryId);
@@ -56,6 +64,14 @@ export function TreatmentsFilterProvider({ children }: { children: ReactNode }) 
     setHighlightTreatmentId(null);
   }, []);
 
+  const requestDeepLinkTreatment = useCallback((treatmentId: string) => {
+    setPendingTreatmentId(treatmentId);
+  }, []);
+
+  const clearPendingTreatment = useCallback(() => {
+    setPendingTreatmentId(null);
+  }, []);
+
   const value = useMemo(
     () => ({
       activeCategoryId,
@@ -65,6 +81,9 @@ export function TreatmentsFilterProvider({ children }: { children: ReactNode }) 
       highlightTreatmentId,
       requestTreatmentsFilterByGoal,
       clearHighlight,
+      pendingTreatmentId,
+      requestDeepLinkTreatment,
+      clearPendingTreatment,
     }),
     [
       activeCategoryId,
@@ -74,6 +93,9 @@ export function TreatmentsFilterProvider({ children }: { children: ReactNode }) 
       highlightTreatmentId,
       requestTreatmentsFilterByGoal,
       clearHighlight,
+      pendingTreatmentId,
+      requestDeepLinkTreatment,
+      clearPendingTreatment,
     ],
   );
 

@@ -9,6 +9,7 @@ import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useMobileViewportActive } from '../../hooks/useMobileViewportActive';
 import { mobileCardTransition, mobileCardVariants } from '../motion/mobileActive';
 import { useRepeatableInView } from '../../hooks/useRepeatableInView';
+import { useOnceInView } from '../../hooks/useOnceInView';
 import { useReplayKey } from '../../hooks/useReplayKey';
 import mimoImage from '../../assets/leh-estetic/cuidado-detalhes-leh-estetic.webp';
 
@@ -32,7 +33,10 @@ import mimoImage from '../../assets/leh-estetic/cuidado-detalhes-leh-estetic.web
 export function ThoughtfulDetails() {
   const { thoughtfulDetails, brand } = siteContent;
   const ref = useRef<HTMLDivElement>(null);
+  // `isInView` (repete) só alimenta o brilho -- a entrada da foto/título/
+  // texto usa `hasBeenSeen` (uma vez só).
   const isInView = useRepeatableInView(ref, { amount: 0.4 });
+  const hasBeenSeen = useOnceInView(ref, { amount: 0.4 });
   const prefersReducedMotion = useReducedMotion();
   const shimmerReplayKey = useReplayKey(isInView);
   const { ref: mobileRef, active: mobileActive, isMobileViewport } = useMobileViewportActive<HTMLDivElement>();
@@ -55,7 +59,7 @@ export function ThoughtfulDetails() {
           whileTap={{ scale: 0.99 }}
           transition={{ duration: 0.3, ease: EASE_OUT }}
         >
-          <Reveal active={isInView} delay={0}>
+          <Reveal active={hasBeenSeen} delay={0} className="w-full">
             <div className="relative">
               <div
                 aria-hidden="true"
@@ -100,13 +104,13 @@ export function ThoughtfulDetails() {
             </div>
           </Reveal>
 
-          <Reveal active={isInView} delay={0.18}>
+          <Reveal active={hasBeenSeen} delay={0.18}>
             <h2 className="text-2xl text-brown-dark transition-colors duration-300 group-hover:text-gold group-active:text-gold group-data-[mobile-active=true]:text-gold sm:text-3xl">
               {thoughtfulDetails.title}
             </h2>
           </Reveal>
 
-          <Reveal active={isInView} delay={0.28}>
+          <Reveal active={hasBeenSeen} delay={0.28}>
             <p className="max-w-xs text-base leading-relaxed text-brown/75 sm:max-w-sm">
               {thoughtfulDetails.text}
             </p>

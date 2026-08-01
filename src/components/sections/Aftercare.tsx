@@ -7,7 +7,7 @@ import { Ornament } from '../ui/Ornament';
 import { Reveal } from '../motion/reveal';
 import { useMobileViewportActive } from '../../hooks/useMobileViewportActive';
 import { mobileCardTransition, mobileCardVariants } from '../motion/mobileActive';
-import { useRepeatableInView } from '../../hooks/useRepeatableInView';
+import { useOnceInView } from '../../hooks/useOnceInView';
 
 /**
  * Card informativo sem `whileHover`/Motion, só CSS (`hover:-translate-y-0.5
@@ -19,7 +19,7 @@ import { useRepeatableInView } from '../../hooks/useRepeatableInView';
 export function Aftercare() {
   const { aftercare } = siteContent;
   const ref = useRef<HTMLElement>(null);
-  const isInView = useRepeatableInView(ref, { amount: 0.4 });
+  const isInView = useOnceInView(ref, { amount: 0.4 });
   const { ref: mobileRef, active: mobileActive, isMobileViewport } = useMobileViewportActive<HTMLDivElement>();
 
   return (

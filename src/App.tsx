@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { SelectionProvider } from './context/SelectionContext';
-import { TreatmentsFilterProvider } from './context/TreatmentsFilterContext';
+import { TreatmentsFilterProvider, useTreatmentsFilter } from './context/TreatmentsFilterContext';
+import { siteContent } from './data/siteContent';
+import { parseTreatmentHash } from './utils/treatmentDeepLink';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { Splash } from './components/layout/Splash';
@@ -30,6 +32,49 @@ import { wasSplashAlreadyShown } from './utils/splashSession';
 
 type OpeningType = 'completa' | 'compacta' | 'finalizada';
 
+/**
+ * Resolve o `#hash` da URL logo no carregamento inicial, antes de qualquer
+ * interação -- roda uma única vez, dentro do `TreatmentsFilterProvider`
+ * porque precisa de `requestDeepLinkTreatment`. Cobre três casos:
+ *
+ * - Reload: sempre limpa o hash e força o topo (comportamento já existente,
+ *   nunca restaura a rolagem/estado anterior).
+ * - Link direto para um tratamento válido (`#tratamento-{id}`): não abre um
+ *   modal quebrado -- registra o id pendente para a seção Tratamentos
+ *   localizar e abrir corretamente.
+ * - Qualquer outro hash (inválido, de um id que não existe mais no catálogo,
+ *   etc.): limpa o hash em vez de deixá-lo inerte ou apontando para nada.
+ */
+function TreatmentDeepLinkGate() {
+  const { requestDeepLinkTreatment } = useTreatmentsFilter();
+
+  useEffect(() => {
+    const navigationEntry = performance.getEntriesByType('navigation')[0] as
+      | PerformanceNavigationTiming
+      | undefined;
+    const wasReloaded = navigationEntry?.type === 'reload';
+
+    if (wasReloaded) {
+      if (window.location.hash) {
+        window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+      }
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      return;
+    }
+
+    const treatmentId = parseTreatmentHash(window.location.hash);
+    if (!treatmentId) return;
+
+    if (siteContent.treatments.some((item) => item.id === treatmentId)) {
+      requestDeepLinkTreatment(treatmentId);
+    } else {
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+    }
+  }, [requestDeepLinkTreatment]);
+
+  return null;
+}
+
 function App() {
   const [openingType, setOpeningType] = useState<OpeningType>(() =>
     wasSplashAlreadyShown() ? 'compacta' : 'completa',
@@ -38,8 +83,9 @@ function App() {
   // Recarregar a página deve sempre trazer a cliente de volta ao topo, na
   // seção Início — nunca restaurar a rolagem anterior (ex.: parada em
   // "Tratamentos" ou "Instagram"). O navegador restaura scroll sozinho por
-  // padrão em reloads; desativamos isso e, quando o reload é detectado,
-  // limpamos qualquer #hash antigo da URL e forçamos o topo imediatamente.
+  // padrão em reloads; desativamos isso aqui. A limpeza do #hash em reloads e
+  // a abertura de um link direto (`#tratamento-{id}`) ficam no
+  // `TreatmentDeepLinkGate` abaixo, porque dependem do `TreatmentsFilterContext`.
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
@@ -50,21 +96,6 @@ function App() {
         window.history.scrollRestoration = 'auto';
       }
     };
-  }, []);
-
-  useEffect(() => {
-    const navigationEntry = performance.getEntriesByType('navigation')[0] as
-      | PerformanceNavigationTiming
-      | undefined;
-    const wasReloaded = navigationEntry?.type === 'reload';
-
-    if (!wasReloaded) return;
-
-    if (window.location.hash) {
-      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
-    }
-
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }, []);
 
   const finishOpening = useCallback(() => {
@@ -82,6 +113,7 @@ function App() {
   return (
     <SelectionProvider>
       <TreatmentsFilterProvider>
+        <TreatmentDeepLinkGate />
         {openingType === 'completa' && <Splash onFinish={finishOpening} />}
         {openingType === 'compacta' && <CompactReloadIntro onFinish={finishOpening} />}
         <Header />
