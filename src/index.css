@@ -169,16 +169,20 @@
     position: absolute;
     inset: -30%;
     width: 35%;
+    /* Sem `mix-blend-mode: screen` -- essa mistura só "acende" sobre fundo
+       escuro (o antigo `bg-brown-dark`); contra o `bg-cream-light` atual da
+       capa ela quase desaparece (screen sobre uma base já clara tende a
+       branco). O próprio gradiente, com alfa direto, já lê como um filete
+       de luz dourada passando. */
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 219, 145, 0.12),
-      rgba(255, 230, 172, 0.75),
-      rgba(255, 219, 145, 0.12),
+      rgba(184, 138, 85, 0.16),
+      rgba(216, 165, 89, 0.55),
+      rgba(184, 138, 85, 0.16),
       transparent
     );
     filter: blur(12px);
-    mix-blend-mode: screen;
     animation: splash-beam-sweep 1100ms cubic-bezier(0.45, 0, 0.2, 1) both;
   }
 
@@ -200,6 +204,25 @@
       opacity: 0;
     }
     45% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  /* Brilho champagne discreto na saída da capa completa (primeira visita)
+     -- some junto com o resto (`opacity`/`filter`/`transform` do container),
+     só reforça a sensação de transição suave para o Hero. */
+  .splash-exit-glow {
+    animation: splash-exit-glow 700ms ease-out both;
+  }
+
+  @keyframes splash-exit-glow {
+    0% {
+      opacity: 0;
+    }
+    40% {
       opacity: 1;
     }
     100% {
@@ -246,6 +269,181 @@
     }
   }
 
+  /* Portas modernas da seção "Cuidado presente em cada detalhe" -- entrada
+     de clínica premium: madeira clara acetinada, linha dourada champagne e
+     painel de vidro fumê próximos ao centro, puxador vertical fino.
+     `perspective` mora aqui (no container que também recorta a imagem) para
+     que a rotação em 3D das duas metades pareça abrir "para dentro" da
+     moldura, sem nunca ultrapassar a largura da foto (a rotação acontece em
+     torno da própria borda externa de cada porta, então o retângulo nunca
+     cresce além do espaço que já ocupava fechado). */
+  .detail-image-reveal {
+    perspective: 1200px;
+  }
+
+  /* Moldura arquitetônica -- duas linhas finas (bege + dourado) sobre a
+     borda do próprio contêiner, `z-index` acima das portas para permanecer
+     visível (e estática) tanto fechada quanto aberta, sem crescer o
+     componente (é `inset`, não soma largura/altura). */
+  .detail-frame {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    border-radius: 2rem;
+    box-shadow:
+      inset 0 0 0 1px rgba(226, 208, 184, 0.9),
+      inset 0 0 0 3px rgba(184, 138, 85, 0.36),
+      inset 0 0 0 4px rgba(226, 208, 184, 0.5);
+  }
+
+  .detail-door {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    z-index: 3;
+    pointer-events: none;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    border: 1px solid rgba(181, 132, 61, 0.45);
+    background-image:
+      /* verniz acetinado -- diagonal suave, sem parecer tábua rústica */
+      linear-gradient(100deg, rgba(255, 255, 255, 0.22) 0%, transparent 26%, rgba(112, 76, 46, 0.07) 72%, rgba(255, 255, 255, 0.16) 100%),
+      /* veio muito discreto, espaçado -- textura, não ripas aparentes */
+      repeating-linear-gradient(90deg, rgba(120, 86, 48, 0.045) 0px, rgba(120, 86, 48, 0.045) 1px, transparent 1px, transparent 12px),
+      linear-gradient(90deg, #c9ab85 0%, #e3cba8 46%, #c7a67e 100%);
+    transition: box-shadow 0.4s ease;
+  }
+
+  .detail-door--left {
+    left: 0;
+    transform-origin: left center;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 248, 235, 0.28),
+      inset 0 0 26px rgba(89, 57, 31, 0.12),
+      0 10px 26px rgba(70, 44, 24, 0.16),
+      inset -10px 0 18px -10px rgba(84, 52, 23, 0.4);
+  }
+
+  .detail-door--right {
+    right: 0;
+    transform-origin: right center;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 248, 235, 0.28),
+      inset 0 0 26px rgba(89, 57, 31, 0.12),
+      0 10px 26px rgba(70, 44, 24, 0.16),
+      inset 10px 0 18px -10px rgba(84, 52, 23, 0.4);
+  }
+
+  /* Luz champagne suave que só aparece enquanto a porta está aberta --
+     `data-open` é escrito pelo React em sincronia com o `rotateY` do Motion,
+     então o realce acompanha a abertura sem precisar duplicar a lógica de
+     estado em CSS. */
+  .detail-door--left[data-open='true'] {
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 248, 235, 0.28),
+      inset 0 0 26px rgba(89, 57, 31, 0.12),
+      0 10px 26px rgba(70, 44, 24, 0.16),
+      inset -10px 0 18px -10px rgba(84, 52, 23, 0.4),
+      inset -10px 0 20px rgba(255, 230, 180, 0.14),
+      12px 0 30px rgba(74, 47, 27, 0.18);
+  }
+
+  .detail-door--right[data-open='true'] {
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 248, 235, 0.28),
+      inset 0 0 26px rgba(89, 57, 31, 0.12),
+      0 10px 26px rgba(70, 44, 24, 0.16),
+      inset 10px 0 18px -10px rgba(84, 52, 23, 0.4),
+      inset 10px 0 20px rgba(255, 230, 180, 0.14),
+      -12px 0 30px rgba(74, 47, 27, 0.18);
+  }
+
+  /* Painel estreito de vidro fumê/champagne -- opaco o bastante para nunca
+     deixar a foto entrever antes da porta girar (é só um acabamento sobre a
+     própria madeira, não um recorte real). */
+  .detail-door__glass {
+    position: absolute;
+    top: 12%;
+    bottom: 12%;
+    width: 15%;
+    border-radius: 3px;
+    border: 1px solid rgba(196, 151, 82, 0.42);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.36), rgba(240, 222, 196, 0.2) 55%, rgba(224, 201, 163, 0.26));
+    box-shadow:
+      inset 0 1px 2px rgba(255, 255, 255, 0.4),
+      inset 0 -1px 3px rgba(120, 86, 48, 0.15);
+    backdrop-filter: blur(3px);
+  }
+
+  .detail-door--left .detail-door__glass {
+    right: 24%;
+  }
+
+  .detail-door--right .detail-door__glass {
+    left: 24%;
+  }
+
+  /* Linha dourada vertical -- fica coladinha ao puxador, perto do encontro
+     central; ganha o papel de "linha de encontro" quando as duas portas
+     estão fechadas (a borda de cada porta soma 2px no centro). */
+  .detail-door__gold-line {
+    position: absolute;
+    top: 8%;
+    bottom: 8%;
+    width: 2px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, transparent, rgba(232, 196, 137, 0.9) 15%, rgba(184, 138, 85, 0.95) 50%, rgba(232, 196, 137, 0.9) 85%, transparent);
+  }
+
+  .detail-door--left .detail-door__gold-line {
+    right: 9%;
+  }
+
+  .detail-door--right .detail-door__gold-line {
+    left: 9%;
+  }
+
+  /* Puxador vertical fino, alongado -- moderno, no lugar dos puxadores
+     pequenos antigos. */
+  .detail-door__handle {
+    position: absolute;
+    top: 50%;
+    width: 5px;
+    height: clamp(58px, 14%, 92px);
+    border-radius: 999px;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg, #8f6328, #e7c27d, #a8742f);
+    box-shadow:
+      0 2px 8px rgba(77, 48, 22, 0.28),
+      inset 0 1px 1px rgba(255, 249, 226, 0.7);
+  }
+
+  .detail-door--left .detail-door__handle {
+    right: 4%;
+  }
+
+  .detail-door--right .detail-door__handle {
+    left: 4%;
+  }
+
+  /* Mobile: painel de vidro menor e sem blur (evita serrilhado/custo de
+     desempenho em telas pequenas) -- madeira, linha dourada e puxador
+     continuam iguais, só a proporção do vidro muda. */
+  @media (max-width: 640px) {
+    .detail-door__glass {
+      width: 11%;
+      backdrop-filter: none;
+    }
+
+    .detail-frame {
+      box-shadow:
+        inset 0 0 0 1px rgba(226, 208, 184, 0.85),
+        inset 0 0 0 3px rgba(184, 138, 85, 0.32);
+    }
+  }
+
   .compact-name-in {
     animation: compact-name-in 380ms ease-out 360ms both;
   }
@@ -276,6 +474,131 @@
     to {
       opacity: 1;
       transform: scaleX(1);
+    }
+  }
+
+  /* Cena 3D da imagem principal do Hero (HeroVisualShowcase). `perspective`
+     mora no contêiner externo, `transform-style: preserve-3d` desce até o
+     cartão real para o `translateZ`/`rotateY` do giro terem profundidade de
+     verdade (não só um `box-shadow` plano). */
+  .hero-visual-scene {
+    position: relative;
+    perspective: 1400px;
+    perspective-origin: center;
+  }
+
+  .hero-visual-image {
+    width: min(34vw, 500px);
+    max-height: min(650px, calc(100dvh - 210px));
+    aspect-ratio: 900 / 1200;
+    transform-style: preserve-3d;
+  }
+
+  .hero-visual-card {
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    will-change: transform, opacity, filter;
+  }
+
+  @media (max-width: 767px) {
+    .hero-visual-image {
+      width: min(calc(100vw - 36px), 340px);
+      max-height: 60dvh;
+    }
+
+    .hero-transform-rays {
+      inset: -8%;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .hero-transform-rays {
+      opacity: 0.85;
+      transform: scale(0.92);
+    }
+  }
+
+  /* Raios/feixes dourados -- só existem montados durante a transformação
+     (ver HeroVisualShowcase). Duas camadas independentes girando em
+     sentidos opostos, mais lenta por fora / mais rápida por dentro, para
+     não parecerem um único elemento girando em bloco. */
+  .hero-transform-rays--outer {
+    animation: heroRaysOuter 1s ease-in-out both;
+  }
+
+  .hero-transform-rays--inner {
+    animation: heroRaysInner 0.8s ease-in-out both reverse;
+  }
+
+  @keyframes heroRaysOuter {
+    0% {
+      opacity: 0;
+      transform: rotate(0deg) scale(0.92);
+    }
+    25% {
+      opacity: 0.65;
+    }
+    70% {
+      opacity: 0.85;
+    }
+    100% {
+      opacity: 0;
+      transform: rotate(220deg) scale(1.1);
+    }
+  }
+
+  @keyframes heroRaysInner {
+    0% {
+      opacity: 0;
+      transform: rotate(0deg) scale(0.95);
+    }
+    30% {
+      opacity: 0.55;
+    }
+    75% {
+      opacity: 0.7;
+    }
+    100% {
+      opacity: 0;
+      transform: rotate(180deg) scale(1.05);
+    }
+  }
+
+  .hero-particle {
+    background: radial-gradient(circle, #f2dfb8, #c89a4f 65%, transparent 100%);
+    animation: heroParticleDrift 1.6s ease-out both;
+  }
+
+  @keyframes heroParticleDrift {
+    0% {
+      opacity: 0;
+      transform: translateY(6px) scale(0.6);
+    }
+    35% {
+      opacity: 0.9;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-14px) scale(1.15);
+    }
+  }
+
+  /* Halo champagne breve no instante em que o giro termina (~220ms, dentro
+     da janela pedida de 180-260ms). */
+  .hero-transform-pulse {
+    background: radial-gradient(circle, rgba(242, 223, 184, 0.55), rgba(200, 154, 79, 0.22) 45%, transparent 72%);
+    animation: heroTransformPulse 220ms ease-out both;
+  }
+
+  @keyframes heroTransformPulse {
+    0% {
+      opacity: 0;
+    }
+    45% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
     }
   }
 

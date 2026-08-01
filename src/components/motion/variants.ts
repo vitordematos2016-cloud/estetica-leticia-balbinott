@@ -4,6 +4,10 @@ export type RevealDirection = 'up' | 'down' | 'left' | 'right' | 'none';
 // para manter a mesma assinatura de movimento em toda a experiência Motion.
 export const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 export const EASE_IN = [0.4, 0, 1, 1] as const;
+// Usada para movimentos de "fechamento"/saída que devem ser rápidos mas sem
+// brusquidão (ex.: portas de madeira fechando ao sair da viewport) --
+// distinta de EASE_IN (que acelera até o fim, mais abrupta).
+export const EASE_IN_OUT = [0.4, 0, 0.2, 1] as const;
 
 // Afasta o gatilho de entrada/saída da viewport das bordas cruas -- usado
 // por Reveal/RevealGroup e pelos hooks de reentrada (useRepeatableInView,

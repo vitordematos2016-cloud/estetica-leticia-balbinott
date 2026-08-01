@@ -4,7 +4,7 @@ import { siteContent } from '../../data/siteContent';
 import { Container } from '../ui/Container';
 import { PhotoFrame } from '../ui/PhotoFrame';
 import { Reveal } from '../motion/reveal';
-import { EASE_OUT } from '../motion/variants';
+import { EASE_IN_OUT, EASE_OUT } from '../motion/variants';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useMobileViewportActive } from '../../hooks/useMobileViewportActive';
 import { mobileCardTransition, mobileCardVariants } from '../motion/mobileActive';
@@ -38,6 +38,20 @@ export function ThoughtfulDetails() {
   const isInView = useRepeatableInView(ref, { amount: 0.4 });
   const hasBeenSeen = useOnceInView(ref, { amount: 0.4 });
   const prefersReducedMotion = useReducedMotion();
+  // Exceção deliberada ao `once: true` do resto do site: só as portas de
+  // madeira repetem a cada entrada/saída da viewport (pedido explícito da
+  // cliente para esta seção). `doorContainerRef` observa a moldura da foto
+  // (não a seção inteira, mais alta). `amount: 0.55` + margem de -18% em
+  // cima/embaixo (encolhe a área observada para a faixa central da tela)
+  // exige a moldura já bem visível antes de abrir -- valores mais frouxos
+  // (0.35 / -8%) disparavam a abertura cedo demais, com a moldura ainda
+  // quase toda fora da tela, e quem rolava num ritmo normal só via a
+  // segunda metade do movimento.
+  const doorContainerRef = useRef<HTMLDivElement>(null);
+  const isDoorInView = useRepeatableInView(doorContainerRef, { amount: 0.55, margin: '-18% 0px -18% 0px' });
+  const doorTransition = isDoorInView
+    ? { duration: 2.1, ease: EASE_OUT }
+    : { duration: 1.6, ease: EASE_IN_OUT };
   const shimmerReplayKey = useReplayKey(isInView);
   const { ref: mobileRef, active: mobileActive, isMobileViewport } = useMobileViewportActive<HTMLDivElement>();
 
@@ -60,11 +74,13 @@ export function ThoughtfulDetails() {
           transition={{ duration: 0.3, ease: EASE_OUT }}
         >
           <Reveal active={hasBeenSeen} delay={0} className="w-full">
-            <div className="relative">
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 -rotate-2 rounded-[1.75rem] bg-beige/45"
-              />
+            {/* Largura travada em `max-w-[14rem]`/`sm:max-w-[16rem]` -- igual
+                à da própria foto -- e `mx-auto` para centralizar: sem isso,
+                este bloco herdava a largura cheia do cartão (`w-full` do
+                Reveal acima) e a foto, mais estreita, ficava colada à
+                esquerda dentro dele, com o brilho e as portas visivelmente
+                fora de centro em relação ao título/texto abaixo. */}
+            <div className="relative mx-auto w-full max-w-[14rem] sm:max-w-[16rem]">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute -inset-3 rounded-[2.25rem] bg-gold/10 opacity-60 blur-2xl transition-opacity duration-300 group-hover:opacity-100 group-active:opacity-100 group-data-[mobile-active=true]:opacity-100"
@@ -79,27 +95,87 @@ export function ThoughtfulDetails() {
                 whileHover={{ scale: 1.015 }}
                 transition={{ duration: 0.3, ease: EASE_OUT }}
               >
-                <PhotoFrame
-                  src={mimoImage}
-                  alt={`Biscoitos personalizados oferecidos como mimo pela ${brand.name}`}
-                  className="relative w-full max-w-[14rem] transition-shadow duration-300 group-hover:border-gold/70 group-hover:shadow-warm group-active:border-gold/70 group-active:shadow-warm group-data-[mobile-active=true]:border-gold/70 group-data-[mobile-active=true]:shadow-warm sm:max-w-[16rem]"
-                />
-
-                {!prefersReducedMotion && (
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 overflow-hidden rounded-[2rem]"
+                <div
+                  ref={doorContainerRef}
+                  className="detail-image-reveal relative overflow-hidden rounded-[2rem]"
+                >
+                  <motion.div
+                    className="relative"
+                    initial={prefersReducedMotion ? undefined : false}
+                    animate={
+                      prefersReducedMotion
+                        ? undefined
+                        : { opacity: isDoorInView ? 1 : 0.9, scale: isDoorInView ? 1 : 1.01 }
+                    }
+                    transition={doorTransition}
                   >
-                    <motion.div
-                      key={shimmerReplayKey}
-                      aria-hidden="true"
-                      className="absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-cream/60 to-transparent mix-blend-screen"
-                      initial={{ x: '-40%', opacity: 0 }}
-                      animate={isInView ? { x: '340%', opacity: [0, 1, 0] } : {}}
-                      transition={{ duration: 1.2, ease: EASE_OUT, delay: 0.6 }}
+                    <PhotoFrame
+                      src={mimoImage}
+                      alt={`Biscoitos personalizados oferecidos como mimo pela ${brand.name}`}
+                      className="relative w-full transition-shadow duration-300 group-hover:border-gold/70 group-hover:shadow-warm group-active:border-gold/70 group-active:shadow-warm group-data-[mobile-active=true]:border-gold/70 group-data-[mobile-active=true]:shadow-warm"
                     />
-                  </div>
-                )}
+                  </motion.div>
+
+                  {!prefersReducedMotion && (
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 overflow-hidden rounded-[2rem]"
+                    >
+                      <motion.div
+                        key={shimmerReplayKey}
+                        aria-hidden="true"
+                        className="absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-cream/60 to-transparent mix-blend-screen"
+                        initial={{ x: '-40%', opacity: 0 }}
+                        animate={isInView ? { x: '340%', opacity: [0, 1, 0] } : {}}
+                        transition={{ duration: 1.2, ease: EASE_OUT, delay: 0.6 }}
+                      />
+                    </div>
+                  )}
+
+                  {!prefersReducedMotion && (
+                    <>
+                      <motion.div
+                        aria-hidden="true"
+                        className="detail-door detail-door--left"
+                        data-open={isDoorInView}
+                        initial={false}
+                        animate={{ rotateY: isDoorInView ? -92 : 0, opacity: isDoorInView ? 0 : 1 }}
+                        transition={{
+                          rotateY: doorTransition,
+                          // Some navegadores continuam pintando um resquício
+                          // de `box-shadow`/borda da porta mesmo depois do
+                          // `backface-visibility: hidden` a esconder na
+                          // rotação -- some a `opacity` só depois que o giro
+                          // termina (delay = duração do giro), então o
+                          // movimento em si fica idêntico, e ao fechar ela
+                          // volta visível instantaneamente, antes de girar.
+                          opacity: { duration: 0, delay: isDoorInView ? doorTransition.duration : 0 },
+                        }}
+                      >
+                        <span className="detail-door__glass" />
+                        <span className="detail-door__gold-line" />
+                        <span className="detail-door__handle" />
+                      </motion.div>
+                      <motion.div
+                        aria-hidden="true"
+                        className="detail-door detail-door--right"
+                        data-open={isDoorInView}
+                        initial={false}
+                        animate={{ rotateY: isDoorInView ? 92 : 0, opacity: isDoorInView ? 0 : 1 }}
+                        transition={{
+                          rotateY: doorTransition,
+                          opacity: { duration: 0, delay: isDoorInView ? doorTransition.duration : 0 },
+                        }}
+                      >
+                        <span className="detail-door__glass" />
+                        <span className="detail-door__gold-line" />
+                        <span className="detail-door__handle" />
+                      </motion.div>
+                    </>
+                  )}
+
+                  <span aria-hidden="true" className="detail-frame" />
+                </div>
               </motion.div>
             </div>
           </Reveal>

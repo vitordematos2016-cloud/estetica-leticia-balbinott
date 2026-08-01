@@ -100,13 +100,25 @@ export function TreatmentCoverContent({ treatment, onViewDetails, footerExtra }:
 
       <div className="absolute left-1/2 top-[9%] flex w-[78%] -translate-x-1/2 -translate-y-1/2 items-center gap-3 sm:static sm:row-start-1 sm:w-full sm:translate-x-0 sm:translate-y-0">
         <GoldLine className="flex-1" />
-        <img
-          src={monogramImage}
-          alt=""
-          aria-hidden="true"
-          className="h-6 w-auto shrink-0 sm:h-7"
-          style={{ filter: 'drop-shadow(0 1px 2.5px rgba(124,97,64,0.55)) saturate(1.35) contrast(1.25) brightness(1.05)' }}
-        />
+        <div className="relative flex shrink-0 items-center justify-center">
+          {/* Halo creme muito discreto atrás do LB -- só reforça o contraste
+              nas capas mais claras, sem virar um círculo/caixa visível
+              (blur grande + opacidade baixa dissolve qualquer borda). */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -inset-2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,248,235,0.55)_0%,rgba(255,248,235,0.22)_55%,transparent_78%)] blur-[3px]"
+          />
+          <img
+            src={monogramImage}
+            alt=""
+            aria-hidden="true"
+            className="relative h-6 w-auto sm:h-7"
+            style={{
+              filter:
+                'saturate(1.55) contrast(1.4) brightness(0.82) drop-shadow(0 1px 1px rgba(255,250,240,0.85)) drop-shadow(0 2px 5px rgba(84,52,23,0.28))',
+            }}
+          />
+        </div>
         <GoldLine className="flex-1" />
       </div>
 
